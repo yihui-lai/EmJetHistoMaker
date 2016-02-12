@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Jan 20 00:10:50 2016 by ROOT version 5.34/32
+// Mon Feb  8 21:31:44 2016 by ROOT version 5.34/32
 // from TTree emergingJetsTree/emergingJetsTree
-// found on file: /afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/SelectedJetAnalysis-v0/WJetSkimMuon/SingleMuon/SelectedJetAnalysis/160107_215042/output_merged_WJetSkimMuon.root
+// found on file: /afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root
 //////////////////////////////////////////////////////////
 
 #ifndef BaseClass_h
@@ -45,6 +45,9 @@ public :
    vector<float>   *jets_medianLogIpSig;
    vector<int>     *jets_missHits;
    vector<int>     *jets_muonHits;
+   vector<float>   *jets_alphaMax;
+   vector<int>     *jets_nDarkPions;
+   vector<float>   *jets_minDRDarkPion;
    vector<vector<float> > *tracks_ipXY;
    vector<vector<float> > *tracks_ipZ;
    vector<vector<float> > *tracks_ipXYSig;
@@ -122,6 +125,9 @@ public :
    TBranch        *b_jets_medianLogIpSig;   //!
    TBranch        *b_jets_missHits;   //!
    TBranch        *b_jets_muonHits;   //!
+   TBranch        *b_jets_alphaMax;   //!
+   TBranch        *b_jets_nDarkPions;   //!
+   TBranch        *b_jets_minDRDarkPion;   //!
    TBranch        *b_tracks_ipXY;   //!
    TBranch        *b_tracks_ipZ;   //!
    TBranch        *b_tracks_ipXYSig;   //!
@@ -197,11 +203,11 @@ BaseClass::BaseClass(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/SelectedJetAnalysis-v0/WJetSkimMuon/SingleMuon/SelectedJetAnalysis/160107_215042/output_merged_WJetSkimMuon.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/SelectedJetAnalysis-v0/WJetSkimMuon/SingleMuon/SelectedJetAnalysis/160107_215042/output_merged_WJetSkimMuon.root");
+         f = new TFile("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/SelectedJetAnalysis-v0/WJetSkimMuon/SingleMuon/SelectedJetAnalysis/160107_215042/output_merged_WJetSkimMuon.root:/emergingJetAnalyzer");
+      TDirectory * dir = (TDirectory*)f->Get("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root:/emergingJetAnalyzer");
       dir->GetObject("emergingJetsTree",tree);
 
    }
@@ -258,6 +264,9 @@ void BaseClass::Init(TTree *tree)
    jets_medianLogIpSig = 0;
    jets_missHits = 0;
    jets_muonHits = 0;
+   jets_alphaMax = 0;
+   jets_nDarkPions = 0;
+   jets_minDRDarkPion = 0;
    tracks_ipXY = 0;
    tracks_ipZ = 0;
    tracks_ipXYSig = 0;
@@ -287,6 +296,9 @@ void BaseClass::Init(TTree *tree)
    fChain->SetBranchAddress("jets_medianLogIpSig", &jets_medianLogIpSig, &b_jets_medianLogIpSig);
    fChain->SetBranchAddress("jets_missHits", &jets_missHits, &b_jets_missHits);
    fChain->SetBranchAddress("jets_muonHits", &jets_muonHits, &b_jets_muonHits);
+   fChain->SetBranchAddress("jets_alphaMax", &jets_alphaMax, &b_jets_alphaMax);
+   fChain->SetBranchAddress("jets_nDarkPions", &jets_nDarkPions, &b_jets_nDarkPions);
+   fChain->SetBranchAddress("jets_minDRDarkPion", &jets_minDRDarkPion, &b_jets_minDRDarkPion);
    fChain->SetBranchAddress("tracks_ipXY", &tracks_ipXY, &b_tracks_ipXY);
    fChain->SetBranchAddress("tracks_ipZ", &tracks_ipZ, &b_tracks_ipZ);
    fChain->SetBranchAddress("tracks_ipXYSig", &tracks_ipXYSig, &b_tracks_ipXYSig);
