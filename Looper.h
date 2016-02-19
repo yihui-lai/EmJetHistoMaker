@@ -5,7 +5,9 @@
 #include <TStopwatch.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <TMath.h>
 
+#include <cassert>
 #include <string>
 #include <iostream>
 #include <unordered_map>
@@ -14,6 +16,8 @@
 #include <functional>
 
 using std::string;
+
+#define N_TRACKSORT 50
 
 class Looper : BaseClass 
 {
@@ -69,7 +73,7 @@ void Looper::Loop(string ofilename)
   }
   fChain->SetBranchStatus("tracks_ipXY",1);  // activate branchname
   fChain->SetBranchStatus("tracks_ipXYSig",1);  // activate branchname
-  fChain->SetBranchStatus("tracks_ipZ",1);  // activate branchname
+  // fChain->SetBranchStatus("tracks_ipZ",1);  // activate branchname
 
   Long64_t nentries = fChain->GetEntriesFast();
   std::cout << "Scaling by cross section = " << xsec << std::endl;
@@ -95,9 +99,9 @@ void Looper::Loop(string ofilename)
     {
       TStopwatch timer;
       if ( jentry % 10000 == 0 ) {
-        std::cout << "Running over global entry: " << jentry << std::endl;
         if (jentry!=0) std::cout << "Last chunk took " << timer.RealTime() << std::endl;
         timer.Start();
+        std::cout << "Running over global entry: " << jentry << std::endl;
       }
       else {
       }
@@ -115,56 +119,48 @@ void Looper::Loop(string ofilename)
           break;
         }
         // for (unsigned i=0; i!=4; i++) {
-        for (unsigned i=0; i!=jets_pt->size(); i++) {
-          // Ignore jets beyond the fourth
-          if (i>3) break;
-          double pt = jets_pt->at(i);
-          double eta = jets_eta->at(i);
-          double medianLogIpSig = jets_medianLogIpSig->at(i);
-          double alphaMax = jets_alphaMax->at(i);
-          auto& vec_ipXY = tracks_ipXY->at(i);
+        for (unsigned ijet=0; ijet!=jets_pt->size(); ijet++) {
+          // Skip jets beyond the fourth
+          if (ijet>3) break;
+          double pt             = jets_pt             -> at(ijet);
+          double eta            = jets_eta            -> at(ijet);
+          double medianLogIpSig = jets_medianLogIpSig -> at(ijet);
+          double alphaMax       = jets_alphaMax       -> at(ijet);
+          auto& vec_ipXY    = tracks_ipXY    -> at(ijet);
+          // auto& vec_ipZ     = tracks_ipZ     -> at(ijet);
+          auto& vec_ipXYSig = tracks_ipXYSig -> at(ijet);
           int nTracks = vec_ipXY.size();
-          // std::cout <<"nTracks: " << nTracks << std::endl;
-          // nTracks = tracks_ipXY->at(i).size();
-          // std::cout <<"nTracks: " << nTracks << std::endl;
-          // for (auto i: vec_ipXY) std::cout <<"i" << i << std::endl;
+          // Skip jets with zero tracks
+          if (nTracks==0) continue;
           int nDarkPions = 0;
           bool sig = false;
           if (isSignal) {
-            nDarkPions = jets_nDarkPions->at(i);
+            nDarkPions = jets_nDarkPions->at(ijet);
             if (nDarkPions > 0) sig = true;
           }
 
           histos1D["jet_pt"]->Fill(pt, weight);
           if (sig) histos1D["jet_pt_sig"]->Fill(pt, weight);
-          if (i==0) histos1D["jet_pt0"]->Fill(pt, weight);
-          if (i==1) histos1D["jet_pt1"]->Fill(pt, weight);
-          if (i==2) histos1D["jet_pt2"]->Fill(pt, weight);
-          if (i==3) histos1D["jet_pt3"]->Fill(pt, weight);
+          if (ijet==0) histos1D["jet_pt0"]->Fill(pt, weight);
+          if (ijet==1) histos1D["jet_pt1"]->Fill(pt, weight);
+          if (ijet==2) histos1D["jet_pt2"]->Fill(pt, weight);
+          if (ijet==3) histos1D["jet_pt3"]->Fill(pt, weight);
 
           histos1D["jet_eta"]->Fill(eta, weight);
           if (sig) histos1D["jet_eta_sig"]->Fill(eta, weight);
-          if (i==0) histos1D["jet_eta0"]->Fill(eta, weight);
-          if (i==1) histos1D["jet_eta1"]->Fill(eta, weight);
-          if (i==2) histos1D["jet_eta2"]->Fill(eta, weight);
-          if (i==3) histos1D["jet_eta3"]->Fill(eta, weight);
+          if (ijet==0) histos1D["jet_eta0"]->Fill(eta, weight);
+          if (ijet==1) histos1D["jet_eta1"]->Fill(eta, weight);
+          if (ijet==2) histos1D["jet_eta2"]->Fill(eta, weight);
+          if (ijet==3) histos1D["jet_eta3"]->Fill(eta, weight);
 
           histos1D["jet_nTracks"]->Fill(nTracks, weight);
           if (sig) histos1D["jet_nTracks_sig"]->Fill(nTracks, weight);
 
           histos1D["jet_medianLogIpSig"]->Fill(medianLogIpSig, weight);
           if (sig) histos1D["jet_medianLogIpSig_sig"]->Fill(medianLogIpSig, weight);
-          if (i==0) histos1D["jet_medianLogIpSig0"]->Fill(medianLogIpSig, weight);
-          if (i==1) histos1D["jet_medianLogIpSig1"]->Fill(medianLogIpSig, weight);
-          if (i==2) histos1D["jet_medianLogIpSig2"]->Fill(medianLogIpSig, weight);
-          if (i==3) histos1D["jet_medianLogIpSig3"]->Fill(medianLogIpSig, weight);
 
           histos1D["jet_alphaMax"]->Fill(alphaMax, weight);
           if (sig) histos1D["jet_alphaMax_sig"]->Fill(alphaMax, weight);
-          if (i==0) histos1D["jet_alphaMax0"]->Fill(alphaMax, weight);
-          if (i==1) histos1D["jet_alphaMax1"]->Fill(alphaMax, weight);
-          if (i==2) histos1D["jet_alphaMax2"]->Fill(alphaMax, weight);
-          if (i==3) histos1D["jet_alphaMax3"]->Fill(alphaMax, weight);
 
           histos1D["jet_nDarkPions"]->Fill(nDarkPions, weight);
           if (sig) histos1D["jet_nDarkPions_sig"]->Fill(nDarkPions, weight);
@@ -174,7 +170,48 @@ void Looper::Loop(string ofilename)
           ht += pt;
           sumMedianLogIpSig += medianLogIpSig;
           vec_medianLogIpSig.push_back(medianLogIpSig);
+
+          // Loop through tracks for given jet
+          vector<int> index_ipXYSig_ordered;
+          for (unsigned itk=0; itk!=vec_ipXY.size(); itk++) {
+            index_ipXYSig_ordered.push_back(itk);
+            double ipXY    = vec_ipXY    [itk];
+            // double ipZ     = vec_ipZ     [itk];
+            double ipXYSig = vec_ipXYSig [itk];
+            histos1D["track_logIpSig"]->Fill( TMath::Log(ipXYSig), weight);
+          }
+          std::sort( index_ipXYSig_ordered.begin(), index_ipXYSig_ordered.end(), [&](int a, int b){ return vec_ipXYSig[a] > vec_ipXYSig[b]; } );
+          for (int i=0; i< N_TRACKSORT; i++) {
+            if (i>=nTracks) break; // Don't try to run over more than number of tracks in current jet
+            string prefix = ""; string postfix = std::to_string(i);
+            auto ipXYSig_i = vec_ipXYSig[index_ipXYSig_ordered[i]]; // i-th largest ipXYSig
+            string name = prefix + "jet_track_logIpSig" + postfix ; histos1D[name]->Fill( TMath::Log(ipXYSig_i) , weight );
+          }
+          auto medIpSig = vec_ipXYSig[ index_ipXYSig_ordered[ nTracks/2 ] ];
+          auto medLogIpSig = TMath::Log( medIpSig );
+
+          histos1D["jet_medLogIpSig"]->Fill(medLogIpSig, weight);
+          if (sig) histos1D["jet_medLogIpSig_sig"]->Fill(medLogIpSig, weight);
         }
+
+        // Event-level quantities
+        
+        // nJet > 4 at this point
+        assert(nJet>=4);
+        double deltaPt = jets_pt->at(0) - jets_pt->at(1);
+        double sigmaPt = 0;
+        double sigmaPt2 = 0;
+        for ( unsigned i=0; i<3; i++ ) {
+          float delta = jets_pt->at(i) - jets_pt->at(i+1); 
+          sigmaPt += delta*delta;
+          sigmaPt2 += TMath::Sqrt(delta);
+        }
+        sigmaPt = TMath::Sqrt(sigmaPt);
+        sigmaPt2 = sigmaPt2*sigmaPt2;
+        histos1D["deltaPt"]->Fill(deltaPt, weight);
+        histos1D["sigmaPt"]->Fill(sigmaPt, weight);
+        histos1D["sigmaPt2"]->Fill(sigmaPt2, weight);
+
         histos1D["ht"]->Fill(ht, weight);
         histos1D["sumMedianLogIpSig"]->Fill(sumMedianLogIpSig, weight);
         std::sort(vec_medianLogIpSig.begin(), vec_medianLogIpSig.end(), std::greater<double>());
@@ -182,12 +219,6 @@ void Looper::Loop(string ofilename)
         histos1D["maxMedianLogIpSig1"]->Fill( vec_medianLogIpSig[1], weight ) ;
         histos1D["maxMedianLogIpSig2"]->Fill( vec_medianLogIpSig[2], weight ) ;
         histos1D["maxMedianLogIpSig3"]->Fill( vec_medianLogIpSig[3], weight ) ;
-        // for (auto i=0; i!=jets_eta->size(); i++) {
-        //   histos1D["jet_eta"]->Fill(jets_eta[i], weight);
-        // }
-        // for (auto i=0; i!=jets_medianLogIpSig->size(); i++) {
-        //   histos1D["jet_medianLogIpSig"]->Fill(jets_medianLogIpSig[i], weight);
-        // }
 
       }
 
@@ -206,33 +237,33 @@ void Looper::InitHistograms()
   string prefix = ""; string postfix = "";
   name = prefix + "nJet"               + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() ,  25 , 0  ,  25  ) ;
   name = prefix + "ht"                 + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 2500 ) ;
+  name = prefix + "sigmaPt"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1500 ) ;
+  name = prefix + "sigmaPt2"           + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1500 ) ;
+  name = prefix + "deltaPt"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1000 ) ;
   name = prefix + "jet_pt"             + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1000 ) ;
   name = prefix + "jet_eta"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
   name = prefix + "jet_nTracks"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
   name = prefix + "jet_medianLogIpSig" + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
+  name = prefix + "jet_medLogIpSig"    + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
   name = prefix + "jet_alphaMax"       + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 1.   ) ;
   name = prefix + "jet_nDarkPions"     + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
   name = prefix + "sumMedianLogIpSig"  + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -25,  25  ) ;
   name = prefix + "track_logIpSig"     + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 ,   5  ) ;
-  name = prefix + "event_jetPtDelta"   + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1000 ) ;
   // Ordered by pt
   for (int i=0; i< 4; i++) {
     prefix = ""; postfix = std::to_string(i);
     name = prefix + "jet_pt"             + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1000 ) ;
     name = prefix + "jet_eta"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
-    name = prefix + "jet_nTracks"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
-    name = prefix + "jet_medianLogIpSig" + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
-    name = prefix + "jet_alphaMax"       + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 1.   ) ;
   }
   // Ordered by logIpSig
-  for (int i=0; i< 4; i++) {
+  for (int i=0; i< N_TRACKSORT; i++) {
     prefix = ""; postfix = std::to_string(i);
-    name = prefix + "jet_logIpSig"       + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
+    name = prefix + "jet_track_logIpSig" + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 20   ) ;
   }
   // Ordered by medianLogIpSig
   for (int i=0; i< 4; i++) {
     prefix = ""; postfix = std::to_string(i);
-    name = prefix + "maxMedianLogIpSig" + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
+    name = prefix + "maxMedianLogIpSig"  + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
   }
 
   {
@@ -241,6 +272,7 @@ void Looper::InitHistograms()
     name = prefix + "jet_eta"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
     name = prefix + "jet_nTracks"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
     name = prefix + "jet_medianLogIpSig" + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
+    name = prefix + "jet_medLogIpSig"    + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
     name = prefix + "jet_alphaMax"       + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 1.   ) ;
     name = prefix + "jet_nDarkPions"     + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
   }
