@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Mon Feb  8 21:31:44 2016 by ROOT version 5.34/32
+// Thu Feb 25 00:31:34 2016 by ROOT version 6.02/05
 // from TTree emergingJetsTree/emergingJetsTree
 // found on file: /afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root
 //////////////////////////////////////////////////////////
@@ -13,16 +13,18 @@
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
-#include <vector>
-#include <vector>
+#include "vector"
+#include "vector"
+#include "vector"
+#include "vector"
 using std::vector;
-
-// Fixed size dimensions of array or collections stored in the TTree if any.
 
 class BaseClass {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
+
+// Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
    Int_t           run;
@@ -48,9 +50,22 @@ public :
    vector<float>   *jets_alphaMax;
    vector<int>     *jets_nDarkPions;
    vector<float>   *jets_minDRDarkPion;
+   vector<vector<int> > *tracks_nHits;
+   vector<vector<int> > *tracks_nMissInnerHits;
    vector<vector<float> > *tracks_ipXY;
    vector<vector<float> > *tracks_ipZ;
    vector<vector<float> > *tracks_ipXYSig;
+   vector<float>   *vertex_x;
+   vector<float>   *vertex_y;
+   vector<float>   *vertex_z;
+   vector<float>   *vertex_xError;
+   vector<float>   *vertex_yError;
+   vector<float>   *vertex_zError;
+   vector<float>   *vertex_Lxy;
+   vector<float>   *vertex_mass;
+   vector<float>   *vertex_chi2;
+   vector<float>   *vertex_ndof;
+   vector<float>   *vertex_pt2sum;
    Float_t         jet0_pt;
    Float_t         jet0_eta;
    Int_t           jet0_promptTracks;
@@ -128,9 +143,22 @@ public :
    TBranch        *b_jets_alphaMax;   //!
    TBranch        *b_jets_nDarkPions;   //!
    TBranch        *b_jets_minDRDarkPion;   //!
+   TBranch        *b_tracks_nHits;   //!
+   TBranch        *b_tracks_nMissInnerHits;   //!
    TBranch        *b_tracks_ipXY;   //!
    TBranch        *b_tracks_ipZ;   //!
    TBranch        *b_tracks_ipXYSig;   //!
+   TBranch        *b_vertex_x;   //!
+   TBranch        *b_vertex_y;   //!
+   TBranch        *b_vertex_z;   //!
+   TBranch        *b_vertex_xError;   //!
+   TBranch        *b_vertex_yError;   //!
+   TBranch        *b_vertex_zError;   //!
+   TBranch        *b_vertex_Lxy;   //!
+   TBranch        *b_vertex_mass;   //!
+   TBranch        *b_vertex_chi2;   //!
+   TBranch        *b_vertex_ndof;   //!
+   TBranch        *b_vertex_pt2sum;   //!
    TBranch        *b_jet0_pt;   //!
    TBranch        *b_jet0_eta;   //!
    TBranch        *b_jet0_promptTracks;   //!
@@ -267,9 +295,22 @@ void BaseClass::Init(TTree *tree)
    jets_alphaMax = 0;
    jets_nDarkPions = 0;
    jets_minDRDarkPion = 0;
+   tracks_nHits = 0;
+   tracks_nMissInnerHits = 0;
    tracks_ipXY = 0;
    tracks_ipZ = 0;
    tracks_ipXYSig = 0;
+   vertex_x = 0;
+   vertex_y = 0;
+   vertex_z = 0;
+   vertex_xError = 0;
+   vertex_yError = 0;
+   vertex_zError = 0;
+   vertex_Lxy = 0;
+   vertex_mass = 0;
+   vertex_chi2 = 0;
+   vertex_ndof = 0;
+   vertex_pt2sum = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -299,9 +340,22 @@ void BaseClass::Init(TTree *tree)
    fChain->SetBranchAddress("jets_alphaMax", &jets_alphaMax, &b_jets_alphaMax);
    fChain->SetBranchAddress("jets_nDarkPions", &jets_nDarkPions, &b_jets_nDarkPions);
    fChain->SetBranchAddress("jets_minDRDarkPion", &jets_minDRDarkPion, &b_jets_minDRDarkPion);
+   fChain->SetBranchAddress("tracks_nHits", &tracks_nHits, &b_tracks_nHits);
+   fChain->SetBranchAddress("tracks_nMissInnerHits", &tracks_nMissInnerHits, &b_tracks_nMissInnerHits);
    fChain->SetBranchAddress("tracks_ipXY", &tracks_ipXY, &b_tracks_ipXY);
    fChain->SetBranchAddress("tracks_ipZ", &tracks_ipZ, &b_tracks_ipZ);
    fChain->SetBranchAddress("tracks_ipXYSig", &tracks_ipXYSig, &b_tracks_ipXYSig);
+   fChain->SetBranchAddress("vertex_x", &vertex_x, &b_vertex_x);
+   fChain->SetBranchAddress("vertex_y", &vertex_y, &b_vertex_y);
+   fChain->SetBranchAddress("vertex_z", &vertex_z, &b_vertex_z);
+   fChain->SetBranchAddress("vertex_xError", &vertex_xError, &b_vertex_xError);
+   fChain->SetBranchAddress("vertex_yError", &vertex_yError, &b_vertex_yError);
+   fChain->SetBranchAddress("vertex_zError", &vertex_zError, &b_vertex_zError);
+   fChain->SetBranchAddress("vertex_Lxy", &vertex_Lxy, &b_vertex_Lxy);
+   fChain->SetBranchAddress("vertex_mass", &vertex_mass, &b_vertex_mass);
+   fChain->SetBranchAddress("vertex_chi2", &vertex_chi2, &b_vertex_chi2);
+   fChain->SetBranchAddress("vertex_ndof", &vertex_ndof, &b_vertex_ndof);
+   fChain->SetBranchAddress("vertex_pt2sum", &vertex_pt2sum, &b_vertex_pt2sum);
    fChain->SetBranchAddress("jet0_pt", &jet0_pt, &b_jet0_pt);
    fChain->SetBranchAddress("jet0_eta", &jet0_eta, &b_jet0_eta);
    fChain->SetBranchAddress("jet0_promptTracks", &jet0_promptTracks, &b_jet0_promptTracks);
