@@ -18,16 +18,19 @@
 using std::string;
 
 #define N_TRACKSORT 50
+enum class Sample {SIGNAL, QCD, WJET};
 
 class Looper : BaseClass 
 {
   public:
     Looper();
-    void InitFromFileName(const std::string ifilename, double iweight=1.0, double iefficiency=1.0, bool isignal=false);
+    void InitFromFileName(const std::string ifilename, Sample isample=Sample::SIGNAL, bool iData=false, double ixsec=1.0, double iefficiency=1.0, bool isignal=false);
     void Loop(string ofilename);
   private:
     std::unordered_map<std::string, TH1F*> histos1D;
     std::unordered_map<std::string, TH2F*> histos2D;
+    Sample sample;
+    bool isData;
     double xsec;
     double efficiency;
     bool isSignal;
@@ -38,10 +41,12 @@ Looper::Looper() : xsec(1.0), efficiency(1.0), isSignal(false)
 {
 }
 
-void Looper::InitFromFileName(const std::string ifilename, double ixsec, double iefficiency, bool isignal)
+void Looper::InitFromFileName(const std::string ifilename, Sample isample, bool iData, double ixsec, double iefficiency, bool isignal)
 {
   TTree *tree = 0;
   std::string filename = ifilename;
+  sample = isample;
+  isData = iData;
   xsec = ixsec;
   efficiency = iefficiency;
   isSignal = isignal;
@@ -71,6 +76,8 @@ void Looper::Loop(string ofilename)
   if (isSignal) {
     fChain->SetBranchStatus("jets_nDarkPions",1);  // activate branchname
   }
+  fChain->SetBranchStatus("tracks_nHits",1);  // activate branchname
+  fChain->SetBranchStatus("tracks_nMissInnerHits",1);  // activate branchname
   fChain->SetBranchStatus("tracks_ipXY",1);  // activate branchname
   fChain->SetBranchStatus("tracks_ipXYSig",1);  // activate branchname
   // fChain->SetBranchStatus("tracks_ipZ",1);  // activate branchname
@@ -82,7 +89,9 @@ void Looper::Loop(string ofilename)
   if ( nentries == 0 ) {
     std::cout << "No entries!" << std::endl;
   }
-  double weight = xsec*efficiency/nentries;
+  double weight = 0.0;
+  if (isData) weight = 1.0;
+  else        weight = xsec*efficiency/nentries;
 
   Long64_t nbytes = 0, nb = 0;
   TStopwatch timer_total;
@@ -114,9 +123,11 @@ void Looper::Loop(string ofilename)
         double ht = 0;
         double sumMedianLogIpSig = 0;
         vector<double> vec_medianLogIpSig;
-        if ( jets_pt->size() < 4 ) {
-          std::cout << "Skipping event with nJet<4" << std::endl;
-          break;
+        if (sample==Sample::SIGNAL || sample==Sample::QCD) {
+          if ( jets_pt->size() < 4  ) {
+            std::cout << "Skipping event with nJet<4" << std::endl;
+            break;
+          }
         }
         // for (unsigned i=0; i!=4; i++) {
         for (unsigned ijet=0; ijet!=jets_pt->size(); ijet++) {
@@ -126,9 +137,10 @@ void Looper::Loop(string ofilename)
           double eta            = jets_eta            -> at(ijet);
           double medianLogIpSig = jets_medianLogIpSig -> at(ijet);
           double alphaMax       = jets_alphaMax       -> at(ijet);
-          auto& vec_ipXY    = tracks_ipXY    -> at(ijet);
-          // auto& vec_ipZ     = tracks_ipZ     -> at(ijet);
-          auto& vec_ipXYSig = tracks_ipXYSig -> at(ijet);
+          auto& vec_nHits     = tracks_nHits          -> at(ijet);
+          auto& vec_nMissHits = tracks_nMissInnerHits -> at(ijet);
+          auto& vec_ipXY      = tracks_ipXY           -> at(ijet);
+          auto& vec_ipXYSig   = tracks_ipXYSig        -> at(ijet);
           int nTracks = vec_ipXY.size();
           // Skip jets with zero tracks
           if (nTracks==0) continue;
@@ -174,12 +186,28 @@ void Looper::Loop(string ofilename)
           // Loop through tracks for given jet
           vector<int> index_ipXYSig_ordered;
           for (unsigned itk=0; itk!=vec_ipXY.size(); itk++) {
+            string name; string prefix =""; string postfix="";
             index_ipXYSig_ordered.push_back(itk);
+            int nHits = vec_nHits[itk];
+            int nMissHits = vec_nMissHits[itk];
+            double missHitFrac = double(nMissHits) / double(nHits);
             double ipXY    = vec_ipXY    [itk];
-            // double ipZ     = vec_ipZ     [itk];
             double ipXYSig = vec_ipXYSig [itk];
-            histos1D["track_logIpSig"]->Fill( TMath::Log(ipXYSig), weight);
+            name = prefix + "track_nHits"        + postfix; histos1D[name] ->Fill( nHits               , weight);
+            name = prefix + "track_nMissHits"    + postfix; histos1D[name] ->Fill( nMissHits           , weight);
+            name = prefix + "track_missHitFrac"  + postfix; histos1D[name] ->Fill( missHitFrac         , weight);
+            name = prefix + "track_ipXY"         + postfix; histos1D[name] ->Fill( ipXY                , weight);
+            name = prefix + "track_logIpSig"     + postfix; histos1D[name] ->Fill( TMath::Log(ipXYSig) , weight);
+            if (sig) {
+              postfix = "_sig";
+              name = prefix + "track_nHits"        + postfix; histos1D[name] ->Fill( nHits               , weight);
+              name = prefix + "track_nMissHits"    + postfix; histos1D[name] ->Fill( nMissHits           , weight);
+              name = prefix + "track_missHitFrac"  + postfix; histos1D[name] ->Fill( missHitFrac         , weight);
+              name = prefix + "track_ipXY"         + postfix; histos1D[name] ->Fill( ipXY                , weight);
+              name = prefix + "track_logIpSig"     + postfix; histos1D[name] ->Fill( TMath::Log(ipXYSig) , weight);
+            }
           }
+          // Sort tracks in descending order of ipXYSig
           std::sort( index_ipXYSig_ordered.begin(), index_ipXYSig_ordered.end(), [&](int a, int b){ return vec_ipXYSig[a] > vec_ipXYSig[b]; } );
           for (int i=0; i< N_TRACKSORT; i++) {
             if (i>=nTracks) break; // Don't try to run over more than number of tracks in current jet
@@ -195,31 +223,32 @@ void Looper::Loop(string ofilename)
         }
 
         // Event-level quantities
-        
-        // nJet > 4 at this point
-        assert(nJet>=4);
-        double deltaPt = jets_pt->at(0) - jets_pt->at(1);
-        double sigmaPt = 0;
-        double sigmaPt2 = 0;
-        for ( unsigned i=0; i<3; i++ ) {
-          float delta = jets_pt->at(i) - jets_pt->at(i+1); 
-          sigmaPt += delta*delta;
-          sigmaPt2 += TMath::Sqrt(delta);
+
+        if (sample==Sample::SIGNAL || sample==Sample::QCD) {
+          // nJet >= 4 at this point
+          assert(jets_pt->size()>=4);
+          double deltaPt = jets_pt->at(0) - jets_pt->at(1);
+          double sigmaPt = 0;
+          double sigmaPt2 = 0;
+          for ( unsigned i=0; i<3; i++ ) {
+            float delta = jets_pt->at(i) - jets_pt->at(i+1); 
+            sigmaPt += delta*delta;
+            sigmaPt2 += TMath::Sqrt(delta);
+          }
+          sigmaPt = TMath::Sqrt(sigmaPt);
+          sigmaPt2 = sigmaPt2*sigmaPt2;
+          histos1D["deltaPt"]->Fill(deltaPt, weight);
+          histos1D["sigmaPt"]->Fill(sigmaPt, weight);
+          histos1D["sigmaPt2"]->Fill(sigmaPt2, weight);
+
+          histos1D["ht"]->Fill(ht, weight);
+          histos1D["sumMedianLogIpSig"]->Fill(sumMedianLogIpSig, weight);
+          std::sort(vec_medianLogIpSig.begin(), vec_medianLogIpSig.end(), std::greater<double>());
+          histos1D["maxMedianLogIpSig0"]->Fill( vec_medianLogIpSig[0], weight ) ;
+          histos1D["maxMedianLogIpSig1"]->Fill( vec_medianLogIpSig[1], weight ) ;
+          histos1D["maxMedianLogIpSig2"]->Fill( vec_medianLogIpSig[2], weight ) ;
+          histos1D["maxMedianLogIpSig3"]->Fill( vec_medianLogIpSig[3], weight ) ;
         }
-        sigmaPt = TMath::Sqrt(sigmaPt);
-        sigmaPt2 = sigmaPt2*sigmaPt2;
-        histos1D["deltaPt"]->Fill(deltaPt, weight);
-        histos1D["sigmaPt"]->Fill(sigmaPt, weight);
-        histos1D["sigmaPt2"]->Fill(sigmaPt2, weight);
-
-        histos1D["ht"]->Fill(ht, weight);
-        histos1D["sumMedianLogIpSig"]->Fill(sumMedianLogIpSig, weight);
-        std::sort(vec_medianLogIpSig.begin(), vec_medianLogIpSig.end(), std::greater<double>());
-        histos1D["maxMedianLogIpSig0"]->Fill( vec_medianLogIpSig[0], weight ) ;
-        histos1D["maxMedianLogIpSig1"]->Fill( vec_medianLogIpSig[1], weight ) ;
-        histos1D["maxMedianLogIpSig2"]->Fill( vec_medianLogIpSig[2], weight ) ;
-        histos1D["maxMedianLogIpSig3"]->Fill( vec_medianLogIpSig[3], weight ) ;
-
       }
 
     } // Done processing one TTree entry
@@ -246,9 +275,16 @@ void Looper::InitHistograms()
   name = prefix + "jet_medianLogIpSig" + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
   name = prefix + "jet_medLogIpSig"    + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
   name = prefix + "jet_alphaMax"       + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 1.   ) ;
+  name = prefix + "jet_nHits"          + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+  name = prefix + "jet_nMissHits"      + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+  name = prefix + "jet_missHitFrac"    + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. ,   1. ) ;
   name = prefix + "jet_nDarkPions"     + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
   name = prefix + "sumMedianLogIpSig"  + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -25,  25  ) ;
+  name = prefix + "track_ipXY"         + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 ,   5  ) ;
   name = prefix + "track_logIpSig"     + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 ,   5  ) ;
+  name = prefix + "track_nHits"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+  name = prefix + "track_nMissHits"    + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+  name = prefix + "track_missHitFrac"  + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. ,   1. ) ;
   // Ordered by pt
   for (int i=0; i< 4; i++) {
     prefix = ""; postfix = std::to_string(i);
@@ -274,7 +310,15 @@ void Looper::InitHistograms()
     name = prefix + "jet_medianLogIpSig" + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
     name = prefix + "jet_medLogIpSig"    + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
     name = prefix + "jet_alphaMax"       + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 1.   ) ;
+    name = prefix + "jet_nHits"          + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+    name = prefix + "jet_nMissHits"      + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+    name = prefix + "jet_missHitFrac"    + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. ,   1. ) ;
     name = prefix + "jet_nDarkPions"     + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+    name = prefix + "track_ipXY"         + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 ,   5  ) ;
+    name = prefix + "track_logIpSig"     + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 ,   5  ) ;
+    name = prefix + "track_nHits"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+    name = prefix + "track_nMissHits"    + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
+    name = prefix + "track_missHitFrac"  + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. ,   1. ) ;
   }
 
   postfix = ""; postfix="";
