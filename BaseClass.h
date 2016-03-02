@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Thu Feb 25 00:31:34 2016 by ROOT version 6.02/05
+// Wed Mar  2 04:58:51 2016 by ROOT version 6.02/05
 // from TTree emergingJetsTree/emergingJetsTree
-// found on file: /afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root
+// found on file: /afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root
 //////////////////////////////////////////////////////////
 
 #ifndef BaseClass_h
@@ -231,11 +231,11 @@ BaseClass::BaseClass(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root");
+         f = new TFile("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/output.root:/emergingJetAnalyzer");
+      TDirectory * dir = (TDirectory*)f->Get("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root:/emergingJetAnalyzer");
       dir->GetObject("emergingJetsTree",tree);
 
    }

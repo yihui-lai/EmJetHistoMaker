@@ -69,6 +69,8 @@ void Looper::Loop(string ofilename)
   InitHistograms();
   if (fChain == 0) return;
   fChain->SetBranchStatus("*",0);  // disable all branches
+  fChain->SetBranchStatus("vertex_Lxy",1);  // activate branchname
+  fChain->SetBranchStatus("vertex_mass",1);  // activate branchname
   fChain->SetBranchStatus("jets_pt",1);  // activate branchname
   fChain->SetBranchStatus("jets_eta",1);  // activate branchname
   fChain->SetBranchStatus("jets_medianLogIpSig",1);  // activate branchname
@@ -251,6 +253,17 @@ void Looper::Loop(string ofilename)
         }
       }
 
+      // Fill vertex histograms
+      {
+        string name; string prefix; string postfix;
+        for (unsigned ivtx=0; ivtx!=vertex_Lxy->size(); ivtx++) {
+          double Lxy = vertex_Lxy->at(ivtx);
+          double mass = vertex_mass->at(ivtx);
+          name = prefix + "vertex_Lxy" + postfix ; histos1D[name]->Fill(Lxy);
+          name = prefix + "vertex_mass"+ postfix ; histos1D[name]->Fill(mass);
+        }
+      }
+
     } // Done processing one TTree entry
   }
   double total_time_elapsed = timer_total.RealTime();
@@ -269,6 +282,8 @@ void Looper::InitHistograms()
   name = prefix + "sigmaPt"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1500 ) ;
   name = prefix + "sigmaPt2"           + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1500 ) ;
   name = prefix + "deltaPt"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1000 ) ;
+  name = prefix + "vertex_Lxy"         + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  ,  100 ) ;
+  name = prefix + "vertex_mass"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  ,  100 ) ;
   name = prefix + "jet_pt"             + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1000 ) ;
   name = prefix + "jet_eta"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
   name = prefix + "jet_nTracks"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;

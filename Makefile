@@ -11,7 +11,7 @@
 CC = g++
 
 # define any compile-time flags
-CFLAGS = -Wall -g
+CFLAGS = -Wall -g -pg
 CXXFLAGS=`root-config --cflags` -std=c++0x
 LDFLAGS=`root-config --ldflags`
 LDLIBS=`root-config --glibs`
