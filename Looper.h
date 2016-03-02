@@ -98,6 +98,7 @@ void Looper::Loop(string ofilename)
   Long64_t nbytes = 0, nb = 0;
   TStopwatch timer_total;
   timer_total.Start();
+  TStopwatch timer;
   // Loop over all events in TChain
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     // Get TTree-level entry number from TChain-level entry number
@@ -108,7 +109,6 @@ void Looper::Loop(string ofilename)
 
     // Do stuff with one entry of the TTree
     {
-      TStopwatch timer;
       if ( jentry % 10000 == 0 ) {
         if (jentry!=0) std::cout << "Last chunk took " << timer.RealTime() << std::endl;
         timer.Start();
