@@ -70,9 +70,13 @@ int main(int argc, char *argv[])
   for (auto kv: files) {
     auto label = kv.first;
     auto file = kv.second;
-    std::cout << "Running over sample: " << file.name << std::endl;
-    t.InitFromFileName(file.name, file.sample, file.isData, file.xsec, file.efficiency, file.isSignal);
-    t.Loop(prefix + label + postfix);
+    std::cout << "Running over sample: " << label << std::endl;
+    int status = t.InitFromFileName(file.name, file.sample, file.isData, file.xsec, file.efficiency, file.isSignal);
+    if (status==0) {
+      // If successfully initialized
+      t.Loop(prefix + label + postfix);
+    }
+    else std::cout << "Error! Skipping file: " << file.name << std::endl;
   }
 
 }

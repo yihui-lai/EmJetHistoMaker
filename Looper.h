@@ -24,7 +24,7 @@ class Looper : BaseClass
 {
   public:
     Looper();
-    void InitFromFileName(const std::string ifilename, Sample isample=Sample::SIGNAL, bool iData=false, double ixsec=1.0, double iefficiency=1.0, bool isignal=false);
+    int InitFromFileName(const std::string ifilename, Sample isample=Sample::SIGNAL, bool iData=false, double ixsec=1.0, double iefficiency=1.0, bool isignal=false);
     void Loop(string ofilename);
   private:
     std::unordered_map<std::string, TH1F*> histos1D;
@@ -41,7 +41,7 @@ Looper::Looper() : xsec(1.0), efficiency(1.0), isSignal(false)
 {
 }
 
-void Looper::InitFromFileName(const std::string ifilename, Sample isample, bool iData, double ixsec, double iefficiency, bool isignal)
+int Looper::InitFromFileName(const std::string ifilename, Sample isample, bool iData, double ixsec, double iefficiency, bool isignal)
 {
   TTree *tree = 0;
   std::string filename = ifilename;
@@ -55,9 +55,11 @@ void Looper::InitFromFileName(const std::string ifilename, Sample isample, bool 
   if (!f || !f->IsOpen()) {
     f = new TFile(filename.c_str());
   }
+  if (f->IsZombie()) return 1; // File read error
   TDirectory * dir = (TDirectory*)f->Get((filename+":/emergingJetAnalyzer").c_str());
   dir->GetObject("emergingJetsTree",tree);
   Init(tree);
+  return 0; // No error
 }
 
 // Copied from BaseClass::Loop()
