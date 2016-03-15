@@ -25,5 +25,13 @@ for k,v in files.iteritems():
     tree.MakeClass(classname)
     # raw_input("Press Enter to continue...")
 
-# raw_input("Press Enter to continue...")
+# Add appropriate 'using' directives
+import fileinput
+classheader = classname + '.h'
+using_vector = 0
+for line in fileinput.input(classheader, inplace=1):
+    print line,
+    if using_vector==0 and line.startswith('#include "vector"'):
+        using_vector = 1
+        print 'using std::vector;'
 
