@@ -1,6 +1,10 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
+<<<<<<< Updated upstream
 // Wed Mar  2 04:58:51 2016 by ROOT version 6.02/05
+=======
+// Tue Mar 15 19:47:29 2016 by ROOT version 6.02/05
+>>>>>>> Stashed changes
 // from TTree emergingJetsTree/emergingJetsTree
 // found on file: /afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root
 //////////////////////////////////////////////////////////
@@ -15,7 +19,9 @@
 // Header file for the classes stored in the TTree if any.
 #include "vector"
 #include "vector"
+using std::vector;
 #include "vector"
+using std::vector;
 #include "vector"
 using std::vector;
 
