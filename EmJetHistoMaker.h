@@ -65,22 +65,48 @@ class EmJetHistos
  public:
   EmJetHistos();
   ~EmJetHistos();
-
+  /*[[[cog
+    import emjet_histo_code as mod
+    mod.generate_vbin_decl()
+    mod.generate_histo_decl()
+    mod.generate_histo_vector_decl()
+    ]]]*/
+  const nBins_vertex_Lxy = 100; bins_vertex_Lxy = { 0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.017782794100389229, 0.031622776601683791, 0.056234132519034911, 0.10000000000000001, 0.17782794100389229, 0.31622776601683794, 0.56234132519034907, 1.0, 1.7782794100389228, 3.1622776601683795, 5.6234132519034912, 10.0, 17.782794100389228, 31.622776601683793, 56.234132519034908, 100.0 };
   TH1F* jet_pt;
   TH1F* vertex_Lxy;
-  TH1F* jet_pt0;
-  TH1F* jet_pt1;
-  TH1F* jet_pt2;
-  TH1F* jet_pt3;
+  vector<TH1F*> jet_pt_sorted_by_pt;
+  //[[[end]]]
 };
 
 EmJetHistos::EmJetHistos()
 {
-  jet_pt = new TH1F("jet_pt", "jet_pt", 100, 0., 100.);
-  vertex_Lxy = new TH1F("vertex_Lxy", "vertex_Lxy", nBins_vertex_Lxy, bins_vertex_Lxy);
+  /*[[[cog
+    mod.generate_histo_init()
+    mod.generate_histo_vector_init()
+    ]]]*/
+  jet_pt = new TH1F("jet_pt", "jet_pt" , 100, 0, 1000.0);
+  vertex_Lxy = new TH1F("vertex_Lxy", "vertex_Lxy" , 100, nBins_vertex_Lxy, bins_vertex_Lxy);
+  {
+    auto jet_pt_0 = new TH1F("jet_pt_0", "jet_pt_0" , 100, 0, 1000.0);
+    jet_pt_sorted_by_pt.push_back(jet_pt_0);
+    auto jet_pt_1 = new TH1F("jet_pt_1", "jet_pt_1" , 100, 0, 1000.0);
+    jet_pt_sorted_by_pt.push_back(jet_pt_1);
+    auto jet_pt_2 = new TH1F("jet_pt_2", "jet_pt_2" , 100, 0, 1000.0);
+    jet_pt_sorted_by_pt.push_back(jet_pt_2);
+    auto jet_pt_3 = new TH1F("jet_pt_3", "jet_pt_3" , 100, 0, 1000.0);
+    jet_pt_sorted_by_pt.push_back(jet_pt_3);
+  }
+  //[[[end]]]
 }
 EmJetHistos::~EmJetHistos()
 {
+  /*[[[cog
+    mod.generate_histo_dest()
+    mod.generate_histo_vector_dest()
+    ]]]*/
   delete jet_pt;
   delete vertex_Lxy;
+  for (auto i: jet_pt_sorted_by_pt) { delete i; }
+  jet_pt_sorted_by_pt.clear();
+  //[[[end]]]
 }

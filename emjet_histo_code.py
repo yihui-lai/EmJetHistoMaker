@@ -7,6 +7,9 @@ standalone = False
 if __name__=='__main__':
     print "Running standalone mode - Printing to screen"
     standalone = True
+else:
+    try: import cog
+    except: ImportError
 
 def pad_str(input_string, length=20):
     '''Pads input string with spaces (on the right hand side) to given length'''
@@ -155,13 +158,14 @@ def generate_histo_vector_init():
         vector_name    = name
         for histo in histo_vector:
             histo_name = histo.name
-            outputline( "\tauto " + construct_histo_init(histo) )
-            outputline( '\t{vector_name}.push_back({histo_name});'.format(histo_name=histo_name, vector_name=vector_name) )
+            outputline( "  auto " + construct_histo_init(histo) )
+            outputline( '  {vector_name}.push_back({histo_name});'.format(histo_name=histo_name, vector_name=vector_name) )
         outputline('}')
 
 def generate_histo_vector_dest():
     for name, histo_vector in user_define_histo_vectors().iteritems():
         outputline( 'for (auto i: {name}) {{ delete i; }}'.format(name=name) )
+        outputline( '{name}.clear();'.format(name=name) )
 
 if __name__=='__main__':
     print 'generate_vbin_decl():'
