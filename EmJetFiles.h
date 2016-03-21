@@ -28,8 +28,8 @@ struct File {
 // std::string name("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/SelectedJetAnalysis-v0/QCD_HT700to1000/QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/SelectedJetAnalysis/160121_151706/output_merged_QCD_HT700to1000.root"   );
 // File file = {name , 1.0};
 // std::string label = "QCD_HT700to1000";
-/* const std::string samples[] = {"ModelA", "ModelB", "QCD", "Data"}; */
-const std::string samples[] = {"ModelA"};
+const std::string samples[] = {"ModelA", "ModelB", "QCD", "Data"};
+// const std::string samples[] = {"ModelA", "ModelB", "Data"};
 
 static std::multimap<std::string, File> files = {
   /* {"WJet"              ,  { WJet             , Sample::WJET   , MC    , 60290  , 1.027381e-01 , 8.630102e-04 , false } } , */

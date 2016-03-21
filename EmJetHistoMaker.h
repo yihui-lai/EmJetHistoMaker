@@ -84,26 +84,26 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
     if ( jets_pt->size() < 4  ) {
       std::cout << "jets_pt->size(): " << jets_pt->size() << std::endl;
       std::cout << "Skipping event with nJet<4" << std::endl;
-      return;
+      return; // :CUT: Skip event with nJet<4
     }
   }
 
   for (unsigned ijet=0; ijet!=jets_pt->size(); ijet++) {
     // Skip jets beyond the fourth
-    if (ijet>3) break;
+    if (ijet>3) break; // :CUT:
     double pt             = jets_pt             -> at(ijet);
     double eta            = jets_eta            -> at(ijet);
     double medianLogIpSig = jets_medianLogIpSig -> at(ijet);
     double alphaMax       = jets_alphaMax       -> at(ijet);
+    auto& vec_algo      = tracks_algo           -> at(ijet);
+    auto& vec_origAlgo  = tracks_originalAlgo   -> at(ijet);
     auto& vec_nHits     = tracks_nHits          -> at(ijet);
     auto& vec_nMissHits = tracks_nMissInnerHits -> at(ijet);
     auto& vec_ipXY      = tracks_ipXY           -> at(ijet);
     auto& vec_ipXYSig   = tracks_ipXYSig        -> at(ijet);
     int nTracks = vec_ipXY.size();
-    // Skip jets with zero tracks
-    if (nTracks==0) continue;
-    // Skip jets with |eta|>2.5
-    if (TMath::Abs(eta) > 2.5) continue;
+    if (nTracks==0) continue; // :CUT: Skip jets with zero tracks
+    if (TMath::Abs(eta) > 2.5) continue; // :CUT: Skip jets with |eta|>2.5
     int nDarkPions = 0;
     bool sig = false;
     if (isSignal_) {
@@ -169,6 +169,38 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
 
     histo_->jet_medLogIpSig->Fill(medLogIpSig, weight);
     if (sig) histo_->jet_medLogIpSig_sig->Fill(medLogIpSig, weight);
+
+    // Loop through vertices for given jet
+    int nvtx = jet_vertex_Lxy->at(ijet).size();
+    histo_->jet_nVertex->Fill(nvtx, weight);
+    for (unsigned ivtx=0; ivtx!=nvtx; ivtx++) {
+      double source = jet_vertex_source ->at(ijet)[ivtx];
+      double x      = jet_vertex_x      ->at(ijet)[ivtx];
+      double y      = jet_vertex_y      ->at(ijet)[ivtx];
+      double z      = jet_vertex_z      ->at(ijet)[ivtx];
+      double xError = jet_vertex_xError ->at(ijet)[ivtx];
+      double yError = jet_vertex_yError ->at(ijet)[ivtx];
+      double zError = jet_vertex_zError ->at(ijet)[ivtx];
+      double deltaR = jet_vertex_deltaR ->at(ijet)[ivtx];
+      double Lxy    = jet_vertex_Lxy    ->at(ijet)[ivtx];
+      double mass   = jet_vertex_mass   ->at(ijet)[ivtx];
+      double chi2   = jet_vertex_chi2   ->at(ijet)[ivtx];
+      double ndof   = jet_vertex_ndof   ->at(ijet)[ivtx];
+      double pt2sum = jet_vertex_pt2sum ->at(ijet)[ivtx];
+      if (Lxy<0.1) continue; // :CUT: Skip vertices with Lxy<0.1cm
+      histo_ ->jet_vertex_Lxy    ->Fill(Lxy    , weight);
+      histo_ ->jet_vertex_mass   ->Fill(mass   , weight);
+      histo_ ->jet_vertex_chi2   ->Fill(chi2   , weight);
+      histo_ ->jet_vertex_ndof   ->Fill(ndof   , weight);
+      histo_ ->jet_vertex_pt2sum ->Fill(pt2sum , weight);
+      if (sig) {
+        histo_ ->jet_vertex_Lxy_sig    ->Fill(Lxy    , weight);
+        histo_ ->jet_vertex_mass_sig   ->Fill(mass   , weight);
+        histo_ ->jet_vertex_chi2_sig   ->Fill(chi2   , weight);
+        histo_ ->jet_vertex_ndof_sig   ->Fill(ndof   , weight);
+        histo_ ->jet_vertex_pt2sum_sig ->Fill(pt2sum , weight);
+      }
+    }
   }
 
   // Event-level quantities

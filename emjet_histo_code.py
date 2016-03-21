@@ -1,5 +1,6 @@
 """Generates code for EmJetHistoMaker
 Conventions:
+
 user_XXX functions are used to define specfic instances of elements.
 generate_XXX functions are called from cog to generate code fragments.
 All other functions are used internally."""
@@ -82,8 +83,8 @@ def user_define_bins():
     """Define bins to be used for variable width histograms in this function"""
     binning_dict = OrderedDict()
     binedges = map(lambda x: 10**x, compute_fixed_bins(20, -3., +2.))
-    name = 'vertex_Lxy'         ; binning_dict[name] = VBins(100, binedges, name)
-    name = 'vertex_mass'        ; binning_dict[name] = VBins(100, binedges, name)
+    name = 'vertex_Lxy'         ; binning_dict[name] = VBins(len(binedges)-1, binedges, name)
+    name = 'vertex_mass'        ; binning_dict[name] = VBins(len(binedges)-1, binedges, name)
     return binning_dict
 
 def user_define_histos():
@@ -107,6 +108,16 @@ def user_define_histos():
     name = 'jet_nMissHits'      ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'jet_missHitFrac'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   1. ) )
     name = 'jet_nDarkPions'     ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_nVertex'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    # name = 'jet_vertex_Lxy'     ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    # name = 'jet_vertex_mass'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_vertex_Lxy'     ; histo_dict[name] = Histo1F(name , vbins['vertex_Lxy']     )
+    name = 'jet_vertex_mass'    ; histo_dict[name] = Histo1F(name , vbins['vertex_mass']    )
+    name = 'jet_vertex_chi2'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_vertex_ndof'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,  20  ) )
+    name = 'jet_vertex_pt2sum'  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_track_algo'     ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_track_origAlgo' ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'sumMedianLogIpSig'  ; histo_dict[name] = Histo1F(name , Bins(100 , -25 ,  25  ) )
     name = 'track_ipXY'         ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
     name = 'track_logIpSig'     ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
