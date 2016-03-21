@@ -11,6 +11,51 @@ class EmJetHistos
     mod.generate_histo_decl()
     mod.generate_histo_vector_decl()
     ]]]*/
+  const int nBins_vertex_Lxy = 100; const float bins_vertex_Lxy[100+1] = { 0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.017782794100389229, 0.031622776601683791, 0.056234132519034911, 0.10000000000000001, 0.17782794100389229, 0.31622776601683794, 0.56234132519034907, 1.0, 1.7782794100389228, 3.1622776601683795, 5.6234132519034912, 10.0, 17.782794100389228, 31.622776601683793, 56.234132519034908, 100.0 };
+  const int nBins_vertex_mass = 100; const float bins_vertex_mass[100+1] = { 0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.017782794100389229, 0.031622776601683791, 0.056234132519034911, 0.10000000000000001, 0.17782794100389229, 0.31622776601683794, 0.56234132519034907, 1.0, 1.7782794100389228, 3.1622776601683795, 5.6234132519034912, 10.0, 17.782794100389228, 31.622776601683793, 56.234132519034908, 100.0 };
+  TH1F* nJet;
+  TH1F* ht;
+  TH1F* sigmaPt;
+  TH1F* sigmaPt2;
+  TH1F* deltaPt;
+  TH1F* vertex_Lxy;
+  TH1F* vertex_mass;
+  TH1F* jet_pt;
+  TH1F* jet_eta;
+  TH1F* jet_nTracks;
+  TH1F* jet_medianLogIpSig;
+  TH1F* jet_medLogIpSig;
+  TH1F* jet_alphaMax;
+  TH1F* jet_nHits;
+  TH1F* jet_nMissHits;
+  TH1F* jet_missHitFrac;
+  TH1F* jet_nDarkPions;
+  TH1F* sumMedianLogIpSig;
+  TH1F* track_ipXY;
+  TH1F* track_logIpSig;
+  TH1F* track_nHits;
+  TH1F* track_nMissHits;
+  TH1F* track_missHitFrac;
+  TH1F* vertex_Lxy_sig;
+  TH1F* vertex_mass_sig;
+  TH1F* jet_pt_sig;
+  TH1F* jet_eta_sig;
+  TH1F* jet_nTracks_sig;
+  TH1F* jet_medianLogIpSig_sig;
+  TH1F* jet_medLogIpSig_sig;
+  TH1F* jet_alphaMax_sig;
+  TH1F* jet_nHits_sig;
+  TH1F* jet_nMissHits_sig;
+  TH1F* jet_missHitFrac_sig;
+  TH1F* jet_nDarkPions_sig;
+  TH1F* track_ipXY_sig;
+  TH1F* track_logIpSig_sig;
+  TH1F* track_nHits_sig;
+  TH1F* track_nMissHits_sig;
+  TH1F* track_missHitFrac_sig;
+  vector<TH1F*> jet_pt_sorted_by_pt;
+  vector<TH1F*> jet_eta_sorted_by_pt;
+  vector<TH1F*> jet_track_logIpSig_sorted;
   //[[[end]]]
 };
 
@@ -20,6 +65,168 @@ EmJetHistos::EmJetHistos()
     mod.generate_histo_init()
     mod.generate_histo_vector_init()
     ]]]*/
+  nJet = new TH1F("nJet", "nJet" , 25, 0, 25);
+  ht = new TH1F("ht", "ht" , 100, 0, 2500);
+  sigmaPt = new TH1F("sigmaPt", "sigmaPt" , 100, 0, 1500);
+  sigmaPt2 = new TH1F("sigmaPt2", "sigmaPt2" , 100, 0, 1500);
+  deltaPt = new TH1F("deltaPt", "deltaPt" , 100, 0, 1000);
+  vertex_Lxy = new TH1F("vertex_Lxy", "vertex_Lxy" , nBins_vertex_Lxy, bins_vertex_Lxy);
+  vertex_mass = new TH1F("vertex_mass", "vertex_mass" , nBins_vertex_mass, bins_vertex_mass);
+  jet_pt = new TH1F("jet_pt", "jet_pt" , 100, 0, 1000);
+  jet_eta = new TH1F("jet_eta", "jet_eta" , 100, -5, 5);
+  jet_nTracks = new TH1F("jet_nTracks", "jet_nTracks" , 100, 0.0, 100);
+  jet_medianLogIpSig = new TH1F("jet_medianLogIpSig", "jet_medianLogIpSig" , 100, -5, 5);
+  jet_medLogIpSig = new TH1F("jet_medLogIpSig", "jet_medLogIpSig" , 100, -5, 5);
+  jet_alphaMax = new TH1F("jet_alphaMax", "jet_alphaMax" , 100, 0.0, 1.0);
+  jet_nHits = new TH1F("jet_nHits", "jet_nHits" , 100, 0.0, 100);
+  jet_nMissHits = new TH1F("jet_nMissHits", "jet_nMissHits" , 100, 0.0, 100);
+  jet_missHitFrac = new TH1F("jet_missHitFrac", "jet_missHitFrac" , 100, 0.0, 1.0);
+  jet_nDarkPions = new TH1F("jet_nDarkPions", "jet_nDarkPions" , 100, 0.0, 100);
+  sumMedianLogIpSig = new TH1F("sumMedianLogIpSig", "sumMedianLogIpSig" , 100, -25, 25);
+  track_ipXY = new TH1F("track_ipXY", "track_ipXY" , 100, -5, 5);
+  track_logIpSig = new TH1F("track_logIpSig", "track_logIpSig" , 100, -5, 5);
+  track_nHits = new TH1F("track_nHits", "track_nHits" , 100, 0.0, 100);
+  track_nMissHits = new TH1F("track_nMissHits", "track_nMissHits" , 100, 0.0, 100);
+  track_missHitFrac = new TH1F("track_missHitFrac", "track_missHitFrac" , 100, 0.0, 1.0);
+  vertex_Lxy_sig = new TH1F("vertex_Lxy_sig", "vertex_Lxy_sig" , nBins_vertex_Lxy, bins_vertex_Lxy);
+  vertex_mass_sig = new TH1F("vertex_mass_sig", "vertex_mass_sig" , nBins_vertex_mass, bins_vertex_mass);
+  jet_pt_sig = new TH1F("jet_pt_sig", "jet_pt_sig" , 100, 0, 1000);
+  jet_eta_sig = new TH1F("jet_eta_sig", "jet_eta_sig" , 100, -5, 5);
+  jet_nTracks_sig = new TH1F("jet_nTracks_sig", "jet_nTracks_sig" , 100, 0.0, 100);
+  jet_medianLogIpSig_sig = new TH1F("jet_medianLogIpSig_sig", "jet_medianLogIpSig_sig" , 100, -5, 5);
+  jet_medLogIpSig_sig = new TH1F("jet_medLogIpSig_sig", "jet_medLogIpSig_sig" , 100, -5, 5);
+  jet_alphaMax_sig = new TH1F("jet_alphaMax_sig", "jet_alphaMax_sig" , 100, 0.0, 1.0);
+  jet_nHits_sig = new TH1F("jet_nHits_sig", "jet_nHits_sig" , 100, 0.0, 100);
+  jet_nMissHits_sig = new TH1F("jet_nMissHits_sig", "jet_nMissHits_sig" , 100, 0.0, 100);
+  jet_missHitFrac_sig = new TH1F("jet_missHitFrac_sig", "jet_missHitFrac_sig" , 100, 0.0, 1.0);
+  jet_nDarkPions_sig = new TH1F("jet_nDarkPions_sig", "jet_nDarkPions_sig" , 100, 0.0, 100);
+  track_ipXY_sig = new TH1F("track_ipXY_sig", "track_ipXY_sig" , 100, -5, 5);
+  track_logIpSig_sig = new TH1F("track_logIpSig_sig", "track_logIpSig_sig" , 100, -5, 5);
+  track_nHits_sig = new TH1F("track_nHits_sig", "track_nHits_sig" , 100, 0.0, 100);
+  track_nMissHits_sig = new TH1F("track_nMissHits_sig", "track_nMissHits_sig" , 100, 0.0, 100);
+  track_missHitFrac_sig = new TH1F("track_missHitFrac_sig", "track_missHitFrac_sig" , 100, 0.0, 1.0);
+  {
+    auto jet_pt_0 = new TH1F("jet_pt_0", "jet_pt_0" , 100, 0, 1000);
+    jet_pt_sorted_by_pt.push_back(jet_pt_0);
+    auto jet_pt_1 = new TH1F("jet_pt_1", "jet_pt_1" , 100, 0, 1000);
+    jet_pt_sorted_by_pt.push_back(jet_pt_1);
+    auto jet_pt_2 = new TH1F("jet_pt_2", "jet_pt_2" , 100, 0, 1000);
+    jet_pt_sorted_by_pt.push_back(jet_pt_2);
+    auto jet_pt_3 = new TH1F("jet_pt_3", "jet_pt_3" , 100, 0, 1000);
+    jet_pt_sorted_by_pt.push_back(jet_pt_3);
+  }
+  {
+    auto jet_eta_0 = new TH1F("jet_eta_0", "jet_eta_0" , 100, -5, 5);
+    jet_eta_sorted_by_pt.push_back(jet_eta_0);
+    auto jet_eta_1 = new TH1F("jet_eta_1", "jet_eta_1" , 100, -5, 5);
+    jet_eta_sorted_by_pt.push_back(jet_eta_1);
+    auto jet_eta_2 = new TH1F("jet_eta_2", "jet_eta_2" , 100, -5, 5);
+    jet_eta_sorted_by_pt.push_back(jet_eta_2);
+    auto jet_eta_3 = new TH1F("jet_eta_3", "jet_eta_3" , 100, -5, 5);
+    jet_eta_sorted_by_pt.push_back(jet_eta_3);
+  }
+  {
+    auto jet__track_logIpSig_0 = new TH1F("jet__track_logIpSig_0", "jet__track_logIpSig_0" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_0);
+    auto jet__track_logIpSig_1 = new TH1F("jet__track_logIpSig_1", "jet__track_logIpSig_1" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_1);
+    auto jet__track_logIpSig_2 = new TH1F("jet__track_logIpSig_2", "jet__track_logIpSig_2" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_2);
+    auto jet__track_logIpSig_3 = new TH1F("jet__track_logIpSig_3", "jet__track_logIpSig_3" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_3);
+    auto jet__track_logIpSig_4 = new TH1F("jet__track_logIpSig_4", "jet__track_logIpSig_4" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_4);
+    auto jet__track_logIpSig_5 = new TH1F("jet__track_logIpSig_5", "jet__track_logIpSig_5" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_5);
+    auto jet__track_logIpSig_6 = new TH1F("jet__track_logIpSig_6", "jet__track_logIpSig_6" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_6);
+    auto jet__track_logIpSig_7 = new TH1F("jet__track_logIpSig_7", "jet__track_logIpSig_7" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_7);
+    auto jet__track_logIpSig_8 = new TH1F("jet__track_logIpSig_8", "jet__track_logIpSig_8" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_8);
+    auto jet__track_logIpSig_9 = new TH1F("jet__track_logIpSig_9", "jet__track_logIpSig_9" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_9);
+    auto jet__track_logIpSig_10 = new TH1F("jet__track_logIpSig_10", "jet__track_logIpSig_10" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_10);
+    auto jet__track_logIpSig_11 = new TH1F("jet__track_logIpSig_11", "jet__track_logIpSig_11" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_11);
+    auto jet__track_logIpSig_12 = new TH1F("jet__track_logIpSig_12", "jet__track_logIpSig_12" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_12);
+    auto jet__track_logIpSig_13 = new TH1F("jet__track_logIpSig_13", "jet__track_logIpSig_13" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_13);
+    auto jet__track_logIpSig_14 = new TH1F("jet__track_logIpSig_14", "jet__track_logIpSig_14" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_14);
+    auto jet__track_logIpSig_15 = new TH1F("jet__track_logIpSig_15", "jet__track_logIpSig_15" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_15);
+    auto jet__track_logIpSig_16 = new TH1F("jet__track_logIpSig_16", "jet__track_logIpSig_16" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_16);
+    auto jet__track_logIpSig_17 = new TH1F("jet__track_logIpSig_17", "jet__track_logIpSig_17" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_17);
+    auto jet__track_logIpSig_18 = new TH1F("jet__track_logIpSig_18", "jet__track_logIpSig_18" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_18);
+    auto jet__track_logIpSig_19 = new TH1F("jet__track_logIpSig_19", "jet__track_logIpSig_19" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_19);
+    auto jet__track_logIpSig_20 = new TH1F("jet__track_logIpSig_20", "jet__track_logIpSig_20" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_20);
+    auto jet__track_logIpSig_21 = new TH1F("jet__track_logIpSig_21", "jet__track_logIpSig_21" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_21);
+    auto jet__track_logIpSig_22 = new TH1F("jet__track_logIpSig_22", "jet__track_logIpSig_22" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_22);
+    auto jet__track_logIpSig_23 = new TH1F("jet__track_logIpSig_23", "jet__track_logIpSig_23" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_23);
+    auto jet__track_logIpSig_24 = new TH1F("jet__track_logIpSig_24", "jet__track_logIpSig_24" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_24);
+    auto jet__track_logIpSig_25 = new TH1F("jet__track_logIpSig_25", "jet__track_logIpSig_25" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_25);
+    auto jet__track_logIpSig_26 = new TH1F("jet__track_logIpSig_26", "jet__track_logIpSig_26" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_26);
+    auto jet__track_logIpSig_27 = new TH1F("jet__track_logIpSig_27", "jet__track_logIpSig_27" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_27);
+    auto jet__track_logIpSig_28 = new TH1F("jet__track_logIpSig_28", "jet__track_logIpSig_28" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_28);
+    auto jet__track_logIpSig_29 = new TH1F("jet__track_logIpSig_29", "jet__track_logIpSig_29" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_29);
+    auto jet__track_logIpSig_30 = new TH1F("jet__track_logIpSig_30", "jet__track_logIpSig_30" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_30);
+    auto jet__track_logIpSig_31 = new TH1F("jet__track_logIpSig_31", "jet__track_logIpSig_31" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_31);
+    auto jet__track_logIpSig_32 = new TH1F("jet__track_logIpSig_32", "jet__track_logIpSig_32" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_32);
+    auto jet__track_logIpSig_33 = new TH1F("jet__track_logIpSig_33", "jet__track_logIpSig_33" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_33);
+    auto jet__track_logIpSig_34 = new TH1F("jet__track_logIpSig_34", "jet__track_logIpSig_34" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_34);
+    auto jet__track_logIpSig_35 = new TH1F("jet__track_logIpSig_35", "jet__track_logIpSig_35" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_35);
+    auto jet__track_logIpSig_36 = new TH1F("jet__track_logIpSig_36", "jet__track_logIpSig_36" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_36);
+    auto jet__track_logIpSig_37 = new TH1F("jet__track_logIpSig_37", "jet__track_logIpSig_37" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_37);
+    auto jet__track_logIpSig_38 = new TH1F("jet__track_logIpSig_38", "jet__track_logIpSig_38" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_38);
+    auto jet__track_logIpSig_39 = new TH1F("jet__track_logIpSig_39", "jet__track_logIpSig_39" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_39);
+    auto jet__track_logIpSig_40 = new TH1F("jet__track_logIpSig_40", "jet__track_logIpSig_40" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_40);
+    auto jet__track_logIpSig_41 = new TH1F("jet__track_logIpSig_41", "jet__track_logIpSig_41" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_41);
+    auto jet__track_logIpSig_42 = new TH1F("jet__track_logIpSig_42", "jet__track_logIpSig_42" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_42);
+    auto jet__track_logIpSig_43 = new TH1F("jet__track_logIpSig_43", "jet__track_logIpSig_43" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_43);
+    auto jet__track_logIpSig_44 = new TH1F("jet__track_logIpSig_44", "jet__track_logIpSig_44" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_44);
+    auto jet__track_logIpSig_45 = new TH1F("jet__track_logIpSig_45", "jet__track_logIpSig_45" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_45);
+    auto jet__track_logIpSig_46 = new TH1F("jet__track_logIpSig_46", "jet__track_logIpSig_46" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_46);
+    auto jet__track_logIpSig_47 = new TH1F("jet__track_logIpSig_47", "jet__track_logIpSig_47" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_47);
+    auto jet__track_logIpSig_48 = new TH1F("jet__track_logIpSig_48", "jet__track_logIpSig_48" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_48);
+    auto jet__track_logIpSig_49 = new TH1F("jet__track_logIpSig_49", "jet__track_logIpSig_49" , 100, -5, 5);
+    jet_track_logIpSig_sorted.push_back(jet__track_logIpSig_49);
+  }
     //[[[end]]]
 }
 
@@ -29,5 +236,51 @@ EmJetHistos::~EmJetHistos()
     mod.generate_histo_dest()
     mod.generate_histo_vector_dest()
     ]]]*/
+  delete nJet;
+  delete ht;
+  delete sigmaPt;
+  delete sigmaPt2;
+  delete deltaPt;
+  delete vertex_Lxy;
+  delete vertex_mass;
+  delete jet_pt;
+  delete jet_eta;
+  delete jet_nTracks;
+  delete jet_medianLogIpSig;
+  delete jet_medLogIpSig;
+  delete jet_alphaMax;
+  delete jet_nHits;
+  delete jet_nMissHits;
+  delete jet_missHitFrac;
+  delete jet_nDarkPions;
+  delete sumMedianLogIpSig;
+  delete track_ipXY;
+  delete track_logIpSig;
+  delete track_nHits;
+  delete track_nMissHits;
+  delete track_missHitFrac;
+  delete vertex_Lxy_sig;
+  delete vertex_mass_sig;
+  delete jet_pt_sig;
+  delete jet_eta_sig;
+  delete jet_nTracks_sig;
+  delete jet_medianLogIpSig_sig;
+  delete jet_medLogIpSig_sig;
+  delete jet_alphaMax_sig;
+  delete jet_nHits_sig;
+  delete jet_nMissHits_sig;
+  delete jet_missHitFrac_sig;
+  delete jet_nDarkPions_sig;
+  delete track_ipXY_sig;
+  delete track_logIpSig_sig;
+  delete track_nHits_sig;
+  delete track_nMissHits_sig;
+  delete track_missHitFrac_sig;
+  for (auto i: jet_pt_sorted_by_pt) { delete i; }
+  jet_pt_sorted_by_pt.clear();
+  for (auto i: jet_eta_sorted_by_pt) { delete i; }
+  jet_eta_sorted_by_pt.clear();
+  for (auto i: jet_track_logIpSig_sorted) { delete i; }
+  jet_track_logIpSig_sorted.clear();
   //[[[end]]]
 }

@@ -3,6 +3,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TTree.h>
 #include <TStopwatch.h>
 #include <TH1F.h>
 #include <TH2F.h>
@@ -17,10 +18,11 @@
 
 using std::string;
 
-class HistoMakerBase : BaseClass
+class HistoMakerBase : protected BaseClass
 {
   public:
     HistoMakerBase() {};
+    ~HistoMakerBase();
     virtual void OpenOutputFile (string ofilename);
     virtual void InitHistograms() = 0;
     virtual void FillHistograms(long eventnumber) = 0;
@@ -28,9 +30,11 @@ class HistoMakerBase : BaseClass
     virtual int SetTree(string ifilename) = 0;
     void LoopOverCurrentTree ();
 
-  private:
+  protected:
     int reportEvery_ = 10000;
     TFile* ofile_;
+    TTree* tree_; // Current tree
+    long nentries_; // Number of entries in current tree
     TStopwatch timer_total_;
     TStopwatch timer_;
 };
@@ -42,20 +46,22 @@ void HistoMakerBase::LoopOverCurrentTree()
     std::cout << "Invalid tree!" << std::endl;
     return;
   }
-  Long64_t nentries = fChain->GetEntriesFast();
-  if ( nentries == 0 ) {
+  nentries_ = fChain->GetEntriesFast();
+  if ( nentries_ == 0 ) {
     std::cout << "No entries!" << std::endl;
     return;
   }
   else {
-    std::cout << "Number of entries: " << nentries << std::endl;
+    std::cout << "Number of entries: " << nentries_ << std::endl;
   }
 
+  Long64_t nbytes = 0, nb = 0;
   timer_total_.Start();
   // Loop over all events in TChain
-  for (Long64_t jentry = 0; jentry < nentries; jentry++) {
+  for (Long64_t jentry = 0; jentry < nentries_; jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
+    nb = fChain->GetEntry(jentry);   nbytes += nb;
 
     // Do stuff with one entry of the TTree
     if ( jentry % reportEvery_ == 0 ) {
@@ -74,9 +80,15 @@ void HistoMakerBase::LoopOverCurrentTree()
 void HistoMakerBase::OpenOutputFile(string ofilename)
 {
   ofile_ = new TFile(ofilename.c_str(), "RECREATE");
+  InitHistograms();
 }
 
-void HistoMakerBase::WriteHistograms(Long64_t entry)
+void HistoMakerBase::WriteHistograms()
 {
-  ofile->Write();
+  ofile_->Write();
+}
+
+HistoMakerBase::~HistoMakerBase()
+{
+  delete ofile_;
 }

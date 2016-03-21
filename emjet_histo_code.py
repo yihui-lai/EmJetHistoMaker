@@ -33,6 +33,8 @@ VBins   = namedtuple('VBins'   , ['nBins' , 'binedges' , 'binname' , ]) # Variab
 Histo1F = namedtuple('Histo1F' , ['name'  , 'binsX'     , ])           # binsX or binsY contains objects of type Bins or VBins
 Histo2F = namedtuple('Histo2F' , ['name'  , 'binsX'    , 'binsY'   , ])
 
+from collections import OrderedDict
+
 def compute_fixed_bins(nBins, xMin, xMax):
     delta = xMax - xMin
     binWidth = delta/nBins
@@ -78,47 +80,57 @@ def vectorize_histo(histo, prefixlist=[''], postfixlist=['']):
 def user_define_bins():
     import math
     """Define bins to be used for variable width histograms in this function"""
-    binning_dict = {}
+    binning_dict = OrderedDict()
     binedges = map(lambda x: 10**x, compute_fixed_bins(20, -3., +2.))
-    binning_dict['vertex_Lxy'] = VBins(100, binedges, 'vertex_Lxy')
-    binning_dict['vertex_mass'] = VBins(100, binedges, 'vertex_mass')
+    name = 'vertex_Lxy'         ; binning_dict[name] = VBins(100, binedges, name)
+    name = 'vertex_mass'        ; binning_dict[name] = VBins(100, binedges, name)
     return binning_dict
 
 def user_define_histos():
     """Define histograms in this function"""
     vbins = user_define_bins()
-    histo_dict = {}
-    histo_dict['jet_pt']             = Histo1F('jet_pt'             , Bins(100 , 0   , 1000.)               )
-    histo_dict['nJet']               = Histo1F('nJet'               , Bins( 25 , 0   ,  25  )               )
-    histo_dict['ht']                 = Histo1F('ht'                 , Bins(100 , 0   , 2500 )               )
-    histo_dict['sigmaPt']            = Histo1F('sigmaPt'            , Bins(100 , 0   , 1500 )               )
-    histo_dict['sigmaPt2']           = Histo1F('sigmaPt2'           , Bins(100 , 0   , 1500 )               )
-    histo_dict['deltaPt']            = Histo1F('deltaPt'            , Bins(100 , 0   , 1000 )               )
-    histo_dict['vertex_Lxy']         = Histo1F('vertex_Lxy'         , vbins['vertex_Lxy']                   )
-    histo_dict['vertex_mass']        = Histo1F('vertex_mass'        , vbins['vertex_mass']                  )
-    histo_dict['jet_pt']             = Histo1F('jet_pt'             , Bins(100 , 0   , 1000 )               )
-    histo_dict['jet_eta']            = Histo1F('jet_eta'            , Bins(100 , -5  , 5    )               )
-    histo_dict['jet_nTracks']        = Histo1F('jet_nTracks'        , Bins(100 , 0.  , 100  )               )
-    histo_dict['jet_medianLogIpSig'] = Histo1F('jet_medianLogIpSig' , Bins(100 , -5  , 5    )               )
-    histo_dict['jet_medLogIpSig']    = Histo1F('jet_medLogIpSig'    , Bins(100 , -5  , 5    )               )
-    histo_dict['jet_alphaMax']       = Histo1F('jet_alphaMax'       , Bins(100 , 0.  , 1.   )               )
-    histo_dict['jet_nHits']          = Histo1F('jet_nHits'          , Bins(100 , 0.  , 100  )               )
-    histo_dict['jet_nMissHits']      = Histo1F('jet_nMissHits'      , Bins(100 , 0.  , 100  )               )
-    histo_dict['jet_missHitFrac']    = Histo1F('jet_missHitFrac'    , Bins(100 , 0.  ,   1. )               )
-    histo_dict['jet_nDarkPions']     = Histo1F('jet_nDarkPions'     , Bins(100 , 0.  , 100  )               )
-    histo_dict['sumMedianLogIpSig']  = Histo1F('sumMedianLogIpSig'  , Bins(100 , -25 ,  25  )               )
-    histo_dict['track_ipXY']         = Histo1F('track_ipXY'         , Bins(100 , -5  ,   5  )               )
-    histo_dict['track_logIpSig']     = Histo1F('track_logIpSig'     , Bins(100 , -5  ,   5  )               )
-    histo_dict['track_nHits']        = Histo1F('track_nHits'        , Bins(100 , 0.  , 100  )               )
-    histo_dict['track_nMissHits']    = Histo1F('track_nMissHits'    , Bins(100 , 0.  , 100  )               )
-    histo_dict['track_missHitFrac']  = Histo1F('track_missHitFrac'  , Bins(100 , 0.  ,   1. )               )
+    histo_dict = OrderedDict()
+    name = 'nJet'               ; histo_dict[name] = Histo1F(name , Bins( 25 , 0   ,  25  ) )
+    name = 'ht'                 ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 2500 ) )
+    name = 'sigmaPt'            ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1500 ) )
+    name = 'sigmaPt2'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1500 ) )
+    name = 'deltaPt'            ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1000 ) )
+    name = 'vertex_Lxy'         ; histo_dict[name] = Histo1F(name , vbins[name]             )
+    name = 'vertex_mass'        ; histo_dict[name] = Histo1F(name , vbins[name]             )
+    name = 'jet_pt'             ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1000 ) )
+    name = 'jet_eta'            ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
+    name = 'jet_nTracks'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_medianLogIpSig' ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
+    name = 'jet_medLogIpSig'    ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
+    name = 'jet_alphaMax'       ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 1.   ) )
+    name = 'jet_nHits'          ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_nMissHits'      ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_missHitFrac'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   1. ) )
+    name = 'jet_nDarkPions'     ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'sumMedianLogIpSig'  ; histo_dict[name] = Histo1F(name , Bins(100 , -25 ,  25  ) )
+    name = 'track_ipXY'         ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
+    name = 'track_logIpSig'     ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
+    name = 'track_nHits'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_nMissHits'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_missHitFrac'  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   1. ) )
+
+    # Define signal histos
+    histo_sig_dict = OrderedDict()
+    for name, histo in histo_dict.iteritems():
+        if name[:4]=='jet_' or name[:6]=='track_' or name[:7]=='vertex_':
+            histo_sig = clone_object(histo, postfix='sig')
+            histo_sig_dict[histo_sig.name] = histo_sig
+    histo_dict.update(histo_sig_dict)
+
     return histo_dict
 
 def user_define_histo_vectors():
     """Define histogram vectors in this function"""
     histo_dict = user_define_histos()
-    histo_vector_dict = {}
+    histo_vector_dict = OrderedDict()
     histo_vector_dict['jet_pt_sorted_by_pt'] = vectorize_histo(histo_dict['jet_pt'], postfixlist=range(4))
+    histo_vector_dict['jet_eta_sorted_by_pt'] = vectorize_histo(histo_dict['jet_eta'], postfixlist=range(4))
+    histo_vector_dict['jet_track_logIpSig_sorted'] = vectorize_histo(histo_dict['track_logIpSig'], prefixlist=['jet'], postfixlist=range(50))
     return histo_vector_dict
 
 def construct_bin_str(bins):
@@ -127,7 +139,7 @@ def construct_bin_str(bins):
         return ', {nBins}, {min}, {max}'.format(nBins=bins.nBins, min=bins.min, max=bins.max)
     # Variable width binning
     if type(bins).__name__ == 'VBins':
-        return ', {nBins}, nBins_{binname}, bins_{binname}'.format(nBins=bins.nBins, binname=bins.binname)
+        return ', nBins_{binname}, bins_{binname}'.format(nBins=bins.nBins, binname=bins.binname)
 
 def construct_histo_init(obj):
     name    = obj.name
@@ -143,7 +155,7 @@ def generate_vbin_decl():
         nBins=bins.nBins
         bin_array_str = str(bins.binedges)[1:-1] # Remove first and last character (square brackets)
         bin_array_str = '{ ' + bin_array_str + ' }'
-        outputline( 'const nBins_{binname} = {nBins}; bins_{binname} = {binedges};'.format(nBins=bins.nBins, binname=bins.binname, binedges=bin_array_str) )
+        outputline( 'const int nBins_{binname} = {nBins}; const float bins_{binname}[{nBins}+1] = {binedges};'.format(nBins=bins.nBins, binname=bins.binname, binedges=bin_array_str) )
 
 def generate_histo_decl():
     """Outputs lines like:
