@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-  std::string prefix = "~/www/2016-03-21/histo-";
+  std::string prefix = "~/www/2016-03-22/histo-";
   std::string postfix = ".root";
   for (std::string sample: samples) {
     EmJetHistoMaker hm;
@@ -21,7 +21,9 @@ int main(int argc, char *argv[])
       std::string filename = file.name;
       int status = hm.SetTree(filename);
       hm.SetOptions(file.sample, file.isData, file.xsec, file.efficiency, file.isSignal);
+      hm.SetMaxEntries(50000);
       if (status==0) {
+        std::cout << " Running over file: " << filename << std::endl;
         hm.LoopOverCurrentTree();
       }
       else { std::cout << "Error! Skipping file: " << filename << std::endl; }

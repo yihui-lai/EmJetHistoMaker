@@ -16,6 +16,9 @@
 #include <algorithm>
 #include <functional>
 
+#define SET_MEMBER(NAME, TYPE, member) void Set##NAME(TYPE member) {member##_ = member;}
+#define SET_MEMBER_DEFAULT(NAME, TYPE, member, DEFAULT) void Set##NAME(TYPE member = DEFAULT) {member##_ = member;}
+
 using std::string;
 
 class HistoMakerBase : protected BaseClass
@@ -28,6 +31,7 @@ class HistoMakerBase : protected BaseClass
     virtual void FillHistograms(long eventnumber) = 0;
     virtual void WriteHistograms();
     virtual int SetTree(string ifilename) = 0;
+    SET_MEMBER_DEFAULT(MaxEntries, long, nentries_max, -1);
     void LoopOverCurrentTree ();
 
   protected:
@@ -35,6 +39,8 @@ class HistoMakerBase : protected BaseClass
     TFile* ofile_;
     TTree* tree_; // Current tree
     long nentries_; // Number of entries in current tree
+    long nentries_max_; // Maximum number of entries to process for current tree (Set to -1 to run over all entries)
+    long nentries_to_process_; // Actual number of entries to process for current tree
     TStopwatch timer_total_;
     TStopwatch timer_;
 };
@@ -55,10 +61,15 @@ void HistoMakerBase::LoopOverCurrentTree()
     std::cout << "Number of entries: " << nentries_ << std::endl;
   }
 
+  // Calculate number of entries to process
+  if (nentries_max_==-1) { nentries_to_process_ = nentries_                          ; }
+  else                   { nentries_to_process_ = std::min(nentries_, nentries_max_) ; }
+  std::cout << "Number of entries to process: " << nentries_to_process_ << std::endl;
+
   Long64_t nbytes = 0, nb = 0;
   timer_total_.Start();
   // Loop over all events in TChain
-  for (Long64_t jentry = 0; jentry < nentries_; jentry++) {
+  for (Long64_t jentry = 0; jentry < nentries_to_process_; jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
