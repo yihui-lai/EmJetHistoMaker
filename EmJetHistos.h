@@ -37,11 +37,15 @@ class EmJetHistos
   TH1F* jet_vertex_ndof;
   TH1F* jet_vertex_pt2sum;
   TH1F* sumMedianLogIpSig;
+  TH1F* track_pt;
+  TH1F* track_eta;
   TH1F* track_ipXY;
   TH1F* track_logIpSig;
   TH1F* track_nHits;
   TH1F* track_nMissHits;
   TH1F* track_missHitFrac;
+  TH1F* track_algo;
+  TH1F* track_originalAlgo;
   TH1F* vertex_Lxy_sig;
   TH1F* vertex_mass_sig;
   TH1F* jet_pt_sig;
@@ -60,14 +64,20 @@ class EmJetHistos
   TH1F* jet_vertex_chi2_sig;
   TH1F* jet_vertex_ndof_sig;
   TH1F* jet_vertex_pt2sum_sig;
+  TH1F* track_pt_sig;
+  TH1F* track_eta_sig;
   TH1F* track_ipXY_sig;
   TH1F* track_logIpSig_sig;
   TH1F* track_nHits_sig;
   TH1F* track_nMissHits_sig;
   TH1F* track_missHitFrac_sig;
+  TH1F* track_algo_sig;
+  TH1F* track_originalAlgo_sig;
+  TH2F* track_pt_VS_track_eta;
   vector<TH1F*> jet_pt_sorted_by_pt;
   vector<TH1F*> jet_eta_sorted_by_pt;
   vector<TH1F*> jet_track_logIpSig_sorted;
+  vector<TH1F*> jet_medianLogIpSig_sorted_by_medianLogIpSig;
   //[[[end]]]
 };
 
@@ -101,11 +111,15 @@ EmJetHistos::EmJetHistos()
   jet_vertex_ndof = new TH1F("jet_vertex_ndof", "jet_vertex_ndof" , 100, 0.0, 20);
   jet_vertex_pt2sum = new TH1F("jet_vertex_pt2sum", "jet_vertex_pt2sum" , 100, 0.0, 100);
   sumMedianLogIpSig = new TH1F("sumMedianLogIpSig", "sumMedianLogIpSig" , 100, -25, 25);
+  track_pt = new TH1F("track_pt", "track_pt" , 100, 0.0, 10.0);
+  track_eta = new TH1F("track_eta", "track_eta" , 100, -5, 5);
   track_ipXY = new TH1F("track_ipXY", "track_ipXY" , 100, -5, 5);
   track_logIpSig = new TH1F("track_logIpSig", "track_logIpSig" , 100, -5, 5);
   track_nHits = new TH1F("track_nHits", "track_nHits" , 100, 0.0, 100);
   track_nMissHits = new TH1F("track_nMissHits", "track_nMissHits" , 100, 0.0, 100);
   track_missHitFrac = new TH1F("track_missHitFrac", "track_missHitFrac" , 100, 0.0, 1.0);
+  track_algo = new TH1F("track_algo", "track_algo" , 100, 0.0, 100);
+  track_originalAlgo = new TH1F("track_originalAlgo", "track_originalAlgo" , 100, 0.0, 100);
   vertex_Lxy_sig = new TH1F("vertex_Lxy_sig", "vertex_Lxy_sig" , nBins_vertex_Lxy, bins_vertex_Lxy);
   vertex_mass_sig = new TH1F("vertex_mass_sig", "vertex_mass_sig" , nBins_vertex_mass, bins_vertex_mass);
   jet_pt_sig = new TH1F("jet_pt_sig", "jet_pt_sig" , 100, 0, 1000);
@@ -124,11 +138,16 @@ EmJetHistos::EmJetHistos()
   jet_vertex_chi2_sig = new TH1F("jet_vertex_chi2_sig", "jet_vertex_chi2_sig" , 100, 0.0, 100);
   jet_vertex_ndof_sig = new TH1F("jet_vertex_ndof_sig", "jet_vertex_ndof_sig" , 100, 0.0, 20);
   jet_vertex_pt2sum_sig = new TH1F("jet_vertex_pt2sum_sig", "jet_vertex_pt2sum_sig" , 100, 0.0, 100);
+  track_pt_sig = new TH1F("track_pt_sig", "track_pt_sig" , 100, 0.0, 10.0);
+  track_eta_sig = new TH1F("track_eta_sig", "track_eta_sig" , 100, -5, 5);
   track_ipXY_sig = new TH1F("track_ipXY_sig", "track_ipXY_sig" , 100, -5, 5);
   track_logIpSig_sig = new TH1F("track_logIpSig_sig", "track_logIpSig_sig" , 100, -5, 5);
   track_nHits_sig = new TH1F("track_nHits_sig", "track_nHits_sig" , 100, 0.0, 100);
   track_nMissHits_sig = new TH1F("track_nMissHits_sig", "track_nMissHits_sig" , 100, 0.0, 100);
   track_missHitFrac_sig = new TH1F("track_missHitFrac_sig", "track_missHitFrac_sig" , 100, 0.0, 1.0);
+  track_algo_sig = new TH1F("track_algo_sig", "track_algo_sig" , 100, 0.0, 100);
+  track_originalAlgo_sig = new TH1F("track_originalAlgo_sig", "track_originalAlgo_sig" , 100, 0.0, 100);
+  track_pt_VS_track_eta = new TH2F("track_pt_VS_track_eta", "track_pt_VS_track_eta" , 100, -5, 5, 100, 0.0, 10.0);
   {
     auto jet_pt_0 = new TH1F("jet_pt_0", "jet_pt_0" , 100, 0, 1000);
     jet_pt_sorted_by_pt.push_back(jet_pt_0);
@@ -251,6 +270,16 @@ EmJetHistos::EmJetHistos()
     auto jet_track_logIpSig_49 = new TH1F("jet_track_logIpSig_49", "jet_track_logIpSig_49" , 100, -5, 5);
     jet_track_logIpSig_sorted.push_back(jet_track_logIpSig_49);
   }
+  {
+    auto jet_medianLogIpSig_0 = new TH1F("jet_medianLogIpSig_0", "jet_medianLogIpSig_0" , 100, -5, 5);
+    jet_medianLogIpSig_sorted_by_medianLogIpSig.push_back(jet_medianLogIpSig_0);
+    auto jet_medianLogIpSig_1 = new TH1F("jet_medianLogIpSig_1", "jet_medianLogIpSig_1" , 100, -5, 5);
+    jet_medianLogIpSig_sorted_by_medianLogIpSig.push_back(jet_medianLogIpSig_1);
+    auto jet_medianLogIpSig_2 = new TH1F("jet_medianLogIpSig_2", "jet_medianLogIpSig_2" , 100, -5, 5);
+    jet_medianLogIpSig_sorted_by_medianLogIpSig.push_back(jet_medianLogIpSig_2);
+    auto jet_medianLogIpSig_3 = new TH1F("jet_medianLogIpSig_3", "jet_medianLogIpSig_3" , 100, -5, 5);
+    jet_medianLogIpSig_sorted_by_medianLogIpSig.push_back(jet_medianLogIpSig_3);
+  }
     //[[[end]]]
 }
 
@@ -284,11 +313,15 @@ EmJetHistos::~EmJetHistos()
   delete jet_vertex_ndof;
   delete jet_vertex_pt2sum;
   delete sumMedianLogIpSig;
+  delete track_pt;
+  delete track_eta;
   delete track_ipXY;
   delete track_logIpSig;
   delete track_nHits;
   delete track_nMissHits;
   delete track_missHitFrac;
+  delete track_algo;
+  delete track_originalAlgo;
   delete vertex_Lxy_sig;
   delete vertex_mass_sig;
   delete jet_pt_sig;
@@ -307,16 +340,23 @@ EmJetHistos::~EmJetHistos()
   delete jet_vertex_chi2_sig;
   delete jet_vertex_ndof_sig;
   delete jet_vertex_pt2sum_sig;
+  delete track_pt_sig;
+  delete track_eta_sig;
   delete track_ipXY_sig;
   delete track_logIpSig_sig;
   delete track_nHits_sig;
   delete track_nMissHits_sig;
   delete track_missHitFrac_sig;
+  delete track_algo_sig;
+  delete track_originalAlgo_sig;
+  delete track_pt_VS_track_eta;
   for (auto i: jet_pt_sorted_by_pt) { delete i; }
   jet_pt_sorted_by_pt.clear();
   for (auto i: jet_eta_sorted_by_pt) { delete i; }
   jet_eta_sorted_by_pt.clear();
   for (auto i: jet_track_logIpSig_sorted) { delete i; }
   jet_track_logIpSig_sorted.clear();
+  for (auto i: jet_medianLogIpSig_sorted_by_medianLogIpSig) { delete i; }
+  jet_medianLogIpSig_sorted_by_medianLogIpSig.clear();
   //[[[end]]]
 }

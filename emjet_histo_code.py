@@ -116,14 +116,16 @@ def user_define_histos():
     name = 'jet_vertex_chi2'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'jet_vertex_ndof'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,  20  ) )
     name = 'jet_vertex_pt2sum'  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_track_algo'     ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_track_origAlgo' ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'sumMedianLogIpSig'  ; histo_dict[name] = Histo1F(name , Bins(100 , -25 ,  25  ) )
+    name = 'track_pt'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 10.  ) )
+    name = 'track_eta'          ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
     name = 'track_ipXY'         ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
     name = 'track_logIpSig'     ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
     name = 'track_nHits'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'track_nMissHits'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'track_missHitFrac'  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   1. ) )
+    name = 'track_algo'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_originalAlgo' ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
 
     # Define signal histos
     histo_sig_dict = OrderedDict()
@@ -132,6 +134,11 @@ def user_define_histos():
             histo_sig = clone_object(histo, postfix='sig')
             histo_sig_dict[histo_sig.name] = histo_sig
     histo_dict.update(histo_sig_dict)
+
+    histo_2d_dict = OrderedDict()
+    h = histo_combine1Dto2D( histo_dict['track_eta'], histo_dict['track_pt'], )
+    histo_2d_dict[h.name] = h
+    histo_dict.update(histo_2d_dict)
 
     return histo_dict
 
@@ -142,6 +149,7 @@ def user_define_histo_vectors():
     histo_vector_dict['jet_pt_sorted_by_pt'] = vectorize_histo(histo_dict['jet_pt'], postfixlist=range(4))
     histo_vector_dict['jet_eta_sorted_by_pt'] = vectorize_histo(histo_dict['jet_eta'], postfixlist=range(4))
     histo_vector_dict['jet_track_logIpSig_sorted'] = vectorize_histo(histo_dict['track_logIpSig'], prefixlist=['jet'], postfixlist=range(50))
+    histo_vector_dict['jet_medianLogIpSig_sorted_by_medianLogIpSig'] = vectorize_histo(histo_dict['jet_medianLogIpSig'], postfixlist=range(4))
     return histo_vector_dict
 
 def construct_bin_str(bins):

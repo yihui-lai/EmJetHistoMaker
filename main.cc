@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
       hm.SetOptions(file.sample, file.isData, file.xsec, file.efficiency, file.isSignal);
       hm.SetMaxEntries(50000);
       if (status==0) {
-        std::cout << " Running over file: " << filename << std::endl;
+        std::cout << "Running over file: " << filename << std::endl;
         hm.LoopOverCurrentTree();
       }
       else { std::cout << "Error! Skipping file: " << filename << std::endl; }
