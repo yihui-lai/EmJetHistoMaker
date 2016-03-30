@@ -5,11 +5,17 @@
 #include <string>
 #include <map>
 #include <algorithm>
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
-  std::string prefix = "~/www/2016-03-22/histo-";
+  bool pileupOnly = false;
+  // Specify any option to turn on pileup only
+  if (argc>1) pileupOnly = true;
+
+  std::string prefix = "~/www/2016-03-30/histo-";
   std::string postfix = ".root";
+  if (pileupOnly) postfix = "_pileupOnly" + postfix;
   for (std::string sample: samples) {
     EmJetHistoMaker hm;
     std::cout << "Running over sample: " << sample << std::endl;
@@ -20,8 +26,8 @@ int main(int argc, char *argv[])
       auto file = sample_file_pair->second;
       std::string filename = file.name;
       int status = hm.SetTree(filename);
-      hm.SetOptions(file.sample, file.isData, file.xsec, file.efficiency, file.isSignal);
-      hm.SetMaxEntries(50000);
+      hm.SetOptions(file.sample, file.isData, file.xsec, file.efficiency, file.isSignal, pileupOnly);
+      // hm.SetMaxEntries(50000);
       if (status==0) {
         std::cout << "Running over file: " << filename << std::endl;
         hm.LoopOverCurrentTree();

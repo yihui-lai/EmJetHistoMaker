@@ -83,6 +83,7 @@ def user_define_bins():
     """Define bins to be used for variable width histograms in this function"""
     binning_dict = OrderedDict()
     binedges = map(lambda x: 10**x, compute_fixed_bins(20, -3., +2.))
+    name = 'track_ipXY'         ; binning_dict[name] = VBins(len(binedges)-1, binedges, name)
     name = 'vertex_Lxy'         ; binning_dict[name] = VBins(len(binedges)-1, binedges, name)
     name = 'vertex_mass'        ; binning_dict[name] = VBins(len(binedges)-1, binedges, name)
     return binning_dict
@@ -91,53 +92,71 @@ def user_define_histos():
     """Define histograms in this function"""
     vbins = user_define_bins()
     histo_dict = OrderedDict()
-    name = 'nJet'               ; histo_dict[name] = Histo1F(name , Bins( 25 , 0   ,  25  ) )
-    name = 'ht'                 ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 2500 ) )
-    name = 'sigmaPt'            ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1500 ) )
-    name = 'sigmaPt2'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1500 ) )
-    name = 'deltaPt'            ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1000 ) )
-    name = 'vertex_Lxy'         ; histo_dict[name] = Histo1F(name , vbins[name]             )
-    name = 'vertex_mass'        ; histo_dict[name] = Histo1F(name , vbins[name]             )
-    name = 'jet_pt'             ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1000 ) )
-    name = 'jet_eta'            ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
-    name = 'jet_nTracks'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_medianLogIpSig' ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
-    name = 'jet_medLogIpSig'    ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
-    name = 'jet_alphaMax'       ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 1.   ) )
-    name = 'jet_nHits'          ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_nMissHits'      ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_missHitFrac'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   1. ) )
-    name = 'jet_nDarkPions'     ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_nVertex'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    # name = 'jet_vertex_Lxy'     ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    # name = 'jet_vertex_mass'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_vertex_Lxy'     ; histo_dict[name] = Histo1F(name , vbins['vertex_Lxy']     )
-    name = 'jet_vertex_mass'    ; histo_dict[name] = Histo1F(name , vbins['vertex_mass']    )
-    name = 'jet_vertex_chi2'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_vertex_ndof'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,  20  ) )
-    name = 'jet_vertex_pt2sum'  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'sumMedianLogIpSig'  ; histo_dict[name] = Histo1F(name , Bins(100 , -25 ,  25  ) )
-    name = 'track_pt'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 10.  ) )
-    name = 'track_eta'          ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
-    name = 'track_ipXY'         ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
-    name = 'track_logIpSig'     ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
-    name = 'track_nHits'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'track_nMissHits'    ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'track_missHitFrac'  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   1. ) )
-    name = 'track_algo'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'track_originalAlgo' ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'nJet'                      ; histo_dict[name] = Histo1F(name , Bins( 25 , 0   ,  25  ) )
+    name = 'ht'                        ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 2500 ) )
+    name = 'sigmaPt'                   ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1500 ) )
+    name = 'sigmaPt2'                  ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1500 ) )
+    name = 'deltaPt'                   ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1000 ) )
+    name = 'vertex_Lxy'                ; histo_dict[name] = Histo1F(name , vbins[name]             )
+    name = 'vertex_mass'               ; histo_dict[name] = Histo1F(name , vbins[name]             )
+    name = 'jet_pt'                    ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1000 ) )
+    name = 'jet_eta'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
+    name = 'jet_nTracks'               ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_medianLogIpSig'        ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
+    name = 'jet_medLogIpSig'           ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
+    name = 'jet_alphaMax'              ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 1.   ) )
+    name = 'jet_nHits'                 ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_nMissHits'             ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_missHitFrac'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   1. ) )
+    name = 'jet_nDarkPions'            ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_nVertex'               ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    # name = 'jet_vertex_Lxy'          ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    # name = 'jet_vertex_mass'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_vertex_Lxy'            ; histo_dict[name] = Histo1F(name , vbins['vertex_Lxy']     )
+    name = 'jet_vertex_mass'           ; histo_dict[name] = Histo1F(name , vbins['vertex_mass']    )
+    name = 'jet_vertex_chi2'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_vertex_ndof'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,  20  ) )
+    name = 'jet_vertex_pt2sum'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'sumMedianLogIpSig'         ; histo_dict[name] = Histo1F(name , Bins(100 , -25 ,  25  ) )
+    name = 'track_pt'                  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 10.  ) )
+    name = 'track_eta'                 ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
+    name = 'track_phi'                 ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
+    name = 'track_ipXY'                ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
+    name = 'track_logIpSig'            ; histo_dict[name] = Histo1F(name , Bins(100 , -5  ,   5  ) )
+    name = 'track_nHits'               ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_nMissHits'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_missHitFrac'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   5. ) )
+    name = 'track_nTrkLayers'          ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_nMissInnerTrkLayers' ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_nPxlLayers'          ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_nMissInnerPxlLayers' ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_nNetMissInnerLayers' ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_missLayerFrac'       ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,   5. ) )
+    name = 'track_algo'                ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_originalAlgo'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'track_dRToJetAxis'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 10.  ) )
+    name = 'track_distanceToJet'       ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 10.  ) )
 
-    # Define signal histos
+    # Define signal histos, by copying all jet, track and vertex histograms
     histo_sig_dict = OrderedDict()
     for name, histo in histo_dict.iteritems():
         if name[:4]=='jet_' or name[:6]=='track_' or name[:7]=='vertex_':
             histo_sig = clone_object(histo, postfix='sig')
             histo_sig_dict[histo_sig.name] = histo_sig
+    # Define high pt track histograms
+    histo_highpt_dict = OrderedDict()
+    for name, histo in histo_dict.iteritems():
+        if name[:6]=='track_':
+            histo_highpt = clone_object(histo, postfix='highpt')
+            histo_highpt_dict[histo_highpt.name] = histo_highpt
+    # Add postfixed histograms to dictionary
     histo_dict.update(histo_sig_dict)
+    histo_dict.update(histo_highpt_dict)
 
+    # Define 2D histograms from ordered pairs of 1D histograms
     histo_2d_dict = OrderedDict()
-    h = histo_combine1Dto2D( histo_dict['track_eta'], histo_dict['track_pt'], )
-    histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['track_eta'], histo_dict['track_pt'], ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['track_eta'], histo_dict['track_phi'], ); histo_2d_dict[h.name] = h
     histo_dict.update(histo_2d_dict)
 
     return histo_dict
@@ -146,10 +165,16 @@ def user_define_histo_vectors():
     """Define histogram vectors in this function"""
     histo_dict = user_define_histos()
     histo_vector_dict = OrderedDict()
-    histo_vector_dict['jet_pt_sorted_by_pt'] = vectorize_histo(histo_dict['jet_pt'], postfixlist=range(4))
-    histo_vector_dict['jet_eta_sorted_by_pt'] = vectorize_histo(histo_dict['jet_eta'], postfixlist=range(4))
-    histo_vector_dict['jet_track_logIpSig_sorted'] = vectorize_histo(histo_dict['track_logIpSig'], prefixlist=['jet'], postfixlist=range(50))
+    histo_vector_dict['jet_pt_sorted_by_pt']                         = vectorize_histo(histo_dict['jet_pt'], postfixlist=range(4))
+    histo_vector_dict['jet_eta_sorted_by_pt']                        = vectorize_histo(histo_dict['jet_eta'], postfixlist=range(4))
+    histo_vector_dict['jet_track_logIpSig_sorted']                   = vectorize_histo(histo_dict['track_logIpSig'], prefixlist=['jet'], postfixlist=range(50))
     histo_vector_dict['jet_medianLogIpSig_sorted_by_medianLogIpSig'] = vectorize_histo(histo_dict['jet_medianLogIpSig'], postfixlist=range(4))
+    # Histograms to use when playing with cuts
+    histo_vector_dict['track_pt_VS_track_eta_sorted_by_cuts'] = vectorize_histo(histo_dict['track_pt_VS_track_eta'], postfixlist=['nHits_low', 'nHits_high'])
+    histo_vector_dict['track_phi_VS_track_eta_sorted_by_cuts'] = vectorize_histo(histo_dict['track_phi_VS_track_eta'], postfixlist=['nHits_low', 'nHits_high'])
+    histo_vector_dict['track_phi_VS_track_eta_by_dRToJetAxis'] = vectorize_histo(histo_dict['track_phi_VS_track_eta'], postfixlist=['dRToJetAxis_low', 'dRToJetAxis_high'])
+    histo_vector_dict['track_phi_VS_track_eta_by_nMissInnerPxlLayers'] = vectorize_histo(histo_dict['track_phi_VS_track_eta'], postfixlist=['nMissInnerPxlLayers_low', 'nMissInnerPxlLayers_high'])
+    histo_vector_dict['track_phi_VS_track_eta_by_nMissInnerTrkLayers'] = vectorize_histo(histo_dict['track_phi_VS_track_eta'], postfixlist=['nMissInnerTrkLayers_low', 'nMissInnerTrkLayers_high'])
     return histo_vector_dict
 
 def construct_bin_str(bins):

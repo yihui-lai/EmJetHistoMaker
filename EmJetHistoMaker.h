@@ -1,5 +1,7 @@
 #include "HistoMakerBase.h"
 #include "EmJetHistos.h"
+#include "LumiReWeightingStandAlone.h"
+
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
@@ -28,21 +30,38 @@ enum class Sample {SIGNAL, QCD, WJET};
 class EmJetHistoMaker : public HistoMakerBase
 {
  public:
-  EmJetHistoMaker() {};
+  EmJetHistoMaker();
   ~EmJetHistoMaker() {};
   void InitHistograms();
   void FillHistograms(long eventnumber);
   void FillJetHistograms(long eventnumber);
+  void FillPileupHistograms(long eventnumber);
   int SetTree(string ifilename);
-  void SetOptions(Sample isample=Sample::SIGNAL, bool iData=false, double ixsec=1.0, double iefficiency=1.0, bool isignal=false);
+  void SetOptions(Sample sample=Sample::SIGNAL, bool isData=false, double xsec=1.0, double efficiency=1.0, bool isSignal=false, bool pileupOnly=false);
  private:
+  double CalculateEventWeight(long eventnumber);
   unique_ptr<Histos> histo_;
+  unique_ptr<TH1F> histo_nTrueInt_;
   Sample sample_;
   bool isData_;
   double xsec_;
   double efficiency_;
   bool isSignal_;
+  bool pileupOnly_;
+  unique_ptr<reweight::LumiReWeighting> LumiWeights_;
 };
+
+EmJetHistoMaker::EmJetHistoMaker()
+{
+  // Initialize lumi reweighting utility
+  {
+    std::string mcFile   = "~/www/2016-03-23/pileup_mc_2015_25ns_Startup_PoissonOOTPU.root";
+    std::string dataFile = "~/www/2016-03-21/pileup-DataSkim-20160302.root";
+    std::string mcHist   = "nTrueInt";
+    std::string dataHist = "pileup";
+    LumiWeights_ = unique_ptr<reweight::LumiReWeighting>(new reweight::LumiReWeighting(mcFile, dataFile, mcHist, dataHist));
+  }
+}
 
 int EmJetHistoMaker::SetTree(std::string filename)
 {
@@ -60,19 +79,38 @@ int EmJetHistoMaker::SetTree(std::string filename)
 
 void EmJetHistoMaker::InitHistograms()
 {
-  histo_ = unique_ptr<Histos>(new Histos());
+  TH1::SetDefaultSumw2();
+  histo_nTrueInt_ = unique_ptr<TH1F>(new TH1F("nTrueInt", "nTrueInt", 100, 0., 100.));
+  if (!pileupOnly_) {
+    histo_ = unique_ptr<Histos>(new Histos());
+  }
 }
 
 void EmJetHistoMaker::FillHistograms(long eventnumber)
 {
-  FillJetHistograms(eventnumber);
+  FillPileupHistograms(eventnumber);
+  if (!pileupOnly_) {
+    FillJetHistograms(eventnumber);
+  }
+}
+
+double EmJetHistoMaker::CalculateEventWeight(long eventnumber)
+{
+  double weight = 0.0;
+  if (isData_) weight = 1.0;
+  else {
+    weight = 1.0;
+    double generator_weight = xsec_*efficiency_/nentries_;
+    weight *= generator_weight;
+    double pileup_lumi_weight = LumiWeights_->weight(nTrueInt);
+    weight *= pileup_lumi_weight;
+  }
+  return weight;
 }
 
 void EmJetHistoMaker::FillJetHistograms(long eventnumber)
 {
-  double weight = 0.0;
-  if (isData_) weight = 1.0;
-  else        weight = xsec_*efficiency_/nentries_;
+  double weight = CalculateEventWeight(eventnumber);
   // Fill jet histograms
   int nJet = jets_pt->size();
   // std::cout << "nJet:" << nJet << std::endl;
@@ -95,14 +133,25 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
     double eta            = jets_eta            -> at(ijet);
     double medianLogIpSig = jets_medianLogIpSig -> at(ijet);
     double alphaMax       = jets_alphaMax       -> at(ijet);
-    // auto& vec_pt           = tracks_pt           -> at(ijet);
-    // auto& vec_eta          = tracks_eta           -> at(ijet);
-    auto& vec_algo         = tracks_algo           -> at(ijet);
-    auto& vec_originalAlgo = tracks_originalAlgo   -> at(ijet);
-    auto& vec_nHits        = tracks_nHits          -> at(ijet);
-    auto& vec_nMissHits    = tracks_nMissInnerHits -> at(ijet);
-    auto& vec_ipXY         = tracks_ipXY           -> at(ijet);
-    auto& vec_ipXYSig      = tracks_ipXYSig        -> at(ijet);
+    auto& vec_pt                  = tracks_pt                  -> at(ijet);
+    auto& vec_eta                 = tracks_eta                 -> at(ijet);
+    auto& vec_phi                 = tracks_phi                 -> at(ijet);
+    auto& vec_algo                = tracks_algo                -> at(ijet);
+    auto& vec_originalAlgo        = tracks_originalAlgo        -> at(ijet);
+    auto& vec_nHits               = tracks_nHits               -> at(ijet);
+    auto& vec_nMissHits           = tracks_nMissInnerHits      -> at(ijet);
+    auto& vec_nTrkLayers          = tracks_nTrkLayers          -> at(ijet);
+    auto& vec_nMissInnerTrkLayers = tracks_nMissInnerTrkLayers -> at(ijet);
+    auto& vec_nMissOuterTrkLayers = tracks_nMissOuterTrkLayers -> at(ijet);
+    auto& vec_nMissTrkLayers      = tracks_nMissTrkLayers      -> at(ijet);
+    auto& vec_nPxlLayers          = tracks_nPxlLayers          -> at(ijet);
+    auto& vec_nMissInnerPxlLayers = tracks_nMissInnerPxlLayers -> at(ijet);
+    auto& vec_nMissOuterPxlLayers = tracks_nMissOuterPxlLayers -> at(ijet);
+    auto& vec_nMissPxlLayers      = tracks_nMissPxlLayers      -> at(ijet);
+    auto& vec_dRToJetAxis         = tracks_dRToJetAxis         -> at(ijet);
+    auto& vec_distanceToJet       = tracks_distanceToJet       -> at(ijet);
+    auto& vec_ipXY                = tracks_ipXY                -> at(ijet);
+    auto& vec_ipXYSig             = tracks_ipXYSig             -> at(ijet);
     int nTracks = vec_ipXY.size();
     if (nTracks==0) continue; // :CUT: Skip jets with zero tracks
     if (TMath::Abs(eta) > 2.5) continue; // :CUT: Skip jets with |eta|>2.5
@@ -144,39 +193,118 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
       // int nHits = vec_nHits[itk];
       // int nMissHits = vec_nMissHits[itk];
 #define GET_TRACK_VAR_FROM_VEC(var) double var = vec_##var[itk]
-      // GET_TRACK_VAR_FROM_VEC (pt           );
-      // GET_TRACK_VAR_FROM_VEC (eta          );
-      GET_TRACK_VAR_FROM_VEC (algo         );
-      GET_TRACK_VAR_FROM_VEC (originalAlgo );
-      GET_TRACK_VAR_FROM_VEC (nHits        );
-      GET_TRACK_VAR_FROM_VEC (nMissHits    );
-      GET_TRACK_VAR_FROM_VEC (ipXY         );
-      GET_TRACK_VAR_FROM_VEC (ipXYSig      );
+      GET_TRACK_VAR_FROM_VEC (pt                  );
+      GET_TRACK_VAR_FROM_VEC (eta                 );
+      GET_TRACK_VAR_FROM_VEC (phi                 );
+      GET_TRACK_VAR_FROM_VEC (algo                );
+      GET_TRACK_VAR_FROM_VEC (originalAlgo        );
+      GET_TRACK_VAR_FROM_VEC (nHits               );
+      GET_TRACK_VAR_FROM_VEC (nMissHits           );
+      GET_TRACK_VAR_FROM_VEC (ipXY                );
+      GET_TRACK_VAR_FROM_VEC (ipXYSig             );
+      GET_TRACK_VAR_FROM_VEC (nTrkLayers          );
+      GET_TRACK_VAR_FROM_VEC (nMissInnerTrkLayers );
+      GET_TRACK_VAR_FROM_VEC (nMissOuterTrkLayers );
+      GET_TRACK_VAR_FROM_VEC (nMissTrkLayers      );
+      GET_TRACK_VAR_FROM_VEC (nPxlLayers          );
+      GET_TRACK_VAR_FROM_VEC (nMissInnerPxlLayers );
+      GET_TRACK_VAR_FROM_VEC (nMissOuterPxlLayers );
+      GET_TRACK_VAR_FROM_VEC (nMissPxlLayers      );
+      GET_TRACK_VAR_FROM_VEC (dRToJetAxis         );
+      GET_TRACK_VAR_FROM_VEC (distanceToJet       );
 #undef GET_TRACK_VAR_FROM_VEC
       double missHitFrac = double(nMissHits) / double(nHits);
       double logIpSig = TMath::Log(ipXYSig);
+      double nNetMissInnerLayers = (nMissInnerPxlLayers+nMissInnerTrkLayers) - (nMissPxlLayers+nMissOuterPxlLayers+nMissTrkLayers+nMissOuterTrkLayers);
+      double missLayerFrac = (nNetMissInnerLayers)/(nPxlLayers+nTrkLayers);
 #define FILL_TRACK_HISTO(var, postfix) histo_->track_##var##postfix ->Fill(var, weight)
-      // FILL_TRACK_HISTO (pt           , );
-      // FILL_TRACK_HISTO (eta          , );
-      FILL_TRACK_HISTO (algo         , );
-      FILL_TRACK_HISTO (originalAlgo , );
-      FILL_TRACK_HISTO (nHits        , );
-      FILL_TRACK_HISTO (nMissHits    , );
-      FILL_TRACK_HISTO (missHitFrac  , );
-      FILL_TRACK_HISTO (ipXY         , );
-      FILL_TRACK_HISTO (logIpSig     , );
+      FILL_TRACK_HISTO (pt                  , );
+      FILL_TRACK_HISTO (eta                 , );
+      FILL_TRACK_HISTO (phi                 , );
+      FILL_TRACK_HISTO (algo                , );
+      FILL_TRACK_HISTO (originalAlgo        , );
+      FILL_TRACK_HISTO (nHits               , );
+      FILL_TRACK_HISTO (nMissHits           , );
+      FILL_TRACK_HISTO (missHitFrac         , );
+      FILL_TRACK_HISTO (nTrkLayers          , );
+      FILL_TRACK_HISTO (nMissInnerTrkLayers , );
+      FILL_TRACK_HISTO (nPxlLayers          , );
+      FILL_TRACK_HISTO (nMissInnerPxlLayers , );
+      FILL_TRACK_HISTO (nNetMissInnerLayers , );
+      FILL_TRACK_HISTO (missLayerFrac       , );
+      FILL_TRACK_HISTO (ipXY                , );
+      FILL_TRACK_HISTO (logIpSig            , );
+      FILL_TRACK_HISTO (dRToJetAxis         , );
+      FILL_TRACK_HISTO (distanceToJet       , );
       if (sig) {
-        // FILL_TRACK_HISTO (pt           , _sig);
-        // FILL_TRACK_HISTO (eta          , _sig);
-        FILL_TRACK_HISTO (algo         , _sig);
-        FILL_TRACK_HISTO (originalAlgo , _sig);
-        FILL_TRACK_HISTO (nHits        , _sig);
-        FILL_TRACK_HISTO (nMissHits    , _sig);
-        FILL_TRACK_HISTO (missHitFrac  , _sig);
-        FILL_TRACK_HISTO (ipXY         , _sig);
-        FILL_TRACK_HISTO (logIpSig     , _sig);
+        FILL_TRACK_HISTO (pt                  , _sig);
+        FILL_TRACK_HISTO (eta                 , _sig);
+        FILL_TRACK_HISTO (phi                 , _sig);
+        FILL_TRACK_HISTO (algo                , _sig);
+        FILL_TRACK_HISTO (originalAlgo        , _sig);
+        FILL_TRACK_HISTO (nHits               , _sig);
+        FILL_TRACK_HISTO (nMissHits           , _sig);
+        FILL_TRACK_HISTO (missHitFrac         , _sig);
+        FILL_TRACK_HISTO (nTrkLayers          , _sig);
+        FILL_TRACK_HISTO (nMissInnerTrkLayers , _sig);
+        FILL_TRACK_HISTO (nPxlLayers          , _sig);
+        FILL_TRACK_HISTO (nMissInnerPxlLayers , _sig);
+        FILL_TRACK_HISTO (nNetMissInnerLayers , _sig);
+        FILL_TRACK_HISTO (missLayerFrac       , _sig);
+        FILL_TRACK_HISTO (ipXY                , _sig);
+        FILL_TRACK_HISTO (logIpSig            , _sig);
+        FILL_TRACK_HISTO (dRToJetAxis         , _sig);
+        FILL_TRACK_HISTO (distanceToJet       , _sig);
+      }
+      if (pt>5) {
+        FILL_TRACK_HISTO (pt                  , _highpt);
+        FILL_TRACK_HISTO (eta                 , _highpt);
+        FILL_TRACK_HISTO (phi                 , _highpt);
+        FILL_TRACK_HISTO (algo                , _highpt);
+        FILL_TRACK_HISTO (originalAlgo        , _highpt);
+        FILL_TRACK_HISTO (nHits               , _highpt);
+        FILL_TRACK_HISTO (nMissHits           , _highpt);
+        FILL_TRACK_HISTO (missHitFrac         , _highpt);
+        FILL_TRACK_HISTO (nTrkLayers          , _highpt);
+        FILL_TRACK_HISTO (nMissInnerTrkLayers , _highpt);
+        FILL_TRACK_HISTO (nPxlLayers          , _highpt);
+        FILL_TRACK_HISTO (nMissInnerPxlLayers , _highpt);
+        FILL_TRACK_HISTO (nNetMissInnerLayers , _highpt);
+        FILL_TRACK_HISTO (missLayerFrac       , _highpt);
+        FILL_TRACK_HISTO (ipXY                , _highpt);
+        FILL_TRACK_HISTO (logIpSig            , _highpt);
+        FILL_TRACK_HISTO (dRToJetAxis         , _highpt);
+        FILL_TRACK_HISTO (distanceToJet       , _highpt);
       }
 #undef FILL_TRACK_HISTO
+      histo_->track_pt_VS_track_eta->Fill(eta, pt, weight);
+      histo_->track_phi_VS_track_eta->Fill(eta, phi, weight);
+      if (nHits<=15) {
+        histo_->track_pt_VS_track_eta_sorted_by_cuts[0] ->Fill(eta, pt, weight);
+        histo_->track_phi_VS_track_eta_sorted_by_cuts[0] ->Fill(eta, phi, weight);
+      }
+      else           {
+        histo_->track_pt_VS_track_eta_sorted_by_cuts[1] ->Fill(eta, pt, weight);
+        histo_->track_phi_VS_track_eta_sorted_by_cuts[1] ->Fill(eta, phi, weight);
+      }
+      if (dRToJetAxis<=0.1) {
+        histo_->track_phi_VS_track_eta_by_dRToJetAxis[0] ->Fill(eta, phi, weight);
+      }
+      else           {
+        histo_->track_phi_VS_track_eta_by_dRToJetAxis[1] ->Fill(eta, phi, weight);
+      }
+      if (nMissInnerPxlLayers==0) {
+        histo_->track_phi_VS_track_eta_by_nMissInnerPxlLayers[0] ->Fill(eta, phi, weight);
+      }
+      else           {
+        histo_->track_phi_VS_track_eta_by_nMissInnerPxlLayers[1] ->Fill(eta, phi, weight);
+      }
+      if (nMissInnerTrkLayers==0) {
+        histo_->track_phi_VS_track_eta_by_nMissInnerTrkLayers[0] ->Fill(eta, phi, weight);
+      }
+      else           {
+        histo_->track_phi_VS_track_eta_by_nMissInnerTrkLayers[1] ->Fill(eta, phi, weight);
+      }
     }
     // Sort tracks in descending order of ipXYSig
     std::sort( index_ipXYSig_ordered.begin(), index_ipXYSig_ordered.end(), [&](int a, int b){ return vec_ipXYSig[a] > vec_ipXYSig[b]; } );
@@ -252,12 +380,20 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
   }
 }
 
+void EmJetHistoMaker::FillPileupHistograms(long eventnumber)
+{
+  double weight = CalculateEventWeight(eventnumber);
+  histo_nTrueInt_->Fill(nTrueInt, weight);
+}
+
 void
-EmJetHistoMaker::SetOptions(Sample sample, bool isData, double xsec, double efficiency, bool isSignal)
+EmJetHistoMaker::SetOptions(Sample sample, bool isData, double xsec, double efficiency, bool isSignal, bool pileupOnly)
 {
   sample_ = sample;
   isData_ = isData;
   xsec_ = xsec;
   efficiency_ = efficiency;
   isSignal_ = isSignal;
+  pileupOnly_ = pileupOnly;
 }
+

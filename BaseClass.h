@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Tue Mar 15 19:47:57 2016 by ROOT version 6.02/05
+// Mon Mar 28 05:17:09 2016 by ROOT version 6.02/05
 // from TTree emergingJetsTree/emergingJetsTree
-// found on file: /afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root
+// found on file: /afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/Analysis-20160325-v0/ModelA/EmergingJets_ModelA_TuneCUETP8M1_13TeV_pythia8Mod/Analysis-20160325/160325_192306/ntuple_merged_ModelA.root
 //////////////////////////////////////////////////////////
 
 #ifndef BaseClass_h
@@ -31,6 +31,9 @@ public :
    Int_t           lumi;
    Int_t           event;
    Int_t           bx;
+   Int_t           nVtx;
+   Int_t           nGoodVtx;
+   Int_t           nTrueInt;
    Float_t         met_pt;
    Float_t         met_phi;
    vector<float>   *jets_pt;
@@ -58,9 +61,20 @@ public :
    vector<vector<int> > *tracks_originalAlgo;
    vector<vector<int> > *tracks_nHits;
    vector<vector<int> > *tracks_nMissInnerHits;
+   vector<vector<int> > *tracks_nTrkLayers;
+   vector<vector<int> > *tracks_nMissInnerTrkLayers;
+   vector<vector<int> > *tracks_nMissOuterTrkLayers;
+   vector<vector<int> > *tracks_nMissTrkLayers;
+   vector<vector<int> > *tracks_nPxlLayers;
+   vector<vector<int> > *tracks_nMissInnerPxlLayers;
+   vector<vector<int> > *tracks_nMissOuterPxlLayers;
+   vector<vector<int> > *tracks_nMissPxlLayers;
    vector<vector<float> > *tracks_ipXY;
    vector<vector<float> > *tracks_ipZ;
    vector<vector<float> > *tracks_ipXYSig;
+   vector<vector<float> > *tracks_dRToJetAxis;
+   vector<vector<float> > *tracks_distanceToJet;
+   vector<vector<float> > *tracks_vertexLxy;
    vector<vector<int> > *jet_vertex_source;
    vector<vector<float> > *jet_vertex_x;
    vector<vector<float> > *jet_vertex_y;
@@ -92,6 +106,9 @@ public :
    TBranch        *b_lumi;   //!
    TBranch        *b_event;   //!
    TBranch        *b_bx;   //!
+   TBranch        *b_nVtx;   //!
+   TBranch        *b_nGoodVtx;   //!
+   TBranch        *b_nTrueInt;   //!
    TBranch        *b_met_pt;   //!
    TBranch        *b_met_phi;   //!
    TBranch        *b_jets_pt;   //!
@@ -119,9 +136,20 @@ public :
    TBranch        *b_tracks_originalAlgo;   //!
    TBranch        *b_tracks_nHits;   //!
    TBranch        *b_tracks_nMissInnerHits;   //!
+   TBranch        *b_tracks_nTrkLayers;   //!
+   TBranch        *b_tracks_nMissInnerTrkLayers;   //!
+   TBranch        *b_tracks_nMissOuterTrkLayers;   //!
+   TBranch        *b_tracks_nMissTrkLayers;   //!
+   TBranch        *b_tracks_nPxlLayers;   //!
+   TBranch        *b_tracks_nMissInnerPxlLayers;   //!
+   TBranch        *b_tracks_nMissOuterPxlLayers;   //!
+   TBranch        *b_tracks_nMissPxlLayers;   //!
    TBranch        *b_tracks_ipXY;   //!
    TBranch        *b_tracks_ipZ;   //!
    TBranch        *b_tracks_ipXYSig;   //!
+   TBranch        *b_tracks_dRToJetAxis;   //!
+   TBranch        *b_tracks_distanceToJet;   //!
+   TBranch        *b_tracks_vertexLxy;   //!
    TBranch        *b_jet_vertex_source;   //!
    TBranch        *b_jet_vertex_x;   //!
    TBranch        *b_jet_vertex_y;   //!
@@ -167,11 +195,11 @@ BaseClass::BaseClass(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/Analysis-20160325-v0/ModelA/EmergingJets_ModelA_TuneCUETP8M1_13TeV_pythia8Mod/Analysis-20160325/160325_192306/ntuple_merged_ModelA.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root");
+         f = new TFile("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/Analysis-20160325-v0/ModelA/EmergingJets_ModelA_TuneCUETP8M1_13TeV_pythia8Mod/Analysis-20160325/160325_192306/ntuple_merged_ModelA.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("/afs/cern.ch/user/y/yoshin/CMSSW_7_4_12/src/EmergingJetAnalysis/ntuple.root:/emergingJetAnalyzer");
+      TDirectory * dir = (TDirectory*)f->Get("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/Analysis-20160325-v0/ModelA/EmergingJets_ModelA_TuneCUETP8M1_13TeV_pythia8Mod/Analysis-20160325/160325_192306/ntuple_merged_ModelA.root:/emergingJetAnalyzer");
       dir->GetObject("emergingJetsTree",tree);
 
    }
@@ -239,9 +267,20 @@ void BaseClass::Init(TTree *tree)
    tracks_originalAlgo = 0;
    tracks_nHits = 0;
    tracks_nMissInnerHits = 0;
+   tracks_nTrkLayers = 0;
+   tracks_nMissInnerTrkLayers = 0;
+   tracks_nMissOuterTrkLayers = 0;
+   tracks_nMissTrkLayers = 0;
+   tracks_nPxlLayers = 0;
+   tracks_nMissInnerPxlLayers = 0;
+   tracks_nMissOuterPxlLayers = 0;
+   tracks_nMissPxlLayers = 0;
    tracks_ipXY = 0;
    tracks_ipZ = 0;
    tracks_ipXYSig = 0;
+   tracks_dRToJetAxis = 0;
+   tracks_distanceToJet = 0;
+   tracks_vertexLxy = 0;
    jet_vertex_source = 0;
    jet_vertex_x = 0;
    jet_vertex_y = 0;
@@ -277,6 +316,9 @@ void BaseClass::Init(TTree *tree)
    fChain->SetBranchAddress("lumi", &lumi, &b_lumi);
    fChain->SetBranchAddress("event", &event, &b_event);
    fChain->SetBranchAddress("bx", &bx, &b_bx);
+   fChain->SetBranchAddress("nVtx", &nVtx, &b_nVtx);
+   fChain->SetBranchAddress("nGoodVtx", &nGoodVtx, &b_nGoodVtx);
+   fChain->SetBranchAddress("nTrueInt", &nTrueInt, &b_nTrueInt);
    fChain->SetBranchAddress("met_pt", &met_pt, &b_met_pt);
    fChain->SetBranchAddress("met_phi", &met_phi, &b_met_phi);
    fChain->SetBranchAddress("jets_pt", &jets_pt, &b_jets_pt);
@@ -304,9 +346,20 @@ void BaseClass::Init(TTree *tree)
    fChain->SetBranchAddress("tracks_originalAlgo", &tracks_originalAlgo, &b_tracks_originalAlgo);
    fChain->SetBranchAddress("tracks_nHits", &tracks_nHits, &b_tracks_nHits);
    fChain->SetBranchAddress("tracks_nMissInnerHits", &tracks_nMissInnerHits, &b_tracks_nMissInnerHits);
+   fChain->SetBranchAddress("tracks_nTrkLayers", &tracks_nTrkLayers, &b_tracks_nTrkLayers);
+   fChain->SetBranchAddress("tracks_nMissInnerTrkLayers", &tracks_nMissInnerTrkLayers, &b_tracks_nMissInnerTrkLayers);
+   fChain->SetBranchAddress("tracks_nMissOuterTrkLayers", &tracks_nMissOuterTrkLayers, &b_tracks_nMissOuterTrkLayers);
+   fChain->SetBranchAddress("tracks_nMissTrkLayers", &tracks_nMissTrkLayers, &b_tracks_nMissTrkLayers);
+   fChain->SetBranchAddress("tracks_nPxlLayers", &tracks_nPxlLayers, &b_tracks_nPxlLayers);
+   fChain->SetBranchAddress("tracks_nMissInnerPxlLayers", &tracks_nMissInnerPxlLayers, &b_tracks_nMissInnerPxlLayers);
+   fChain->SetBranchAddress("tracks_nMissOuterPxlLayers", &tracks_nMissOuterPxlLayers, &b_tracks_nMissOuterPxlLayers);
+   fChain->SetBranchAddress("tracks_nMissPxlLayers", &tracks_nMissPxlLayers, &b_tracks_nMissPxlLayers);
    fChain->SetBranchAddress("tracks_ipXY", &tracks_ipXY, &b_tracks_ipXY);
    fChain->SetBranchAddress("tracks_ipZ", &tracks_ipZ, &b_tracks_ipZ);
    fChain->SetBranchAddress("tracks_ipXYSig", &tracks_ipXYSig, &b_tracks_ipXYSig);
+   fChain->SetBranchAddress("tracks_dRToJetAxis", &tracks_dRToJetAxis, &b_tracks_dRToJetAxis);
+   fChain->SetBranchAddress("tracks_distanceToJet", &tracks_distanceToJet, &b_tracks_distanceToJet);
+   fChain->SetBranchAddress("tracks_vertexLxy", &tracks_vertexLxy, &b_tracks_vertexLxy);
    fChain->SetBranchAddress("jet_vertex_source", &jet_vertex_source, &b_jet_vertex_source);
    fChain->SetBranchAddress("jet_vertex_x", &jet_vertex_x, &b_jet_vertex_x);
    fChain->SetBranchAddress("jet_vertex_y", &jet_vertex_y, &b_jet_vertex_y);

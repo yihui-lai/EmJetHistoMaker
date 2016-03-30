@@ -11,6 +11,7 @@ class EmJetHistos
     mod.generate_histo_decl()
     mod.generate_histo_vector_decl()
     ]]]*/
+  const int nBins_track_ipXY = 20; const float bins_track_ipXY[20+1] = { 0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.017782794100389229, 0.031622776601683791, 0.056234132519034911, 0.10000000000000001, 0.17782794100389229, 0.31622776601683794, 0.56234132519034907, 1.0, 1.7782794100389228, 3.1622776601683795, 5.6234132519034912, 10.0, 17.782794100389228, 31.622776601683793, 56.234132519034908, 100.0 };
   const int nBins_vertex_Lxy = 20; const float bins_vertex_Lxy[20+1] = { 0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.017782794100389229, 0.031622776601683791, 0.056234132519034911, 0.10000000000000001, 0.17782794100389229, 0.31622776601683794, 0.56234132519034907, 1.0, 1.7782794100389228, 3.1622776601683795, 5.6234132519034912, 10.0, 17.782794100389228, 31.622776601683793, 56.234132519034908, 100.0 };
   const int nBins_vertex_mass = 20; const float bins_vertex_mass[20+1] = { 0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.017782794100389229, 0.031622776601683791, 0.056234132519034911, 0.10000000000000001, 0.17782794100389229, 0.31622776601683794, 0.56234132519034907, 1.0, 1.7782794100389228, 3.1622776601683795, 5.6234132519034912, 10.0, 17.782794100389228, 31.622776601683793, 56.234132519034908, 100.0 };
   TH1F* nJet;
@@ -39,13 +40,22 @@ class EmJetHistos
   TH1F* sumMedianLogIpSig;
   TH1F* track_pt;
   TH1F* track_eta;
+  TH1F* track_phi;
   TH1F* track_ipXY;
   TH1F* track_logIpSig;
   TH1F* track_nHits;
   TH1F* track_nMissHits;
   TH1F* track_missHitFrac;
+  TH1F* track_nTrkLayers;
+  TH1F* track_nMissInnerTrkLayers;
+  TH1F* track_nPxlLayers;
+  TH1F* track_nMissInnerPxlLayers;
+  TH1F* track_nNetMissInnerLayers;
+  TH1F* track_missLayerFrac;
   TH1F* track_algo;
   TH1F* track_originalAlgo;
+  TH1F* track_dRToJetAxis;
+  TH1F* track_distanceToJet;
   TH1F* vertex_Lxy_sig;
   TH1F* vertex_mass_sig;
   TH1F* jet_pt_sig;
@@ -66,18 +76,51 @@ class EmJetHistos
   TH1F* jet_vertex_pt2sum_sig;
   TH1F* track_pt_sig;
   TH1F* track_eta_sig;
+  TH1F* track_phi_sig;
   TH1F* track_ipXY_sig;
   TH1F* track_logIpSig_sig;
   TH1F* track_nHits_sig;
   TH1F* track_nMissHits_sig;
   TH1F* track_missHitFrac_sig;
+  TH1F* track_nTrkLayers_sig;
+  TH1F* track_nMissInnerTrkLayers_sig;
+  TH1F* track_nPxlLayers_sig;
+  TH1F* track_nMissInnerPxlLayers_sig;
+  TH1F* track_nNetMissInnerLayers_sig;
+  TH1F* track_missLayerFrac_sig;
   TH1F* track_algo_sig;
   TH1F* track_originalAlgo_sig;
+  TH1F* track_dRToJetAxis_sig;
+  TH1F* track_distanceToJet_sig;
+  TH1F* track_pt_highpt;
+  TH1F* track_eta_highpt;
+  TH1F* track_phi_highpt;
+  TH1F* track_ipXY_highpt;
+  TH1F* track_logIpSig_highpt;
+  TH1F* track_nHits_highpt;
+  TH1F* track_nMissHits_highpt;
+  TH1F* track_missHitFrac_highpt;
+  TH1F* track_nTrkLayers_highpt;
+  TH1F* track_nMissInnerTrkLayers_highpt;
+  TH1F* track_nPxlLayers_highpt;
+  TH1F* track_nMissInnerPxlLayers_highpt;
+  TH1F* track_nNetMissInnerLayers_highpt;
+  TH1F* track_missLayerFrac_highpt;
+  TH1F* track_algo_highpt;
+  TH1F* track_originalAlgo_highpt;
+  TH1F* track_dRToJetAxis_highpt;
+  TH1F* track_distanceToJet_highpt;
   TH2F* track_pt_VS_track_eta;
+  TH2F* track_phi_VS_track_eta;
   vector<TH1F*> jet_pt_sorted_by_pt;
   vector<TH1F*> jet_eta_sorted_by_pt;
   vector<TH1F*> jet_track_logIpSig_sorted;
   vector<TH1F*> jet_medianLogIpSig_sorted_by_medianLogIpSig;
+  vector<TH2F*> track_pt_VS_track_eta_sorted_by_cuts;
+  vector<TH2F*> track_phi_VS_track_eta_sorted_by_cuts;
+  vector<TH2F*> track_phi_VS_track_eta_by_dRToJetAxis;
+  vector<TH2F*> track_phi_VS_track_eta_by_nMissInnerPxlLayers;
+  vector<TH2F*> track_phi_VS_track_eta_by_nMissInnerTrkLayers;
   //[[[end]]]
 };
 
@@ -113,13 +156,22 @@ EmJetHistos::EmJetHistos()
   sumMedianLogIpSig = new TH1F("sumMedianLogIpSig", "sumMedianLogIpSig" , 100, -25, 25);
   track_pt = new TH1F("track_pt", "track_pt" , 100, 0.0, 10.0);
   track_eta = new TH1F("track_eta", "track_eta" , 100, -5, 5);
-  track_ipXY = new TH1F("track_ipXY", "track_ipXY" , 100, -5, 5);
+  track_phi = new TH1F("track_phi", "track_phi" , 100, -5, 5);
+  track_ipXY = new TH1F("track_ipXY", "track_ipXY" , nBins_track_ipXY, bins_track_ipXY);
   track_logIpSig = new TH1F("track_logIpSig", "track_logIpSig" , 100, -5, 5);
   track_nHits = new TH1F("track_nHits", "track_nHits" , 100, 0.0, 100);
   track_nMissHits = new TH1F("track_nMissHits", "track_nMissHits" , 100, 0.0, 100);
-  track_missHitFrac = new TH1F("track_missHitFrac", "track_missHitFrac" , 100, 0.0, 1.0);
+  track_missHitFrac = new TH1F("track_missHitFrac", "track_missHitFrac" , 100, 0.0, 5.0);
+  track_nTrkLayers = new TH1F("track_nTrkLayers", "track_nTrkLayers" , 100, 0.0, 100);
+  track_nMissInnerTrkLayers = new TH1F("track_nMissInnerTrkLayers", "track_nMissInnerTrkLayers" , 100, 0.0, 100);
+  track_nPxlLayers = new TH1F("track_nPxlLayers", "track_nPxlLayers" , 100, 0.0, 100);
+  track_nMissInnerPxlLayers = new TH1F("track_nMissInnerPxlLayers", "track_nMissInnerPxlLayers" , 100, 0.0, 100);
+  track_nNetMissInnerLayers = new TH1F("track_nNetMissInnerLayers", "track_nNetMissInnerLayers" , 100, 0.0, 100);
+  track_missLayerFrac = new TH1F("track_missLayerFrac", "track_missLayerFrac" , 100, 0.0, 5.0);
   track_algo = new TH1F("track_algo", "track_algo" , 100, 0.0, 100);
   track_originalAlgo = new TH1F("track_originalAlgo", "track_originalAlgo" , 100, 0.0, 100);
+  track_dRToJetAxis = new TH1F("track_dRToJetAxis", "track_dRToJetAxis" , 100, 0.0, 10.0);
+  track_distanceToJet = new TH1F("track_distanceToJet", "track_distanceToJet" , 100, 0.0, 10.0);
   vertex_Lxy_sig = new TH1F("vertex_Lxy_sig", "vertex_Lxy_sig" , nBins_vertex_Lxy, bins_vertex_Lxy);
   vertex_mass_sig = new TH1F("vertex_mass_sig", "vertex_mass_sig" , nBins_vertex_mass, bins_vertex_mass);
   jet_pt_sig = new TH1F("jet_pt_sig", "jet_pt_sig" , 100, 0, 1000);
@@ -140,14 +192,42 @@ EmJetHistos::EmJetHistos()
   jet_vertex_pt2sum_sig = new TH1F("jet_vertex_pt2sum_sig", "jet_vertex_pt2sum_sig" , 100, 0.0, 100);
   track_pt_sig = new TH1F("track_pt_sig", "track_pt_sig" , 100, 0.0, 10.0);
   track_eta_sig = new TH1F("track_eta_sig", "track_eta_sig" , 100, -5, 5);
-  track_ipXY_sig = new TH1F("track_ipXY_sig", "track_ipXY_sig" , 100, -5, 5);
+  track_phi_sig = new TH1F("track_phi_sig", "track_phi_sig" , 100, -5, 5);
+  track_ipXY_sig = new TH1F("track_ipXY_sig", "track_ipXY_sig" , nBins_track_ipXY, bins_track_ipXY);
   track_logIpSig_sig = new TH1F("track_logIpSig_sig", "track_logIpSig_sig" , 100, -5, 5);
   track_nHits_sig = new TH1F("track_nHits_sig", "track_nHits_sig" , 100, 0.0, 100);
   track_nMissHits_sig = new TH1F("track_nMissHits_sig", "track_nMissHits_sig" , 100, 0.0, 100);
-  track_missHitFrac_sig = new TH1F("track_missHitFrac_sig", "track_missHitFrac_sig" , 100, 0.0, 1.0);
+  track_missHitFrac_sig = new TH1F("track_missHitFrac_sig", "track_missHitFrac_sig" , 100, 0.0, 5.0);
+  track_nTrkLayers_sig = new TH1F("track_nTrkLayers_sig", "track_nTrkLayers_sig" , 100, 0.0, 100);
+  track_nMissInnerTrkLayers_sig = new TH1F("track_nMissInnerTrkLayers_sig", "track_nMissInnerTrkLayers_sig" , 100, 0.0, 100);
+  track_nPxlLayers_sig = new TH1F("track_nPxlLayers_sig", "track_nPxlLayers_sig" , 100, 0.0, 100);
+  track_nMissInnerPxlLayers_sig = new TH1F("track_nMissInnerPxlLayers_sig", "track_nMissInnerPxlLayers_sig" , 100, 0.0, 100);
+  track_nNetMissInnerLayers_sig = new TH1F("track_nNetMissInnerLayers_sig", "track_nNetMissInnerLayers_sig" , 100, 0.0, 100);
+  track_missLayerFrac_sig = new TH1F("track_missLayerFrac_sig", "track_missLayerFrac_sig" , 100, 0.0, 5.0);
   track_algo_sig = new TH1F("track_algo_sig", "track_algo_sig" , 100, 0.0, 100);
   track_originalAlgo_sig = new TH1F("track_originalAlgo_sig", "track_originalAlgo_sig" , 100, 0.0, 100);
+  track_dRToJetAxis_sig = new TH1F("track_dRToJetAxis_sig", "track_dRToJetAxis_sig" , 100, 0.0, 10.0);
+  track_distanceToJet_sig = new TH1F("track_distanceToJet_sig", "track_distanceToJet_sig" , 100, 0.0, 10.0);
+  track_pt_highpt = new TH1F("track_pt_highpt", "track_pt_highpt" , 100, 0.0, 10.0);
+  track_eta_highpt = new TH1F("track_eta_highpt", "track_eta_highpt" , 100, -5, 5);
+  track_phi_highpt = new TH1F("track_phi_highpt", "track_phi_highpt" , 100, -5, 5);
+  track_ipXY_highpt = new TH1F("track_ipXY_highpt", "track_ipXY_highpt" , nBins_track_ipXY, bins_track_ipXY);
+  track_logIpSig_highpt = new TH1F("track_logIpSig_highpt", "track_logIpSig_highpt" , 100, -5, 5);
+  track_nHits_highpt = new TH1F("track_nHits_highpt", "track_nHits_highpt" , 100, 0.0, 100);
+  track_nMissHits_highpt = new TH1F("track_nMissHits_highpt", "track_nMissHits_highpt" , 100, 0.0, 100);
+  track_missHitFrac_highpt = new TH1F("track_missHitFrac_highpt", "track_missHitFrac_highpt" , 100, 0.0, 5.0);
+  track_nTrkLayers_highpt = new TH1F("track_nTrkLayers_highpt", "track_nTrkLayers_highpt" , 100, 0.0, 100);
+  track_nMissInnerTrkLayers_highpt = new TH1F("track_nMissInnerTrkLayers_highpt", "track_nMissInnerTrkLayers_highpt" , 100, 0.0, 100);
+  track_nPxlLayers_highpt = new TH1F("track_nPxlLayers_highpt", "track_nPxlLayers_highpt" , 100, 0.0, 100);
+  track_nMissInnerPxlLayers_highpt = new TH1F("track_nMissInnerPxlLayers_highpt", "track_nMissInnerPxlLayers_highpt" , 100, 0.0, 100);
+  track_nNetMissInnerLayers_highpt = new TH1F("track_nNetMissInnerLayers_highpt", "track_nNetMissInnerLayers_highpt" , 100, 0.0, 100);
+  track_missLayerFrac_highpt = new TH1F("track_missLayerFrac_highpt", "track_missLayerFrac_highpt" , 100, 0.0, 5.0);
+  track_algo_highpt = new TH1F("track_algo_highpt", "track_algo_highpt" , 100, 0.0, 100);
+  track_originalAlgo_highpt = new TH1F("track_originalAlgo_highpt", "track_originalAlgo_highpt" , 100, 0.0, 100);
+  track_dRToJetAxis_highpt = new TH1F("track_dRToJetAxis_highpt", "track_dRToJetAxis_highpt" , 100, 0.0, 10.0);
+  track_distanceToJet_highpt = new TH1F("track_distanceToJet_highpt", "track_distanceToJet_highpt" , 100, 0.0, 10.0);
   track_pt_VS_track_eta = new TH2F("track_pt_VS_track_eta", "track_pt_VS_track_eta" , 100, -5, 5, 100, 0.0, 10.0);
+  track_phi_VS_track_eta = new TH2F("track_phi_VS_track_eta", "track_phi_VS_track_eta" , 100, -5, 5, 100, -5, 5);
   {
     auto jet_pt_0 = new TH1F("jet_pt_0", "jet_pt_0" , 100, 0, 1000);
     jet_pt_sorted_by_pt.push_back(jet_pt_0);
@@ -280,6 +360,36 @@ EmJetHistos::EmJetHistos()
     auto jet_medianLogIpSig_3 = new TH1F("jet_medianLogIpSig_3", "jet_medianLogIpSig_3" , 100, -5, 5);
     jet_medianLogIpSig_sorted_by_medianLogIpSig.push_back(jet_medianLogIpSig_3);
   }
+  {
+    auto track_pt_VS_track_eta_nHits_low = new TH2F("track_pt_VS_track_eta_nHits_low", "track_pt_VS_track_eta_nHits_low" , 100, -5, 5, 100, 0.0, 10.0);
+    track_pt_VS_track_eta_sorted_by_cuts.push_back(track_pt_VS_track_eta_nHits_low);
+    auto track_pt_VS_track_eta_nHits_high = new TH2F("track_pt_VS_track_eta_nHits_high", "track_pt_VS_track_eta_nHits_high" , 100, -5, 5, 100, 0.0, 10.0);
+    track_pt_VS_track_eta_sorted_by_cuts.push_back(track_pt_VS_track_eta_nHits_high);
+  }
+  {
+    auto track_phi_VS_track_eta_nHits_low = new TH2F("track_phi_VS_track_eta_nHits_low", "track_phi_VS_track_eta_nHits_low" , 100, -5, 5, 100, -5, 5);
+    track_phi_VS_track_eta_sorted_by_cuts.push_back(track_phi_VS_track_eta_nHits_low);
+    auto track_phi_VS_track_eta_nHits_high = new TH2F("track_phi_VS_track_eta_nHits_high", "track_phi_VS_track_eta_nHits_high" , 100, -5, 5, 100, -5, 5);
+    track_phi_VS_track_eta_sorted_by_cuts.push_back(track_phi_VS_track_eta_nHits_high);
+  }
+  {
+    auto track_phi_VS_track_eta_dRToJetAxis_low = new TH2F("track_phi_VS_track_eta_dRToJetAxis_low", "track_phi_VS_track_eta_dRToJetAxis_low" , 100, -5, 5, 100, -5, 5);
+    track_phi_VS_track_eta_by_dRToJetAxis.push_back(track_phi_VS_track_eta_dRToJetAxis_low);
+    auto track_phi_VS_track_eta_dRToJetAxis_high = new TH2F("track_phi_VS_track_eta_dRToJetAxis_high", "track_phi_VS_track_eta_dRToJetAxis_high" , 100, -5, 5, 100, -5, 5);
+    track_phi_VS_track_eta_by_dRToJetAxis.push_back(track_phi_VS_track_eta_dRToJetAxis_high);
+  }
+  {
+    auto track_phi_VS_track_eta_nMissInnerPxlLayers_low = new TH2F("track_phi_VS_track_eta_nMissInnerPxlLayers_low", "track_phi_VS_track_eta_nMissInnerPxlLayers_low" , 100, -5, 5, 100, -5, 5);
+    track_phi_VS_track_eta_by_nMissInnerPxlLayers.push_back(track_phi_VS_track_eta_nMissInnerPxlLayers_low);
+    auto track_phi_VS_track_eta_nMissInnerPxlLayers_high = new TH2F("track_phi_VS_track_eta_nMissInnerPxlLayers_high", "track_phi_VS_track_eta_nMissInnerPxlLayers_high" , 100, -5, 5, 100, -5, 5);
+    track_phi_VS_track_eta_by_nMissInnerPxlLayers.push_back(track_phi_VS_track_eta_nMissInnerPxlLayers_high);
+  }
+  {
+    auto track_phi_VS_track_eta_nMissInnerTrkLayers_low = new TH2F("track_phi_VS_track_eta_nMissInnerTrkLayers_low", "track_phi_VS_track_eta_nMissInnerTrkLayers_low" , 100, -5, 5, 100, -5, 5);
+    track_phi_VS_track_eta_by_nMissInnerTrkLayers.push_back(track_phi_VS_track_eta_nMissInnerTrkLayers_low);
+    auto track_phi_VS_track_eta_nMissInnerTrkLayers_high = new TH2F("track_phi_VS_track_eta_nMissInnerTrkLayers_high", "track_phi_VS_track_eta_nMissInnerTrkLayers_high" , 100, -5, 5, 100, -5, 5);
+    track_phi_VS_track_eta_by_nMissInnerTrkLayers.push_back(track_phi_VS_track_eta_nMissInnerTrkLayers_high);
+  }
     //[[[end]]]
 }
 
@@ -315,13 +425,22 @@ EmJetHistos::~EmJetHistos()
   delete sumMedianLogIpSig;
   delete track_pt;
   delete track_eta;
+  delete track_phi;
   delete track_ipXY;
   delete track_logIpSig;
   delete track_nHits;
   delete track_nMissHits;
   delete track_missHitFrac;
+  delete track_nTrkLayers;
+  delete track_nMissInnerTrkLayers;
+  delete track_nPxlLayers;
+  delete track_nMissInnerPxlLayers;
+  delete track_nNetMissInnerLayers;
+  delete track_missLayerFrac;
   delete track_algo;
   delete track_originalAlgo;
+  delete track_dRToJetAxis;
+  delete track_distanceToJet;
   delete vertex_Lxy_sig;
   delete vertex_mass_sig;
   delete jet_pt_sig;
@@ -342,14 +461,42 @@ EmJetHistos::~EmJetHistos()
   delete jet_vertex_pt2sum_sig;
   delete track_pt_sig;
   delete track_eta_sig;
+  delete track_phi_sig;
   delete track_ipXY_sig;
   delete track_logIpSig_sig;
   delete track_nHits_sig;
   delete track_nMissHits_sig;
   delete track_missHitFrac_sig;
+  delete track_nTrkLayers_sig;
+  delete track_nMissInnerTrkLayers_sig;
+  delete track_nPxlLayers_sig;
+  delete track_nMissInnerPxlLayers_sig;
+  delete track_nNetMissInnerLayers_sig;
+  delete track_missLayerFrac_sig;
   delete track_algo_sig;
   delete track_originalAlgo_sig;
+  delete track_dRToJetAxis_sig;
+  delete track_distanceToJet_sig;
+  delete track_pt_highpt;
+  delete track_eta_highpt;
+  delete track_phi_highpt;
+  delete track_ipXY_highpt;
+  delete track_logIpSig_highpt;
+  delete track_nHits_highpt;
+  delete track_nMissHits_highpt;
+  delete track_missHitFrac_highpt;
+  delete track_nTrkLayers_highpt;
+  delete track_nMissInnerTrkLayers_highpt;
+  delete track_nPxlLayers_highpt;
+  delete track_nMissInnerPxlLayers_highpt;
+  delete track_nNetMissInnerLayers_highpt;
+  delete track_missLayerFrac_highpt;
+  delete track_algo_highpt;
+  delete track_originalAlgo_highpt;
+  delete track_dRToJetAxis_highpt;
+  delete track_distanceToJet_highpt;
   delete track_pt_VS_track_eta;
+  delete track_phi_VS_track_eta;
   for (auto i: jet_pt_sorted_by_pt) { delete i; }
   jet_pt_sorted_by_pt.clear();
   for (auto i: jet_eta_sorted_by_pt) { delete i; }
@@ -358,5 +505,15 @@ EmJetHistos::~EmJetHistos()
   jet_track_logIpSig_sorted.clear();
   for (auto i: jet_medianLogIpSig_sorted_by_medianLogIpSig) { delete i; }
   jet_medianLogIpSig_sorted_by_medianLogIpSig.clear();
+  for (auto i: track_pt_VS_track_eta_sorted_by_cuts) { delete i; }
+  track_pt_VS_track_eta_sorted_by_cuts.clear();
+  for (auto i: track_phi_VS_track_eta_sorted_by_cuts) { delete i; }
+  track_phi_VS_track_eta_sorted_by_cuts.clear();
+  for (auto i: track_phi_VS_track_eta_by_dRToJetAxis) { delete i; }
+  track_phi_VS_track_eta_by_dRToJetAxis.clear();
+  for (auto i: track_phi_VS_track_eta_by_nMissInnerPxlLayers) { delete i; }
+  track_phi_VS_track_eta_by_nMissInnerPxlLayers.clear();
+  for (auto i: track_phi_VS_track_eta_by_nMissInnerTrkLayers) { delete i; }
+  track_phi_VS_track_eta_by_nMissInnerTrkLayers.clear();
   //[[[end]]]
 }
