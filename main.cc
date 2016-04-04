@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   // Specify any option to turn on pileup only
   if (argc>1) pileupOnly = true;
 
-  std::string prefix = "~/www/2016-03-30/histo-";
+  std::string prefix = "~/www/2016-03-31/histo-";
   std::string postfix = ".root";
   if (pileupOnly) postfix = "_pileupOnly" + postfix;
   for (std::string sample: samples) {

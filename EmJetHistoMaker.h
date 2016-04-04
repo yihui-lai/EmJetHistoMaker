@@ -125,6 +125,14 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
       return; // :CUT: Skip event with nJet<4
     }
   }
+  // Count number of jets with alphaMax higher than cut
+  {
+    float cut_value = 0.05;
+    int nJet_high = std::count_if(jets_alphaMax->begin(), jets_alphaMax->end(), [cut_value](float i) {return i >= cut_value;});
+    int nJet_low  = nJet - nJet_high;
+    histo_->nJet_by_alphaMax[0]->Fill(nJet_low, weight);
+    histo_->nJet_by_alphaMax[1]->Fill(nJet_high, weight);
+  }
 
   for (unsigned ijet=0; ijet!=jets_pt->size(); ijet++) {
     // Skip jets beyond the fourth
@@ -162,6 +170,23 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
       if (nDarkPions > 0) sig = true;
     }
 
+    {
+      const float ipSig_cut_values [4] = {2.0, 5.0, 10.0, 20.0};
+      for (int icut=0; icut<4; icut++)
+        {
+          // Count number of tracks with ipXYSig above and below cut value
+          float cut_value = ipSig_cut_values[icut];
+          int nTracks_high = std::count_if(vec_ipXYSig.begin(), vec_ipXYSig.end(), [cut_value](float i) {return i >= cut_value;});
+          int nTracks_low  = nTracks - nTracks_high;
+          histo_->jet_nTracks_by_ipSig_cut_low[icut]->Fill(nTracks_low, weight);
+          histo_->jet_nTracks_by_ipSig_cut_high[icut]->Fill(nTracks_high, weight);
+          if (sig) {
+            histo_->jet_nTracks_by_ipSig_cut_low_sig[icut]->Fill(nTracks_low, weight);
+            histo_->jet_nTracks_by_ipSig_cut_high_sig[icut]->Fill(nTracks_high, weight);
+          }
+        }
+    }
+
     histo_->jet_pt->Fill(pt, weight);
     if (sig) histo_->jet_pt_sig->Fill(pt, weight);
     if (ijet>=0 && ijet<=3) histo_->jet_pt_sorted_by_pt[ijet]->Fill(pt, weight);
@@ -180,6 +205,9 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
 
     histo_->jet_nDarkPions->Fill(nDarkPions, weight);
     if (sig) histo_->jet_nDarkPions_sig->Fill(nDarkPions, weight);
+
+    histo_->jet_medianLogIpSig_VS_jet_alphaMax->Fill(alphaMax, medianLogIpSig, weight);
+    if (sig) histo_->jet_medianLogIpSig_VS_jet_alphaMax_sig->Fill(alphaMax, medianLogIpSig, weight);
 
     ht += pt;
     sumMedianLogIpSig += medianLogIpSig;
@@ -214,6 +242,7 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
       GET_TRACK_VAR_FROM_VEC (distanceToJet       );
 #undef GET_TRACK_VAR_FROM_VEC
       double missHitFrac = double(nMissHits) / double(nHits);
+      double ipSig = ipXYSig;
       double logIpSig = TMath::Log(ipXYSig);
       double nNetMissInnerLayers = (nMissInnerPxlLayers+nMissInnerTrkLayers) - (nMissPxlLayers+nMissOuterPxlLayers+nMissTrkLayers+nMissOuterTrkLayers);
       double missLayerFrac = (nNetMissInnerLayers)/(nPxlLayers+nTrkLayers);
@@ -233,6 +262,7 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
       FILL_TRACK_HISTO (nNetMissInnerLayers , );
       FILL_TRACK_HISTO (missLayerFrac       , );
       FILL_TRACK_HISTO (ipXY                , );
+      FILL_TRACK_HISTO (ipSig               , );
       FILL_TRACK_HISTO (logIpSig            , );
       FILL_TRACK_HISTO (dRToJetAxis         , );
       FILL_TRACK_HISTO (distanceToJet       , );
@@ -252,6 +282,7 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
         FILL_TRACK_HISTO (nNetMissInnerLayers , _sig);
         FILL_TRACK_HISTO (missLayerFrac       , _sig);
         FILL_TRACK_HISTO (ipXY                , _sig);
+        FILL_TRACK_HISTO (ipSig               , _sig);
         FILL_TRACK_HISTO (logIpSig            , _sig);
         FILL_TRACK_HISTO (dRToJetAxis         , _sig);
         FILL_TRACK_HISTO (distanceToJet       , _sig);
@@ -272,6 +303,7 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
         FILL_TRACK_HISTO (nNetMissInnerLayers , _highpt);
         FILL_TRACK_HISTO (missLayerFrac       , _highpt);
         FILL_TRACK_HISTO (ipXY                , _highpt);
+        FILL_TRACK_HISTO (ipSig               , _highpt);
         FILL_TRACK_HISTO (logIpSig            , _highpt);
         FILL_TRACK_HISTO (dRToJetAxis         , _highpt);
         FILL_TRACK_HISTO (distanceToJet       , _highpt);
