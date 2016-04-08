@@ -12,17 +12,17 @@ else:
     try: import cog
     except: ImportError
 
-def pad_str(input_string, length=20):
-    '''Pads input string with spaces (on the right hand side) to given length'''
-    format_string = '{: <%d}' % length
-    output_string = format_string.format(input_string)
-    return output_string
-
 def outputline(line):
     if not standalone:
         cog.outl(line)
     else:
         print(line)
+
+def pad_str(input_string, length=20):
+    '''Pads input string with spaces (on the right hand side) to given length'''
+    format_string = '{: <%d}' % length
+    output_string = format_string.format(input_string)
+    return output_string
 
 ############################################################
 # Object definitions
