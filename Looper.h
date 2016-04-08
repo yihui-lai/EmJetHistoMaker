@@ -17,14 +17,23 @@
 
 using std::string;
 
-#define N_TRACKSORT 50
+// Non-trivial macros
+
+// Const, typedefs, enums and trivial macros
+const int nTrackSort=50;
 enum class Sample {SIGNAL, QCD, WJET};
 
-class Looper : BaseClass 
+// Using computeBins.py
+const int nBins_vertex_Lxy = 20;
+const float bins_vertex_Lxy[nBins_vertex_Lxy+1] = {0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.01778279410038923, 0.03162277660168379, 0.05623413251903491, 0.1, 0.1778279410038923, 0.31622776601683794, 0.5623413251903491, 1.0, 1.7782794100389228, 3.1622776601683795, 5.623413251903491, 10.0, 17.78279410038923, 31.622776601683793, 56.23413251903491, 100.0};
+const int nBins_vertex_mass = 20;
+const float bins_vertex_mass[nBins_vertex_mass+1] = {0.001, 0.0017782794100389228, 0.0031622776601683794, 0.005623413251903491, 0.01, 0.01778279410038923, 0.03162277660168379, 0.05623413251903491, 0.1, 0.1778279410038923, 0.31622776601683794, 0.5623413251903491, 1.0, 1.7782794100389228, 3.1622776601683795, 5.623413251903491, 10.0, 17.78279410038923, 31.622776601683793, 56.23413251903491, 100.0};
+
+class Looper : BaseClass
 {
   public:
     Looper();
-    void InitFromFileName(const std::string ifilename, Sample isample=Sample::SIGNAL, bool iData=false, double ixsec=1.0, double iefficiency=1.0, bool isignal=false);
+    int InitFromFileName(const std::string ifilename, Sample isample=Sample::SIGNAL, bool iData=false, double ixsec=1.0, double iefficiency=1.0, bool isignal=false);
     void Loop(string ofilename);
   private:
     std::unordered_map<std::string, TH1F*> histos1D;
@@ -41,7 +50,7 @@ Looper::Looper() : xsec(1.0), efficiency(1.0), isSignal(false)
 {
 }
 
-void Looper::InitFromFileName(const std::string ifilename, Sample isample, bool iData, double ixsec, double iefficiency, bool isignal)
+int Looper::InitFromFileName(const std::string ifilename, Sample isample, bool iData, double ixsec, double iefficiency, bool isignal)
 {
   TTree *tree = 0;
   std::string filename = ifilename;
@@ -55,9 +64,11 @@ void Looper::InitFromFileName(const std::string ifilename, Sample isample, bool 
   if (!f || !f->IsOpen()) {
     f = new TFile(filename.c_str());
   }
+  if (f->IsZombie()) return 1; // File read error
   TDirectory * dir = (TDirectory*)f->Get((filename+":/emergingJetAnalyzer").c_str());
   dir->GetObject("emergingJetsTree",tree);
   Init(tree);
+  return 0; // No error
 }
 
 // Copied from BaseClass::Loop()
@@ -68,20 +79,20 @@ void Looper::Loop(string ofilename)
   TFile *ofile = new TFile(ofilename.c_str(), "RECREATE");
   InitHistograms();
   if (fChain == 0) return;
-  fChain->SetBranchStatus("*",0);  // disable all branches
-  fChain->SetBranchStatus("vertex_Lxy",1);  // activate branchname
-  fChain->SetBranchStatus("vertex_mass",1);  // activate branchname
-  fChain->SetBranchStatus("jets_pt",1);  // activate branchname
-  fChain->SetBranchStatus("jets_eta",1);  // activate branchname
-  fChain->SetBranchStatus("jets_medianLogIpSig",1);  // activate branchname
-  fChain->SetBranchStatus("jets_alphaMax",1);  // activate branchname
-  if (isSignal) {
-    fChain->SetBranchStatus("jets_nDarkPions",1);  // activate branchname
-  }
-  fChain->SetBranchStatus("tracks_nHits",1);  // activate branchname
-  fChain->SetBranchStatus("tracks_nMissInnerHits",1);  // activate branchname
-  fChain->SetBranchStatus("tracks_ipXY",1);  // activate branchname
-  fChain->SetBranchStatus("tracks_ipXYSig",1);  // activate branchname
+  // fChain->SetBranchStatus("*",0);  // disable all branches
+  // fChain->SetBranchStatus("vertex_Lxy",1);  // activate branchname
+  // fChain->SetBranchStatus("vertex_mass",1);  // activate branchname
+  // fChain->SetBranchStatus("jets_pt",1);  // activate branchname
+  // fChain->SetBranchStatus("jets_eta",1);  // activate branchname
+  // fChain->SetBranchStatus("jets_medianLogIpSig",1);  // activate branchname
+  // fChain->SetBranchStatus("jets_alphaMax",1);  // activate branchname
+  // if (isSignal) {
+  //   fChain->SetBranchStatus("jets_nDarkPions",1);  // activate branchname
+  // }
+  // fChain->SetBranchStatus("tracks_nHits",1);  // activate branchname
+  // fChain->SetBranchStatus("tracks_nMissInnerHits",1);  // activate branchname
+  // fChain->SetBranchStatus("tracks_ipXY",1);  // activate branchname
+  // fChain->SetBranchStatus("tracks_ipXYSig",1);  // activate branchname
   // fChain->SetBranchStatus("tracks_ipZ",1);  // activate branchname
 
   Long64_t nentries = fChain->GetEntriesFast();
@@ -98,6 +109,7 @@ void Looper::Loop(string ofilename)
   Long64_t nbytes = 0, nb = 0;
   TStopwatch timer_total;
   timer_total.Start();
+  TStopwatch timer;
   // Loop over all events in TChain
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     // Get TTree-level entry number from TChain-level entry number
@@ -108,7 +120,6 @@ void Looper::Loop(string ofilename)
 
     // Do stuff with one entry of the TTree
     {
-      TStopwatch timer;
       if ( jentry % 10000 == 0 ) {
         if (jentry!=0) std::cout << "Last chunk took " << timer.RealTime() << std::endl;
         timer.Start();
@@ -146,6 +157,8 @@ void Looper::Loop(string ofilename)
           int nTracks = vec_ipXY.size();
           // Skip jets with zero tracks
           if (nTracks==0) continue;
+          // Skip jets with |eta|>2.5
+          if (TMath::Abs(eta) > 2.5) continue;
           int nDarkPions = 0;
           bool sig = false;
           if (isSignal) {
@@ -211,7 +224,7 @@ void Looper::Loop(string ofilename)
           }
           // Sort tracks in descending order of ipXYSig
           std::sort( index_ipXYSig_ordered.begin(), index_ipXYSig_ordered.end(), [&](int a, int b){ return vec_ipXYSig[a] > vec_ipXYSig[b]; } );
-          for (int i=0; i< N_TRACKSORT; i++) {
+          for (int i=0; i< nTrackSort; i++) {
             if (i>=nTracks) break; // Don't try to run over more than number of tracks in current jet
             string prefix = ""; string postfix = std::to_string(i);
             auto ipXYSig_i = vec_ipXYSig[index_ipXYSig_ordered[i]]; // i-th largest ipXYSig
@@ -282,8 +295,8 @@ void Looper::InitHistograms()
   name = prefix + "sigmaPt"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1500 ) ;
   name = prefix + "sigmaPt2"           + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1500 ) ;
   name = prefix + "deltaPt"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1000 ) ;
-  name = prefix + "vertex_Lxy"         + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  ,  100 ) ;
-  name = prefix + "vertex_mass"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  ,  100 ) ;
+  name = prefix + "vertex_Lxy"         + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , nBins_vertex_Lxy , bins_vertex_Lxy ) ;
+  name = prefix + "vertex_mass"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , nBins_vertex_mass , bins_vertex_mass ) ;
   name = prefix + "jet_pt"             + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0  , 1000 ) ;
   name = prefix + "jet_eta"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
   name = prefix + "jet_nTracks"        + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , 0. , 100  ) ;
@@ -307,7 +320,7 @@ void Looper::InitHistograms()
     name = prefix + "jet_eta"            + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 5    ) ;
   }
   // Ordered by logIpSig
-  for (int i=0; i< N_TRACKSORT; i++) {
+  for (int i=0; i< nTrackSort; i++) {
     prefix = ""; postfix = std::to_string(i);
     name = prefix + "jet_track_logIpSig" + postfix ; histos1D[name] = new TH1F(name.c_str() , name.c_str() , 100 , -5 , 20   ) ;
   }
