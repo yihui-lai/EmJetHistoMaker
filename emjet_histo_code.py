@@ -157,8 +157,11 @@ def user_define_histos():
 
     # Define 2D histograms from ordered pairs of 1D histograms
     histo_2d_dict = OrderedDict()
-    h = histo_combine1Dto2D( histo_dict['track_eta'], histo_dict['track_pt'], ); histo_2d_dict[h.name] = h
-    h = histo_combine1Dto2D( histo_dict['track_eta'], histo_dict['track_phi'], ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['track_eta']   , histo_dict['track_pt']    , ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['track_eta']   , histo_dict['track_phi']   , ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['track_phi']  , histo_dict['track_ipXY']   , ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['track_nHits'] , histo_dict['track_ipXY'] , ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['track_nHits'] , histo_dict['track_ipSig'] , ); histo_2d_dict[h.name] = h
     h = histo_combine1Dto2D( histo_dict['jet_alphaMax'], histo_dict['jet_medianLogIpSig'], ); histo_2d_dict[h.name] = h
     histo_dict.update(histo_2d_dict)
 
@@ -177,6 +180,20 @@ def user_define_histos():
     # Add postfixed histograms to dictionary
     histo_dict.update(histo_sig_dict)
     histo_dict.update(histo_highpt_dict)
+
+    # Define region A and B track histos
+    histo_regionA_dict = OrderedDict()
+    for name, histo in histo_dict.iteritems():
+        if name[:6]=='track_':
+            histo_regionA = clone_object(histo, postfix='regionA')
+            histo_regionA_dict[histo_regionA.name] = histo_regionA
+    histo_dict.update(histo_regionA_dict)
+    histo_regionB_dict = OrderedDict()
+    for name, histo in histo_dict.iteritems():
+        if name[:6]=='track_':
+            histo_regionB = clone_object(histo, postfix='regionB')
+            histo_regionB_dict[histo_regionB.name] = histo_regionB
+    histo_dict.update(histo_regionB_dict)
 
     return histo_dict
 
@@ -228,7 +245,7 @@ def generate_vbin_decl():
         nBins=bins.nBins
         bin_array_str = str(bins.binedges)[1:-1] # Remove first and last character (square brackets)
         bin_array_str = '{ ' + bin_array_str + ' }'
-        outputline( 'const int nBins_{binname} = {nBins}; const float bins_{binname}[{nBins}+1] = {binedges};'.format(nBins=bins.nBins, binname=bins.binname, binedges=bin_array_str) )
+        outputline( 'const int nBins_{binname} = {nBins}; const double bins_{binname}[{nBins}+1] = {binedges};'.format(nBins=bins.nBins, binname=bins.binname, binedges=bin_array_str) )
 
 def generate_histo_decl():
     """Outputs lines like:

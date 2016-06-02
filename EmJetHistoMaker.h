@@ -246,6 +246,8 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
       double logIpSig = TMath::Log(ipXYSig);
       double nNetMissInnerLayers = (nMissInnerPxlLayers+nMissInnerTrkLayers) - (nMissPxlLayers+nMissOuterPxlLayers+nMissTrkLayers+nMissOuterTrkLayers);
       double missLayerFrac = (nNetMissInnerLayers)/(nPxlLayers+nTrkLayers);
+      bool regionA = (-1 < eta && eta < 0) && (-2 < phi && phi < -1);
+      bool regionB = (-1 < eta && eta < 0) && ( 2 < phi && phi < 3 );
 #define FILL_TRACK_HISTO(var, postfix) histo_->track_##var##postfix ->Fill(var, weight)
       FILL_TRACK_HISTO (pt                  , );
       FILL_TRACK_HISTO (eta                 , );
@@ -308,9 +310,54 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber)
         FILL_TRACK_HISTO (dRToJetAxis         , _highpt);
         FILL_TRACK_HISTO (distanceToJet       , _highpt);
       }
+      if (regionA) {
+        FILL_TRACK_HISTO (pt                  , _regionA);
+        FILL_TRACK_HISTO (eta                 , _regionA);
+        FILL_TRACK_HISTO (phi                 , _regionA);
+        FILL_TRACK_HISTO (algo                , _regionA);
+        FILL_TRACK_HISTO (originalAlgo        , _regionA);
+        FILL_TRACK_HISTO (nHits               , _regionA);
+        FILL_TRACK_HISTO (nMissHits           , _regionA);
+        FILL_TRACK_HISTO (missHitFrac         , _regionA);
+        FILL_TRACK_HISTO (nTrkLayers          , _regionA);
+        FILL_TRACK_HISTO (nMissInnerTrkLayers , _regionA);
+        FILL_TRACK_HISTO (nPxlLayers          , _regionA);
+        FILL_TRACK_HISTO (nMissInnerPxlLayers , _regionA);
+        FILL_TRACK_HISTO (nNetMissInnerLayers , _regionA);
+        FILL_TRACK_HISTO (missLayerFrac       , _regionA);
+        FILL_TRACK_HISTO (ipXY                , _regionA);
+        FILL_TRACK_HISTO (ipSig               , _regionA);
+        FILL_TRACK_HISTO (logIpSig            , _regionA);
+        FILL_TRACK_HISTO (dRToJetAxis         , _regionA);
+        FILL_TRACK_HISTO (distanceToJet       , _regionA);
+      }
+      if (regionB) {
+        FILL_TRACK_HISTO (pt                  , _regionB);
+        FILL_TRACK_HISTO (eta                 , _regionB);
+        FILL_TRACK_HISTO (phi                 , _regionB);
+        FILL_TRACK_HISTO (algo                , _regionB);
+        FILL_TRACK_HISTO (originalAlgo        , _regionB);
+        FILL_TRACK_HISTO (nHits               , _regionB);
+        FILL_TRACK_HISTO (nMissHits           , _regionB);
+        FILL_TRACK_HISTO (missHitFrac         , _regionB);
+        FILL_TRACK_HISTO (nTrkLayers          , _regionB);
+        FILL_TRACK_HISTO (nMissInnerTrkLayers , _regionB);
+        FILL_TRACK_HISTO (nPxlLayers          , _regionB);
+        FILL_TRACK_HISTO (nMissInnerPxlLayers , _regionB);
+        FILL_TRACK_HISTO (nNetMissInnerLayers , _regionB);
+        FILL_TRACK_HISTO (missLayerFrac       , _regionB);
+        FILL_TRACK_HISTO (ipXY                , _regionB);
+        FILL_TRACK_HISTO (ipSig               , _regionB);
+        FILL_TRACK_HISTO (logIpSig            , _regionB);
+        FILL_TRACK_HISTO (dRToJetAxis         , _regionB);
+        FILL_TRACK_HISTO (distanceToJet       , _regionB);
+      }
 #undef FILL_TRACK_HISTO
       histo_->track_pt_VS_track_eta->Fill(eta, pt, weight);
       histo_->track_phi_VS_track_eta->Fill(eta, phi, weight);
+      histo_->track_ipXY_VS_track_phi->Fill(phi, ipXY, weight);
+      histo_->track_ipXY_VS_track_nHits->Fill(nHits, ipXY, weight);
+      histo_->track_ipSig_VS_track_nHits->Fill(nHits, ipSig, weight);
       if (nHits<=15) {
         histo_->track_pt_VS_track_eta_sorted_by_cuts[0] ->Fill(eta, pt, weight);
         histo_->track_phi_VS_track_eta_sorted_by_cuts[0] ->Fill(eta, phi, weight);
