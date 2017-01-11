@@ -108,6 +108,7 @@ def offset_bins(bins):
     return Bins(bins.nBins, bins.min-0.5, bins.max-0.5)
 
 def offset(histo):
+    '''Use to offset bins by -0.5 to center bins on integer values'''
     return histo._replace( binsX=offset_bins(histo.binsX) )
 
 def user_define_histos():
@@ -115,6 +116,7 @@ def user_define_histos():
     vbins = user_define_bins()
     histo_dict = OrderedDict()
     name = 'nJet'                      ; histo_dict[name] = Histo1F(name , Bins( 25 , 0   ,  25  ) ); histo_dict[name] = offset(histo_dict[name])
+    name = 'nJetPostCut'               ; histo_dict[name] = Histo1F(name , Bins( 25 , 0   ,  25  ) ); histo_dict[name] = offset(histo_dict[name])
     name = 'ht'                        ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 2500 ) )
     name = 'sigmaPt'                   ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1500 ) )
     name = 'sigmaPt2'                  ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 1500 ) )
@@ -129,11 +131,11 @@ def user_define_histos():
     name = 'jet_alphaMax'              ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 1.   ) )
     name = 'jet_nDarkPions'            ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) ); histo_dict[name] = offset(histo_dict[name])
     name = 'jet_nVertex'               ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) ); histo_dict[name] = offset(histo_dict[name])
-    name = 'jet_vertex_Lxy'            ; histo_dict[name] = Histo1F(name , vbins['vertex_Lxy']     )
-    name = 'jet_vertex_mass'           ; histo_dict[name] = Histo1F(name , vbins['vertex_mass']    )
-    name = 'jet_vertex_chi2'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_vertex_ndof'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,  20  ) )
-    name = 'jet_vertex_pt2sum'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'jet_prompt_frac_E'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 2.   ) )
+    name = 'jet_displaced_frac'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 2.   ) )
+    name = 'jet_alphaMaxNeg'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 1.   ) )
+    name = 'jet_cef'                   ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 1.   ) )
+    name = 'jet_nef'                   ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 1.   ) )
     name = 'sumMedianLogIpSig'         ; histo_dict[name] = Histo1F(name , Bins(100 , -25 ,  25  ) )
     name = 'track_pt'                  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 10.  ) )
     name = 'track_eta'                 ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
@@ -154,6 +156,12 @@ def user_define_histos():
     name = 'track_originalAlgo'        ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'track_dRToJetAxis'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 0.5  ) )
     name = 'track_distanceToJet'       ; histo_dict[name] = Histo1F(name , vbins[name]             )
+    name = 'vertex_Lxy'                ; histo_dict[name] = Histo1F(name , vbins['vertex_Lxy']     )
+    name = 'vertex_mass'               ; histo_dict[name] = Histo1F(name , vbins['vertex_mass']    )
+    name = 'vertex_chi2'               ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'vertex_ndof'               ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  ,  20  ) )
+    name = 'vertex_pt2sum'             ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
+    name = 'vertex_nTracks'            ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
 
     # Define 2D histograms from ordered pairs of 1D histograms
     histo_2d_dict = OrderedDict()
@@ -162,7 +170,9 @@ def user_define_histos():
     h = histo_combine1Dto2D( histo_dict['track_phi']  , histo_dict['track_ipXY']   , ); histo_2d_dict[h.name] = h
     h = histo_combine1Dto2D( histo_dict['track_nHits'] , histo_dict['track_ipXY'] , ); histo_2d_dict[h.name] = h
     h = histo_combine1Dto2D( histo_dict['track_nHits'] , histo_dict['track_ipSig'] , ); histo_2d_dict[h.name] = h
-    h = histo_combine1Dto2D( histo_dict['jet_alphaMax'], histo_dict['jet_medianLogIpSig'], ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['jet_alphaMax'], histo_dict['jet_medLogIpSig'], ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['jet_alphaMax'], histo_dict['jet_prompt_frac_E'], ); histo_2d_dict[h.name] = h
+    h = histo_combine1Dto2D( histo_dict['jet_alphaMaxNeg'], histo_dict['jet_displaced_frac'], ); histo_2d_dict[h.name] = h
     histo_dict.update(histo_2d_dict)
 
     # Define signal histos, by copying all jet, track and vertex histograms
@@ -171,15 +181,35 @@ def user_define_histos():
         if name[:4]=='jet_' or name[:6]=='track_' or name[:7]=='vertex_':
             histo_sig = clone_object(histo, postfix='sig')
             histo_sig_dict[histo_sig.name] = histo_sig
+    # Define dark gluon tagged histos, by copying all jet, track and vertex histograms
+    histo_gluond_dict = OrderedDict()
+    for name, histo in histo_dict.iteritems():
+        if name[:4]=='jet_' or name[:6]=='track_' or name[:7]=='vertex_':
+            histo_gluond = clone_object(histo, postfix='gluond')
+            histo_gluond_dict[histo_gluond.name] = histo_gluond
     # Define high pt track histograms
     histo_highpt_dict = OrderedDict()
     for name, histo in histo_dict.iteritems():
         if name[:6]=='track_':
             histo_highpt = clone_object(histo, postfix='highpt')
             histo_highpt_dict[histo_highpt.name] = histo_highpt
+    # Define low/high track multiplicity histograms
+    histo_lowntrack_dict = OrderedDict()
+    for name, histo in histo_dict.iteritems():
+        if name[:4]=='jet_' or name[:6]=='track_' or name[:7]=='vertex_':
+            histo_lowntrack = clone_object(histo, postfix='lowntrack')
+            histo_lowntrack_dict[histo_lowntrack.name] = histo_lowntrack
+    histo_highntrack_dict = OrderedDict()
+    for name, histo in histo_dict.iteritems():
+        if name[:4]=='jet_' or name[:6]=='track_' or name[:7]=='vertex_':
+            histo_highntrack = clone_object(histo, postfix='highntrack')
+            histo_highntrack_dict[histo_highntrack.name] = histo_highntrack
     # Add postfixed histograms to dictionary
     histo_dict.update(histo_sig_dict)
+    histo_dict.update(histo_gluond_dict)
     histo_dict.update(histo_highpt_dict)
+    histo_dict.update(histo_lowntrack_dict)
+    histo_dict.update(histo_highntrack_dict)
 
     # Define region A and B track histos
     histo_regionA_dict = OrderedDict()
