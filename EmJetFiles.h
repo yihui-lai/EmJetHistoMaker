@@ -40,8 +40,8 @@ const std::string samples[] = {"ModelA", "ModelB", "QCD", "Data"};
 static std::multimap<std::string, File> files = {
   /* {"WJet"              ,  { WJet             , Sample::WJET   , MC    , 60290  , 1.027381e-01 , 8.630102e-04 , false } } , */
   /* {"WJetData"          ,  { WJetData         , Sample::WJET   , DATA  , 1.0    , 1.0          , 1.0          , false } } , */
-  {"ModelA" ,  { ModelA             , Sample::SIGNAL , MC   , 0.0146 , 1.0          , 0.0          , true  } } ,
-  {"ModelB" ,  { ModelB             , Sample::SIGNAL , MC   , 0.0146 , 1.0          , 0.0          , true  } } ,
+  {"ModelA" ,  { ModelA             , Sample::SIGNAL , MC   , 0.0146 , 6.126087e-01 , 1.154018e-02 , true  } } ,
+  {"ModelB" ,  { ModelB             , Sample::SIGNAL , MC   , 0.0146 , 8.950588e-01 , 1.026163e-02 , true  } } ,
   { "QCD"   ,  { QCD_HT700to1000    , Sample::QCD    , MC   , 6524   , 4.155094e-03 , 2.008417e-05 , false } } ,
   { "QCD"   ,  { QCD_HT1000to1500   , Sample::QCD    , MC   , 1064   , 1.706836e-01 , 4.733912e-04 , false } } ,
   { "QCD"   ,  { QCD_HT1500to2000   , Sample::QCD    , MC   , 121.5  , 4.209039e-01 , 7.314915e-04 , false } } ,

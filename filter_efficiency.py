@@ -12,7 +12,9 @@ files = OrderedDict()
 # files["QCD_HT1000to1500"] = rt.TFile("histo_merged_QCD_HT1000to1500.root")
 # files["QCD_HT1500to2000"] = rt.TFile("histo_merged_QCD_HT1500to2000.root")
 # files["QCD_HT2000toInf"]  = rt.TFile("histo_merged_QCD_HT2000toInf.root")
-files["WJet"]  = rt.TFile("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/Analysis-20160301-v0/WJetsToLNuInclusive/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Analysis-20160301/160302_022221/ntuple_merged_WJetsToLNuInclusive.root")
+# files["WJet"]  = rt.TFile("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/Analysis-20160301-v0/WJetsToLNuInclusive/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Analysis-20160301/160302_022221/ntuple_merged_WJetsToLNuInclusive.root")
+files["ModelA"]  = rt.TFile("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/Analysis-20161012-v0/ModelA/EmergingJets_ModelA_TuneCUETP8M1_13TeV_pythia8Mod/Analysis-20161012/161018_065904/ntuple_merged_ModelA.root")
+files["ModelB"]  = rt.TFile("/afs/cern.ch/user/y/yoshin/eos/cms/store/group/phys_exotica/EmergingJets/Analysis-20161012-v0/ModelB/EmergingJets_ModelB_TuneCUETP8M1_13TeV_pythia8Mod/Analysis-20161012/161018_065917/ntuple_merged_ModelB.root")
 
 print "%s, %s, %s" % ("name", "efficiency", "uncertainty_efficiency")
 for name, f in files.iteritems():

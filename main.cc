@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     // Specify any option to turn on pileup only
     if (argc>1) pileupOnly = true;
 
-    std::string prefix = "~/www/2017-01-09/histo-";
+    std::string prefix = "~/www/2017-01-16/histo-";
     std::string postfix = "-comparison.root";
     if (pileupOnly) postfix = "_pileupOnly" + postfix;
     for (std::string sample: samples) {
@@ -29,7 +29,8 @@ int main(int argc, char *argv[])
         std::string filename = file.name;
         int status = hm.SetTree(filename);
         hm.SetOptions(file.sample, file.isData, file.xsec, file.efficiency, file.isSignal, pileupOnly);
-        hm.SetMaxEntries(50000);
+        hm.SetMaxEntries(10000);
+        // hm.SetMaxEntries(100);
         if (status==0) {
           std::cout << "Running over file: " << filename << std::endl;
           hm.LoopOverCurrentTree();
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
         std::string filename = file.name;
         int status = hm.SetTree(filename);
         hm.SetOptions(file.sample, file.isData, file.xsec, file.efficiency, file.isSignal, pileupOnly);
-        hm.SetMaxEntries(50000);
+        // hm.SetMaxEntries(50000);
         if (status==0) {
           std::cout << "Running over file: " << filename << std::endl;
           hm.LoopOverCurrentTree();
