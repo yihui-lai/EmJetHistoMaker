@@ -1,0 +1,9 @@
+# sample group  , sample name              , sample Type , MC/DATA , isSignal , xsec[fb] , input file
+QCDMC           , QCDHT700To1000_YH         , QCDMC       , MC      , false    ,   6802000, /data/users/fengyb/EmJetHistoMaker/inputs/20170523/QCDHT700To1000.txt
+QCDMC           , QCDHT700To1000x_YH        , QCDMC       , MC      , false    ,   6802000, /data/users/fengyb/EmJetHistoMaker/inputs/20170523/QCDHT700To1000x.txt
+QCDMC           , QCDHT1000To1500_YH        , QCDMC       , MC      , false    ,   1206000, /data/users/fengyb/EmJetHistoMaker/inputs/20170523/QCDHT1000To1500.txt
+QCDMC           , QCDHT1000To1500x_YH       , QCDMC       , MC      , false    ,   1206000, /data/users/fengyb/EmJetHistoMaker/inputs/20170523/QCDHT1000To1500x.txt
+QCDMC           , QCDHT1500To2000_YH        , QCDMC       , MC      , false    ,    120400, /data/users/fengyb/EmJetHistoMaker/inputs/20170523/QCDHT1500To2000.txt
+QCDMC           , QCDHT1500To2000x_YH       , QCDMC       , MC      , false    ,    120400, /data/users/fengyb/EmJetHistoMaker/inputs/20170523/QCDHT1500To2000x.txt
+QCDMC           , QCDHT2000ToInf_YH         , QCDMC       , MC      , false    ,     25250, /data/users/fengyb/EmJetHistoMaker/inputs/20170523/QCDHT2000ToInf.txt
+QCDMC           , QCDHT2000ToInfx_YH        , QCDMC       , MC      , false    ,     25250, /data/users/fengyb/EmJetHistoMaker/inputs/20170523/QCDHT2000ToInfx.txt
