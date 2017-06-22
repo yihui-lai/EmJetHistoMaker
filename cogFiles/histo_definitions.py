@@ -108,6 +108,16 @@ def user_define_histos():
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='pt1')
             histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='pt2')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='pt3')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='pt4')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='pt5')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='pt6')
+            histo_clone_dict[histo_clone.name] = histo_clone
     histo_dict.update(histo_clone_dict)
 
     histo_clone_dict = OrderedDict()
@@ -147,10 +157,7 @@ def user_define_histos():
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAF2DSig3')
             histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTbasic4')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTAF2DSig4')
-            histo_clone_dict[histo_clone.name] = histo_clone
+            '''
             histo_clone = clone_object(histo, postfix='JTbasic__TypeIII')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAlpha__TypeIII')
@@ -167,16 +174,13 @@ def user_define_histos():
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAlpha__TypeVIII')
             histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTbasic__TypeX')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTAlpha__TypeX')
-            histo_clone_dict[histo_clone.name] = histo_clone
+            '''
     histo_dict.update(histo_clone_dict)
 
     # event-level plot variations
     histo_clone_dict = OrderedDict()
     for name, histo in histo_dict.iteritems():
-         histo_clone = clone_object(histo, postfix='PVfiltered')
+         histo_clone = clone_object(histo, postfix='Jetfiltered')
          histo_clone_dict[histo_clone.name] = histo_clone
     histo_dict.update(histo_clone_dict)    
     return histo_dict

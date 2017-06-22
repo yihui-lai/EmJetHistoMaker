@@ -24,7 +24,7 @@ command = sys.argv[2]
 command_list = command.split()
 # BASEDIR = "/afs/cern.ch/user/y/yoshin/work/condor_output"
 BASEDIR = "/data/users/fengyb/80Xresult/condor_output"
-DATESTR = time.strftime("%Y-%m-%d") 
+DATESTR = time.strftime("%Y-%m-%d-%H") 
 DIRECTORY = os.path.join(BASEDIR, DATESTR) # DIRECTORY = BASEDIR/YY-MM-DD
 if not os.path.exists(DIRECTORY):
     os.makedirs(DIRECTORY)
@@ -33,7 +33,7 @@ kw_dict['DIRECTORY'] = DIRECTORY
 kw_dict['EXECUTABLE'] = command_list[0]
 kw_dict['ARGUMENTS']  = " ".join(command_list[1:])
 kw_dict['QUEUE']  = "%d" % queue
-kw_dict['DATE'] = time.strftime("%Y-%m-%d")
+kw_dict['DATE'] = time.strftime("%Y-%m-%d-%H")
 
 # For lxplus or generic condor clusters
 jdl_template ="""
