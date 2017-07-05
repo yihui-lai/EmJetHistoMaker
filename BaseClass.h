@@ -36,10 +36,14 @@ public :
    Int_t           nTrueInt;
    Float_t         met_pt;
    Float_t         met_phi;
-   Int_t           pv_indexInColl;
-   Float_t         pv_x;
-   Float_t         pv_y;
-   Float_t         pv_z;
+   vector<int>     *pv_index;
+   vector<float>   *pv_x;
+   vector<float>   *pv_y;
+   vector<float>   *pv_z;
+   vector<float>   *pv_chi2;
+   vector<float>   *pv_ndof;
+   vector<float>   *pv_pt2sum;
+   vector<float>   *pv_nTracks;
    bool            HLT_PFHT800;
    vector<int>     *jet_index;
    vector<int>     *jet_source;
@@ -124,10 +128,14 @@ public :
    TBranch        *b_nTrueInt;   //!
    TBranch        *b_met_pt;   //!
    TBranch        *b_met_phi;   //!
-   TBranch        *b_pv_indexInColl;   //!
+   TBranch        *b_pv_index;   //!
    TBranch        *b_pv_x;  //!
    TBranch        *b_pv_y;
    TBranch        *b_pv_z;
+   TBranch        *b_pv_chi2;  //!
+   TBranch        *b_pv_ndof;
+   TBranch        *b_pv_pt2sum;
+   TBranch        *b_pv_nTracks;
    TBranch        *b_HLT_PFHT800; //!
    TBranch        *b_jet_index;   //!
    TBranch        *b_jet_source;   //!
@@ -255,6 +263,14 @@ void BaseClass::Init(TTree *tree)
    // (once per file to be processed).
 
    // Set object pointer
+   pv_index = 0;
+   pv_x = 0;
+   pv_y = 0;
+   pv_z = 0;
+   pv_chi2 = 0;
+   pv_ndof = 0;
+   pv_pt2sum = 0;
+   pv_nTracks = 0;
    jet_index = 0;
    jet_source = 0;
    jet_pt = 0;
@@ -341,10 +357,14 @@ void BaseClass::Init(TTree *tree)
    fChain->SetBranchAddress("nTrueInt", &nTrueInt, &b_nTrueInt);
    fChain->SetBranchAddress("met_pt", &met_pt, &b_met_pt);
    fChain->SetBranchAddress("met_phi", &met_phi, &b_met_phi);
-   fChain->SetBranchAddress("pv_indexInColl", &pv_indexInColl, &b_pv_indexInColl);
+   fChain->SetBranchAddress("pv_index", &pv_index, &b_pv_index);
    fChain->SetBranchAddress("pv_x", &pv_x, &b_pv_x);
    fChain->SetBranchAddress("pv_y", &pv_y, &b_pv_y);
-   fChain->SetBranchAddress("pv_z", &pv_z, &b_pv_z);
+   fChain->SetBranchAddress("pv_z", &pv_z, &b_pv_z);   
+   fChain->SetBranchAddress("pv_chi2",   &pv_chi2,   &b_pv_chi2);
+   fChain->SetBranchAddress("pv_ndof",   &pv_ndof,   &b_pv_ndof);
+   fChain->SetBranchAddress("pv_pt2sum", &pv_pt2sum, &b_pv_pt2sum);
+   fChain->SetBranchAddress("pv_nTracks", &pv_nTracks, &b_pv_nTracks);
    fChain->SetBranchAddress("HLT_PFHT800",    &HLT_PFHT800,    &b_HLT_PFHT800);
    fChain->SetBranchAddress("jet_index", &jet_index, &b_jet_index);
    fChain->SetBranchAddress("jet_source", &jet_source, &b_jet_source);

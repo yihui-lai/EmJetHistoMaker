@@ -55,8 +55,12 @@ def user_define_histos():
     name = 'jet_phi'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
     name = 'jet_nTrack'                ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'jet_nTrack_pt1000'         ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
-    name = 'jet_medianIP'              ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
-    name = 'jet_maxIP'                 ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
+    #name = 'jet_medianIP'              ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
+    #name = 'jet_maxIP'                 ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
+    name = 'jet_medianIP'              ; histo_dict[name] = Histo1F(name , Bins(200 , -0.2 , 0.2  ) )
+    name = 'jet_maxIP'                 ; histo_dict[name] = Histo1F(name , Bins(200 , -0.2 , 0.2  ) )
+    name = 'jet_medianIPSig'           ; histo_dict[name] = Histo1F(name , Bins(200 , -8   , 8    ) )
+    name = 'jet_maxIPSig'              ; histo_dict[name] = Histo1F(name , Bins(200 , -8   , 8    ) )
     name = 'jet_alphaMax'              ; histo_dict[name] = Histo1F(name , Bins(200 , -1.  , 1.   ) )
     name = 'jet_Alpha'                 ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 1.   ) )
     name = 'jet_Alpha2D'               ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 1.   ) )
@@ -71,8 +75,10 @@ def user_define_histos():
     name = 'track_pt'                  ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 10.  ) )
     name = 'track_eta'                 ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
     name = 'track_phi'                 ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
-    name = 'track_ipXY'                ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
-    name = 'track_ipXYSig'             ; histo_dict[name] = Histo1F(name , vbins['track_ipXYSig']  )
+    #name = 'track_ipXY'                ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
+    #name = 'track_ipXYSig'             ; histo_dict[name] = Histo1F(name , vbins['track_ipXYSig']  )
+    name = 'track_ipXY'                ; histo_dict[name] = Histo1F(name , Bins(200 , -0.2, 0.2   ) )
+    name = 'track_ipXYSig'             ; histo_dict[name] = Histo1F(name , Bins(100 , -8 , 8   ) )
     name = 'track_quality'             ; histo_dict[name] = Histo1F(name , Bins(200 , 0.  , 200  ) )
 
     # Define 2D histograms from ordered pairs of 1D histograms
@@ -118,6 +124,8 @@ def user_define_histos():
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='pt6')
             histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='ptX')
+            histo_clone_dict[histo_clone.name] = histo_clone
     histo_dict.update(histo_clone_dict)
 
     histo_clone_dict = OrderedDict()
@@ -141,11 +149,12 @@ def user_define_histos():
             histo_clone_dict[histo_clone.name] = histo_clone
     histo_dict.update(histo_clone_dict)
 
-
     histo_clone_dict = OrderedDict()
     for name, histo in histo_dict.iteritems():
         if name[:4]=='jet_' or name[:6]=='track_':
             histo_clone = clone_object(histo, postfix='JTbasic')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTAlpha')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAlpha2DSig')
             histo_clone_dict[histo_clone.name] = histo_clone
@@ -157,34 +166,30 @@ def user_define_histos():
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAF2DSig3')
             histo_clone_dict[histo_clone.name] = histo_clone
-            '''
             histo_clone = clone_object(histo, postfix='JTbasic__TypeIII')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTAlpha2DSig__TypeIII')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAlpha__TypeIII')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTbasic__TypeIV')
             histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTAlpha2DSig__TypeIV')
+            histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAlpha__TypeIV')
             histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTbasic__TypeVII')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTAlpha__TypeVII')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTbasic__TypeVIII')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTAlpha__TypeVIII')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            '''
     histo_dict.update(histo_clone_dict)
 
     # event-level plot variations
-    histo_clone_dict = OrderedDict()
-    for name, histo in histo_dict.iteritems():
-         histo_clone = clone_object(histo, postfix='Jetfiltered')
-         histo_clone_dict[histo_clone.name] = histo_clone
-    histo_dict.update(histo_clone_dict)    
-    return histo_dict
+    #histo_clone_dict = OrderedDict()
+    #for name, histo in histo_dict.iteritems():
+    #     histo_clone = clone_object(histo, postfix='HLTfiltered')
+    #     histo_clone_dict[histo_clone.name] = histo_clone
+         #histo_clone = clone_object(histo, postfix='Jetfiltered')
+         #histo_clone_dict[histo_clone.name] = histo_clone
+    #histo_dict.update(histo_clone_dict)    
 
+    return histo_dict
 
 def user_define_histo_vectors():
     """Define histogram vectors in this function"""

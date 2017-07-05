@@ -50,7 +50,7 @@ queue ${QUEUE}
 # For hepcms SL6
 jdl_template ="""
 Universe = vanilla
-Requirements = TARGET.FileSystemDomain == "privnet" && machine != "r510-0-1.privnet"
+Requirements = TARGET.FileSystemDomain == "privnet" && machine != "r720-0-2.privnet"
 Executable            = ${EXECUTABLE}
 Arguments             = ${ARGUMENTS} $(ProcId)
 Output                = ${DIRECTORY}/condor_test.$(ClusterId).$(ProcId).out
