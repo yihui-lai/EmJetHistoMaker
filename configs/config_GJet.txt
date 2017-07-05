@@ -1,0 +1,17 @@
+# sample group  , sample name              , sample Type , MC/DATA , isSignal , xsec[pb] , input file
+GJetMC          , GJetHT40To100            ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-40To100_RunIISummer16DR80Premix.txt
+GJetMC          , GJetHT40To100x           ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-40To100_RunIISummer16DR80Premix_ext1.txt
+GJetMC          , GJetHT100To200           ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-100To200_RunIISummer16DR80Premix.txt
+GJetMC          , GJetHT100To200x          ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-100To200_RunIISummer16DR80Premix_ext1.txt
+GJetMC          , GJetHT200To400           ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-200To400_RunIISummer16DR80Premix.txt
+GJetMC          , GJetHT200To400x          ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-200To400_RunIISummer16DR80Premix_ext1.txt
+GJetMC          , GJetHT400To600           ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-400To600_RunIISummer16DR80Premix.txt
+GJetMC          , GJetHT400To600x          ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-400To600_RunIISummer16DR80Premix_ext1.txt
+GJetMC          , GJetHT600ToInf           ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-600ToInf_RunIISummer16DR80Premix.txt
+GJetMC          , GJetHT600ToInfx          ,  GJetMC      , MC      , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/GJets_HT-600ToInf_RunIISummer16DR80Premix_ext1.txt
+GJetData        , SinglePhotonRun2016B     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016B-v3.txt
+GJetData        , SinglePhotonRun2016C     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016C-v1.txt
+GJetData        , SinglePhotonRun2016D     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016D-v1.txt
+GJetData        , SinglePhotonRun2016E     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016E-v1.txt
+GJetData        , SinglePhotonRun2016F     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016F-v1.txt
+GJetData        , SinglePhotonRun2016G     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016G-v1.txt
