@@ -75,7 +75,6 @@ class EmJetHistoMaker : public HistoMakerBase
   double GetLTKFrac(int ij);
   double GetNonPUFrac(int ij);
   double GetFrac2DSig(int ij);
-  int GetNTracks(int ij);
   bool SelectJet_basic(int jet_index);
   bool SelectJet_alphaMax(int jet_index);
   bool SelectJet_alphaMax2(int jet_index);
@@ -97,7 +96,6 @@ class EmJetHistoMaker : public HistoMakerBase
   vector<double> jet_nonpufrac;
   vector<double> jet_frac2DSig;
   vector<int>    jet_flavour;
-  vector<int>    jet_NTracks;
   vector<int> BquarkIndex;
   string file_; // Path to current input file
   unique_ptr<reweight::LumiReWeighting> LumiWeights_;
@@ -280,7 +278,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
   if(!jet_nonpufrac.empty()) jet_nonpufrac.clear();
   if(!jet_frac2DSig.empty()) jet_frac2DSig.clear();
   if(!jet_flavour.empty()) jet_flavour.clear();
-  if(!jet_NTracks.empty()) jet_NTracks.clear();
 
   for (unsigned ij = 0; ij< (*jet_pt).size(); ij++){
     double Alpha =  GetAlpha(ij);// with track quality cut, deltaR matching and PV weight
@@ -302,15 +299,9 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
       jet_flavour.push_back(flavour);
     }
 
-    int ntracks = GetNTracks(ij);
-    jet_NTracks.push_back(ntracks);
   }
 
-  //DEBUG
-  //if( jet_Alpha.size()!=(*jet_pt).size() || jet_Alpha2D.size()!=(*jet_pt).size() || jet_Alpha2DSig.size()!=(*jet_pt).size() || jet_ltkfrac.size()!=(*jet_pt).size() || jet_nonpufrac.size()!=(*jet_pt).size() || jet_frac2DSig.size()!=(*jet_pt).size() || jet_flavour.size()!=(*jet_pt).size() || jet_NTracks.size()!=(*jet_pt).size() ){
-  //  std::cout << "Jet Alpha Store Problem!!!!" << std::endl;
-  //}
-  if( jet_Alpha.size()!=(*jet_pt).size() || jet_Alpha2D.size()!=(*jet_pt).size() || jet_Alpha2DSig.size()!=(*jet_pt).size() || jet_ltkfrac.size()!=(*jet_pt).size() || jet_nonpufrac.size()!=(*jet_pt).size() || jet_frac2DSig.size()!=(*jet_pt).size() || jet_NTracks.size()!=(*jet_pt).size() ){
+  if( jet_Alpha.size()!=(*jet_pt).size() || jet_Alpha2D.size()!=(*jet_pt).size() || jet_Alpha2DSig.size()!=(*jet_pt).size() || jet_ltkfrac.size()!=(*jet_pt).size() || jet_nonpufrac.size()!=(*jet_pt).size() || jet_frac2DSig.size()!=(*jet_pt).size() ){
     std::cout << "Jet Alpha Store Problem!!!!" << std::endl;
   }
 
@@ -324,7 +315,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
 
     if (SelectJet_basic(ij)) {
       FillJetHistograms_pT(eventnumber, ij, "__JTbasic"+tag);
-      //if( printout ) std::cout << "eventnumber " << event << " jet " << ij << " tagged as " << jet_flavour[ij] << std::endl;
       nJet_basic++;
       pos_basicJT.push_back(ij);
       if ( jet_Alpha[ij]<0.04 ){
@@ -338,6 +328,9 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
       }
 
       if ( jet_ltkfrac[ij]<0.6 && jet_nonpufrac[ij]>0.4 ){
+        if( jet_flavour[ij]==10 && (*jet_pt)[ij]>100.0 ){
+         std::cout << "Weird jets found " << " event " << event << " lumi " << lumi << " run " << run  << " jet index "<< ij  << std::endl;
+        }
         FillJetHistograms_pT(eventnumber, ij, "__JTbasic3"+tag);
         pos_basicJT3.push_back(ij);
         nJet_basic3++;
@@ -347,6 +340,16 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
             FillJetHistograms_pT(eventnumber, ij, "__JTAF2DSig3"+tag);
           } 
 	}
+        
+        if( (*jet_csv)[ij]>=0.5426 ){//jets passing b-tagging
+          FillJetHistograms_pT(eventnumber, ij, "__JTB"+tag); 
+          if( jet_Alpha2DSig[ij]<0.3 ){
+            FillJetHistograms_pT(eventnumber, ij, "__JTBAlpha2DSig3"+tag);
+            if( jet_frac2DSig[ij]<0.3 ){
+              FillJetHistograms_pT(eventnumber, ij, "__JTBAF2DSig3"+tag);
+            }
+          }
+        }
       }
     }
   }
@@ -358,6 +361,9 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
   histo_->hist1d["ht"+tag]->Fill(ht, w);
   histo_->hist1d["ht4"+tag]->Fill(ht4, w);
   histo_->hist1d["pv_z"+tag]->Fill((*pv_z)[0], w);
+  histo_->hist1d["nJets"+tag]->Fill((*jet_pt).size(), w);
+  histo_->hist1d["nJets_JTbasic"+tag]->Fill(pos_basicJT.size(), w);
+  histo_->hist1d["nJets_JTbasic3"+tag]->Fill(pos_basicJT3.size(), w);
  
   // debug 
   if( pos_basicJT.size()  != nJet_basic )  std::cout << "WARNING!!! jet multiplicity does not match" << std::endl;
@@ -391,6 +397,17 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
     }
   }
 
+  if( pos_basicJT3.size()==1 ){// look at the case with only one basic3 jet
+     int index = pos_basicJT3[0];
+     FillJetHistograms_pT(eventnumber, index, "__JTbasic__TypeII"+tag);
+     if( jet_Alpha2DSig[index]<0.3 ){
+        FillJetHistograms_pT(eventnumber, index, "__JTAlpha2DSig__TypeII"+tag);
+     }
+     if( jet_Alpha2DSig[index]<0.3 && jet_frac2DSig[index]<0.3 ){
+        FillJetHistograms_pT(eventnumber, index, "__JTAlpha__TypeII"+tag);
+     }
+  }
+
 }
 
 void EmJetHistoMaker::FillNJetHistograms(long eventnumber, vector<int> vjetindex, string tag)
@@ -409,24 +426,20 @@ void EmJetHistoMaker::FillJetHistograms_pT(long eventnumber, int ij, string tag)
   FillJetHistograms(eventnumber, ij, tag);
   if( (*jet_pt)[ij]<100.0 )                                                FillJetHistograms(eventnumber, ij, "__pt0"+tag);
   if( (*jet_pt)[ij]>=100.0 )                                               FillJetHistograms(eventnumber, ij, "__ptX"+tag);
-  if( (*jet_pt)[ij]>=100.0  && (*jet_pt)[ij]<200.0 )                       FillJetHistograms(eventnumber, ij, "__pt1"+tag);
-  if( (*jet_pt)[ij]>=200.0  && (*jet_pt)[ij]<300.0 )                       FillJetHistograms(eventnumber, ij, "__pt2"+tag);
-  if( (*jet_pt)[ij]>=300.0  && (*jet_pt)[ij]<400.0 )                       FillJetHistograms(eventnumber, ij, "__pt3"+tag);
-  if( (*jet_pt)[ij]>=400.0  && (*jet_pt)[ij]<500.0 )                       FillJetHistograms(eventnumber, ij, "__pt4"+tag);
-  if( (*jet_pt)[ij]>=500.0  && (*jet_pt)[ij]<700.0 )                       FillJetHistograms(eventnumber, ij, "__pt5"+tag);
-  if( (*jet_pt)[ij]>=700.0  && (*jet_pt)[ij]<1000.0 )                      FillJetHistograms(eventnumber, ij, "__pt6"+tag);
+  //if( (*jet_pt)[ij]>=100.0  && (*jet_pt)[ij]<300.0 )                       FillJetHistograms(eventnumber, ij, "__pt1"+tag);
+  //if( (*jet_pt)[ij]>=300.0  && (*jet_pt)[ij]<1000.0 )                      FillJetHistograms(eventnumber, ij, "__pt2"+tag);
 
   if( !isData_ ){ 
     string ftag = "__"+std::to_string(jet_flavour[ij]) + tag;
     FillJetHistograms(eventnumber, ij, ftag);
     if( (*jet_pt)[ij]<100.0 )                                                FillJetHistograms(eventnumber, ij, "__pt0"+ftag);
     if( (*jet_pt)[ij]>=100.0 )                                               FillJetHistograms(eventnumber, ij, "__ptX"+ftag);
-    if( (*jet_pt)[ij]>=100.0  && (*jet_pt)[ij]<200.0 )                       FillJetHistograms(eventnumber, ij, "__pt1"+ftag);
-    if( (*jet_pt)[ij]>=200.0  && (*jet_pt)[ij]<300.0 )                       FillJetHistograms(eventnumber, ij, "__pt2"+ftag);
-    if( (*jet_pt)[ij]>=300.0  && (*jet_pt)[ij]<400.0 )                       FillJetHistograms(eventnumber, ij, "__pt3"+ftag);
-    if( (*jet_pt)[ij]>=400.0  && (*jet_pt)[ij]<500.0 )                       FillJetHistograms(eventnumber, ij, "__pt4"+ftag);
-    if( (*jet_pt)[ij]>=500.0  && (*jet_pt)[ij]<700.0 )                       FillJetHistograms(eventnumber, ij, "__pt5"+ftag);
-    if( (*jet_pt)[ij]>=700.0  && (*jet_pt)[ij]<1000.0 )                      FillJetHistograms(eventnumber, ij, "__pt6"+ftag);
+    //if( (*jet_pt)[ij]>=100.0  && (*jet_pt)[ij]<200.0 )                       FillJetHistograms(eventnumber, ij, "__pt1"+ftag);
+    //if( (*jet_pt)[ij]>=200.0  && (*jet_pt)[ij]<300.0 )                       FillJetHistograms(eventnumber, ij, "__pt2"+ftag);
+    //if( (*jet_pt)[ij]>=300.0  && (*jet_pt)[ij]<400.0 )                       FillJetHistograms(eventnumber, ij, "__pt3"+ftag);
+    //if( (*jet_pt)[ij]>=400.0  && (*jet_pt)[ij]<500.0 )                       FillJetHistograms(eventnumber, ij, "__pt4"+ftag);
+    //if( (*jet_pt)[ij]>=500.0  && (*jet_pt)[ij]<700.0 )                       FillJetHistograms(eventnumber, ij, "__pt5"+ftag);
+    //if( (*jet_pt)[ij]>=700.0  && (*jet_pt)[ij]<1000.0 )                      FillJetHistograms(eventnumber, ij, "__pt6"+ftag);
   }
 }
 
@@ -438,8 +451,6 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber, int ij, string tag)
   //double ipXYcut = 0.025;
   // Calculate median 2D impact parameter (source=0, high quality)
   int nTrack = 0;
-  int nTrack_pt300 = 0;
-  int nTrack_pt500 = 0;
   int nTrack_pt1000 = 0;
   double medianIP = 0.;
   double maxIP = 0.;
@@ -453,8 +464,6 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber, int ij, string tag)
         vector_ipXY.push_back( (*track_ipXY)[ij][itk] );
         vector_ipXYSig.push_back( (*track_ipXYSig)[ij][itk]);
         FillTrackHistograms(eventnumber, ij, itk, tag);
-        if( (*track_pt)[ij][itk]>0.3 ) nTrack_pt300++;
-        if( (*track_pt)[ij][itk]>0.5 ) nTrack_pt500++;
         if( (*track_pt)[ij][itk]>1.0 ) nTrack_pt1000++;
       }
     }
@@ -561,6 +570,12 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber, int ij, string tag)
   histo_->hist1d["jet_medianIPSig"+tag]->Fill(medianIPSig, w);
   histo_->hist1d["jet_prompt_frac"+tag]->Fill(prompt_frac, w);
   histo_->hist1d["jet_disp_frac"+tag]->Fill(disp_frac, w);
+
+  if( nTrack<= 7 )               histo_->hist1d["jet_Alpha2DSig__nTrack0"+tag]->Fill(jet_Alpha2DSig[ij], w);
+  if( nTrack>7  && nTrack<=10 )  histo_->hist1d["jet_Alpha2DSig__nTrack1"+tag]->Fill(jet_Alpha2DSig[ij], w);
+  if( nTrack>10 && nTrack<=12 )  histo_->hist1d["jet_Alpha2DSig__nTrack2"+tag]->Fill(jet_Alpha2DSig[ij], w);
+  if( nTrack>12 && nTrack<=15 )  histo_->hist1d["jet_Alpha2DSig__nTrack3"+tag]->Fill(jet_Alpha2DSig[ij], w);
+  if( nTrack>15 )                histo_->hist1d["jet_Alpha2DSig__nTrack4"+tag]->Fill(jet_Alpha2DSig[ij], w);
 
   // 2D histos
   /*
@@ -733,17 +748,6 @@ double EmJetHistoMaker::GetFrac2DSig(int ij)
 
   double frac2DSig = (nTrack > 0 ? (double)nTrackpassing/nTrack : 0.);
   return frac2DSig;
-}
-
-int EmJetHistoMaker::GetNTracks(int ij)
-{
-  int nTracks = 0;
-    for (unsigned itk=0; itk< (*track_pt)[ij].size(); itk++){
-    if ( (*track_source)[ij][itk]!=0 ) continue;
-    if ( ( (*track_quality)[ij][itk] & 4 ) == 0 ) continue; // Only process tracks with "highPurity" quality
-    nTracks++; 
-  }
-  return nTracks;
 }
 
 bool EmJetHistoMaker::SelectJet_basic(int ij)

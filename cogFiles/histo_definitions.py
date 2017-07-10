@@ -50,6 +50,9 @@ def user_define_histos():
     name = 'pv_z'                      ; histo_dict[name] = Histo1F(name , Bins( 60 ,-30  ,  30  ) )
     name = 'ht'                        ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 2500 ) )
     name = 'ht4'                       ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 2500 ) )
+    name = 'nJets'                     ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) )
+    name = 'nJets_JTbasic'             ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) )
+    name = 'nJets_JTbasic3'            ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) )
     name = 'jet_pt'                    ; histo_dict[name] = Histo1F(name , Bins(102 , -20 , 1000 ) )
     name = 'jet_eta'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
     name = 'jet_phi'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
@@ -61,13 +64,18 @@ def user_define_histos():
     name = 'jet_maxIP'                 ; histo_dict[name] = Histo1F(name , Bins(200 , -0.2 , 0.2  ) )
     name = 'jet_medianIPSig'           ; histo_dict[name] = Histo1F(name , Bins(200 , -8   , 8    ) )
     name = 'jet_maxIPSig'              ; histo_dict[name] = Histo1F(name , Bins(200 , -8   , 8    ) )
-    name = 'jet_alphaMax'              ; histo_dict[name] = Histo1F(name , Bins(200 , -1.  , 1.   ) )
-    name = 'jet_Alpha'                 ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 1.   ) )
-    name = 'jet_Alpha2D'               ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 1.   ) )
-    name = 'jet_Alpha2DSig'            ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 1.   ) )
-    name = 'jet_ltkfrac'               ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 2.   ) )
-    name = 'jet_frac2DSig'             ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 1.   ) )
-    name = 'jet_nonpufrac'             ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 1.   ) )
+    name = 'jet_alphaMax'              ; histo_dict[name] = Histo1F(name , Bins(201 , -1.  , 1.1 ) )
+    name = 'jet_Alpha'                 ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_Alpha2D'               ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_Alpha2DSig'            ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_Alpha2DSig__nTrack0'   ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_Alpha2DSig__nTrack1'   ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_Alpha2DSig__nTrack2'   ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_Alpha2DSig__nTrack3'   ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_Alpha2DSig__nTrack4'   ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_ltkfrac'               ; histo_dict[name] = Histo1F(name , Bins(100 ,  0.  , 2.0 ) )
+    name = 'jet_frac2DSig'             ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
+    name = 'jet_nonpufrac'             ; histo_dict[name] = Histo1F(name , Bins(110 ,  0.  , 1.1 ) )
     name = 'jet_prompt_frac'           ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 2.   ) )
     name = 'jet_disp_frac'             ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 2.   ) )
     name = 'jet_cef'                   ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 1.   ) )
@@ -112,18 +120,18 @@ def user_define_histos():
         if name[:4]=='jet_' or name[:6]=='track_':
             histo_clone = clone_object(histo, postfix='pt0')
             histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt1')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt2')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt3')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt4')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt5')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt6')
-            histo_clone_dict[histo_clone.name] = histo_clone
+            #histo_clone = clone_object(histo, postfix='pt1')
+            #histo_clone_dict[histo_clone.name] = histo_clone
+            #histo_clone = clone_object(histo, postfix='pt2')
+            #histo_clone_dict[histo_clone.name] = histo_clone
+            #histo_clone = clone_object(histo, postfix='pt3')
+            #histo_clone_dict[histo_clone.name] = histo_clone
+            #histo_clone = clone_object(histo, postfix='pt4')
+            #histo_clone_dict[histo_clone.name] = histo_clone
+            #histo_clone = clone_object(histo, postfix='pt5')
+            #histo_clone_dict[histo_clone.name] = histo_clone
+            #histo_clone = clone_object(histo, postfix='pt6')
+            #histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='ptX')
             histo_clone_dict[histo_clone.name] = histo_clone
     histo_dict.update(histo_clone_dict)
@@ -165,6 +173,18 @@ def user_define_histos():
             histo_clone = clone_object(histo, postfix='JTAlpha2DSig3')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAF2DSig3')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTB')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTBAlpha2DSig3')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTBAF2DSig3')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTbasic__TypeII')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTAlpha2DSig__TypeII')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='JTAlpha__TypeII')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTbasic__TypeIII')
             histo_clone_dict[histo_clone.name] = histo_clone

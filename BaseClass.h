@@ -54,6 +54,7 @@ public :
    vector<float>   *jet_nef;
    vector<float>   *jet_chf;
    vector<float>   *jet_nhf;
+   vector<float>   *jet_csv;
    vector<int>     *jet_missHits;
    vector<int>     *jet_muonHits;
    vector<float>   *jet_alphaMax;
@@ -146,6 +147,7 @@ public :
    TBranch        *b_jet_nef;   //!
    TBranch        *b_jet_chf;   //!
    TBranch        *b_jet_nhf;   //!
+   TBranch        *b_jet_csv;   //!
    TBranch        *b_jet_missHits;   //!
    TBranch        *b_jet_muonHits;   //!
    TBranch        *b_jet_alphaMax;   //!
@@ -280,6 +282,7 @@ void BaseClass::Init(TTree *tree)
    jet_nef = 0;
    jet_chf = 0;
    jet_nhf = 0;
+   jet_csv = 0;
    jet_missHits = 0;
    jet_muonHits = 0;
    jet_alphaMax = 0;
@@ -375,6 +378,7 @@ void BaseClass::Init(TTree *tree)
    fChain->SetBranchAddress("jet_nef", &jet_nef, &b_jet_nef);
    fChain->SetBranchAddress("jet_chf", &jet_chf, &b_jet_chf);
    fChain->SetBranchAddress("jet_nhf", &jet_nhf, &b_jet_nhf);
+   fChain->SetBranchAddress("jet_csv", &jet_csv, &b_jet_csv);
    fChain->SetBranchAddress("jet_missHits", &jet_missHits, &b_jet_missHits);
    fChain->SetBranchAddress("jet_muonHits", &jet_muonHits, &b_jet_muonHits);
    fChain->SetBranchAddress("jet_alphaMax", &jet_alphaMax, &b_jet_alphaMax);
