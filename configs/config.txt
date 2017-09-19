@@ -1,16 +1,4 @@
 # sample group  , sample name              , sample Type , MC/DATA , isSignal , xsec[fb] , input file
-WJetMc          , WJetMC                   , WJet        , MC      , false    ,  60290000, /data/users/fengyb/EmJetHistoMaker/inputs/20170426/WJet_MC.txt
-#
-GJetMC          , GJetMCHT600ToInf_pT175   , GJet        , MC      , false    ,     93380, /data/users/fengyb/EmJetHistoMaker/inputs/20170426/GJetMC_HT600ToInf_pT175.txt
-GJetMC          , GJetMCHT400To600_pT175   , GJet        , MC      , false    ,    277400, /data/users/fengyb/EmJetHistoMaker/inputs/20170426/GJetMC_HT400To600_pT175.txt
-GJetMC          , GJetMCHT200To400_pT175   , GJet        , MC      , false    ,   2300000, /data/users/fengyb/EmJetHistoMaker/inputs/20170426/GJetMC_HT200To400_pT175.txt
-GJetMC          , GJetMCHT100To200_pT175   , GJet        , MC      , false    ,   9226000, /data/users/fengyb/EmJetHistoMaker/inputs/20170426/GJetMC_HT100To200_pT175.txt
-GJetMC          , GJetMCHT40To100_pT175    , GJet        , MC      , false    ,  20730000, /data/users/fengyb/EmJetHistoMaker/inputs/20170426/GJetMC_HT40To100_pT175.txt
-#
-QCDMC           , QCDHT500To700            , QCDMC       , MC      , false    ,  29370000, /data/users/fengyb/EmJetHistoMaker/inputs/20170428/QCD80_HT500To700_MC.txt
-QCDMC           , QCDHT700To1000           , QCDMC       , MC      , false    ,   6524000, /data/users/fengyb/EmJetHistoMaker/inputs/20170428/QCD80_HT700To1000_MC.txt
-QCDMC           , QCDHT1000To1500          , QCDMC       , MC      , false    ,   1064000, /data/users/fengyb/EmJetHistoMaker/inputs/20170428/QCD80_HT1000To1500_MC.txt
-QCDMC           , QCDHT1500To2000          , QCDMC       , MC      , false    ,    121500, /data/users/fengyb/EmJetHistoMaker/inputs/20170428/QCD80_HT1500To2000_MC.txt
-QCDMC           , QCDHT2000ToInf          , QCDMC       , MC      , false    ,     25450, /data/users/fengyb/EmJetHistoMaker/inputs/20170428/QCD80_HT2000ToInf_MC.txt
-SignalMC        , SignalModelA            , Signal       , MC     , true      ,        1, /data/users/fengyb/EmJetHistoMaker/inputs/20170426/Signal_ModelA.txt
-SignalMC        , SignalModelB            , Signal       , MC     , true      ,        1, /data/users/fengyb/EmJetHistoMaker/inputs/20170426/Signal_ModelB.txt
+SignalMC        , SignalModelA            , Signal       , MC     , true      ,        1, /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170609/Signal_ModelA.txt
+SignalMC        , SignalModelB            , Signal       , MC     , true      ,        1, /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170609/Signal_ModelB.txt
+SignalMC        , SignalModelB_old        , Signal       , MC     , true      ,        1, /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170523/SignalModelB.txt

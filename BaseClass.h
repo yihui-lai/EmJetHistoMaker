@@ -48,6 +48,7 @@ public :
    vector<int>     *jet_index;
    vector<int>     *jet_source;
    vector<float>   *jet_pt;
+   vector<float>   *jet_ptRaw;
    vector<float>   *jet_eta;
    vector<float>   *jet_phi;
    vector<float>   *jet_cef;
@@ -55,6 +56,7 @@ public :
    vector<float>   *jet_chf;
    vector<float>   *jet_nhf;
    vector<float>   *jet_csv;
+   vector<float>   *jet_theta2D;   
    vector<int>     *jet_missHits;
    vector<int>     *jet_muonHits;
    vector<float>   *jet_alphaMax;
@@ -141,6 +143,7 @@ public :
    TBranch        *b_jet_index;   //!
    TBranch        *b_jet_source;   //!
    TBranch        *b_jet_pt;   //!
+   TBranch        *b_jet_ptRaw; //!
    TBranch        *b_jet_eta;   //!
    TBranch        *b_jet_phi;   //!
    TBranch        *b_jet_cef;   //!
@@ -148,6 +151,7 @@ public :
    TBranch        *b_jet_chf;   //!
    TBranch        *b_jet_nhf;   //!
    TBranch        *b_jet_csv;   //!
+   TBranch        *b_jet_theta2D; //! 
    TBranch        *b_jet_missHits;   //!
    TBranch        *b_jet_muonHits;   //!
    TBranch        *b_jet_alphaMax;   //!
@@ -276,6 +280,7 @@ void BaseClass::Init(TTree *tree)
    jet_index = 0;
    jet_source = 0;
    jet_pt = 0;
+   jet_ptRaw = 0;
    jet_eta = 0;
    jet_phi = 0;
    jet_cef = 0;
@@ -283,6 +288,7 @@ void BaseClass::Init(TTree *tree)
    jet_chf = 0;
    jet_nhf = 0;
    jet_csv = 0;
+   jet_theta2D = 0;
    jet_missHits = 0;
    jet_muonHits = 0;
    jet_alphaMax = 0;
@@ -372,6 +378,7 @@ void BaseClass::Init(TTree *tree)
    fChain->SetBranchAddress("jet_index", &jet_index, &b_jet_index);
    fChain->SetBranchAddress("jet_source", &jet_source, &b_jet_source);
    fChain->SetBranchAddress("jet_pt", &jet_pt, &b_jet_pt);
+   fChain->SetBranchAddress("jet_ptRaw", &jet_ptRaw, &b_jet_ptRaw);
    fChain->SetBranchAddress("jet_eta", &jet_eta, &b_jet_eta);
    fChain->SetBranchAddress("jet_phi", &jet_phi, &b_jet_phi);
    fChain->SetBranchAddress("jet_cef", &jet_cef, &b_jet_cef);
@@ -379,6 +386,7 @@ void BaseClass::Init(TTree *tree)
    fChain->SetBranchAddress("jet_chf", &jet_chf, &b_jet_chf);
    fChain->SetBranchAddress("jet_nhf", &jet_nhf, &b_jet_nhf);
    fChain->SetBranchAddress("jet_csv", &jet_csv, &b_jet_csv);
+   fChain->SetBranchAddress("jet_theta2D", &jet_theta2D, &b_jet_theta2D);
    fChain->SetBranchAddress("jet_missHits", &jet_missHits, &b_jet_missHits);
    fChain->SetBranchAddress("jet_muonHits", &jet_muonHits, &b_jet_muonHits);
    fChain->SetBranchAddress("jet_alphaMax", &jet_alphaMax, &b_jet_alphaMax);
