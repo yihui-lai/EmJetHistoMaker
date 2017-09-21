@@ -1,0 +1,13 @@
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_1.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_10.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_11.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_12.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_14.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_2.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_3.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_4.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_5.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_6.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_7.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_8.root
+/store/user/yofeng/80X/ntuple/Analysis-20170911-v0/SinglePhotonRun2016H-v3/SinglePhoton/Analysis-20170911/170911_181350/0000/ntuple_9.root

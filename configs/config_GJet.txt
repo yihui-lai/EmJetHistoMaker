@@ -15,3 +15,5 @@ GJetData        , SinglePhotonRun2016D     ,  GJetData    , DATA    , false    ,
 GJetData        , SinglePhotonRun2016E     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016E-v1.txt
 GJetData        , SinglePhotonRun2016F     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016F-v1.txt
 GJetData        , SinglePhotonRun2016G     ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170622/SinglePhotonRun2016G-v1.txt
+GJetData        , SinglePhotonRun2016Hv2   ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170911/SinglePhotonRun2016H-v2.txt
+GJetData        , SinglePhotonRun2016Hv3   ,  GJetData    , DATA    , false    ,         1,  /data/users/fengyb/flavourtagging/EmJetHistoMaker/inputs/20170911/SinglePhotonRun2016H-v3.txt
