@@ -259,9 +259,9 @@ void EmJetHistoMaker::FillHistograms(long eventnumber)
   if (pileupOnly_) return;
 
    // turn on HLT trigger and jetfilter for QCD and signal sampels
-  if( HLT_PFHT800==0 ) return;
+  //if( HLT_PFHT800==0 ) return;
   if( (*pv_index)[0]!=-1 || fabs((*pv_z)[0])>15.0 ) return;
-  if( !JetFilter(eventnumber) ) return;
+  //if( !JetFilter(eventnumber) ) return;
   FillEventHistograms(eventnumber, "", false);
   ++nEvecount;
 }
@@ -495,6 +495,7 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
       }
     }
   }
+  */
 
   for( auto &jindex: pos_basicJT){
     if( (*jet_csv)[jindex]<0.8 || (*jet_pt)[jindex]<50.0 ) continue;//tag
@@ -523,7 +524,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
       }
     }
   } 
-  */
 }
 
 void EmJetHistoMaker::FillNJetHistograms(long eventnumber, vector<int> vjetindex, string tag)
@@ -578,8 +578,8 @@ void EmJetHistoMaker::FillJetHistograms(long eventnumber, int ij, string tag)
     vector<double> vector_ipXY;
     vector<double> vector_ipXYSig;
     for (unsigned itk=0; itk < (*track_pt)[ij].size(); itk++) {
-      //if ( (*track_source)[ij][itk] == 0 &&  ((*track_quality)[ij][itk] & 4)>0 ) {
-      if ( (*track_source)[ij][itk] == 0 ) {
+      if ( (*track_source)[ij][itk] == 0 &&  ((*track_quality)[ij][itk] & 4)>0 ) {
+      //if ( (*track_source)[ij][itk] == 0 ) {
         vector_ipXY.push_back( (*track_ipXY)[ij][itk] );
         vector_ipXYSig.push_back( (*track_ipXYSig)[ij][itk]);
         FillTrackHistograms(eventnumber, ij, itk, tag);
