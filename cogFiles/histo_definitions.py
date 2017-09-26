@@ -53,14 +53,16 @@ def user_define_histos():
     name = 'ht'                        ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 2500 ) )
     name = 'ht4'                       ; histo_dict[name] = Histo1F(name , Bins(100 , 0   , 2500 ) )
     name = 'nJets'                     ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) )
-    name = 'nJets_JTbasic'             ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) )
-    name = 'nJets_JTbasic3'            ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) )
-    name = 'nJets_JTsig'               ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) )
-    name = 'nJets_JTsig3'              ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) )
+    name = 'nJets_JTbasic'             ; histo_dict[name] = Histo1F(name , Bins(20  , 0   , 20   ) );
+    name = 'nJets_BTagL'               ; histo_dict[name] = Histo1F(name , Bins( 6  , 0   ,  6   ) );
+    name = 'nJets_BTagM'               ; histo_dict[name] = Histo1F(name , Bins( 6  , 0   ,  6   ) );
+    name = 'nJets_BTagT'               ; histo_dict[name] = Histo1F(name , Bins( 6  , 0   ,  6   ) );
     name = 'nJets_signal'              ; histo_dict[name] = Histo1F(name , Bins( 20 , 0   , 20   ) );
     name = 'nJets_dksignal'            ; histo_dict[name] = Histo1F(name , Bins( 20 , 0   , 20   ) );
     name = 'nJets_dnsignal'            ; histo_dict[name] = Histo1F(name , Bins( 20 , 0   , 20   ) );
     name = 'nJets_tag'                 ; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
+    name = 'nEvts_ntag__withoutflavour'; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
+    name = 'nEvts_ntag__withflavour'   ; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
     name = 'jet_pt'                    ; histo_dict[name] = Histo1F(name , Bins(102 , -20 , 1000 ) )
     name = 'jet_eta'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
     name = 'jet_phi'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
@@ -134,6 +136,7 @@ def user_define_histos():
     histo_dict.update(histo_2d_dict)
 
     # histos for alpha2DSig fitting
+    '''
     nTk = array.array('i', (i for i in xrange(0, 25)))
     histo_clone_dict = OrderedDict()
     for name, histo in histo_dict.iteritems():
@@ -146,10 +149,10 @@ def user_define_histos():
                histo_clone = clone_object(histo, postfix='nTrack%s'%nTk[i])
                histo_clone_dict[histo_clone.name] = histo_clone
     histo_dict.update(histo_clone_dict)
-        
+    '''    
 
     # Jet plot variations
-
+    '''
     histo_clone_dict = OrderedDict()
     for name, histo in histo_dict.iteritems():
         if name[:4]=='jet_' or name[:6]=='track_':
@@ -167,9 +170,10 @@ def user_define_histos():
             #histo_clone_dict[histo_clone.name] = histo_clone
             #histo_clone = clone_object(histo, postfix='pt6')
             #histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='ptX')
-            histo_clone_dict[histo_clone.name] = histo_clone
+            #histo_clone = clone_object(histo, postfix='ptX')
+            #histo_clone_dict[histo_clone.name] = histo_clone
     histo_dict.update(histo_clone_dict)
+    '''
 
     histo_clone_dict = OrderedDict()
     for name, histo in histo_dict.iteritems():
@@ -213,15 +217,41 @@ def user_define_histos():
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='dnsig__JTbasic')
             histo_clone_dict[histo_clone.name] = histo_clone
-            #histo_clone = clone_object(histo, postfix='JTAlpha2DSig')
-            #histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTAlpha3DSig')
-            histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='JTAFM')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='dksig__JTAFM')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='dnsig__JTAFM')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withoutflavour0')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withoutflavour0__Emerging')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withoutflavour1')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withoutflavour1__Emerging')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withoutflavour2')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withoutflavour2__Emerging')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withflavour0')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withflavour0__Emerging')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withflavour1')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withflavour1__Emerging')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withflavour2')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='withflavour2__Emerging')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='truth_with0Tag')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='truth_with1Tag')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='truth_with2Tag')
             histo_clone_dict[histo_clone.name] = histo_clone
             #histo_clone = clone_object(histo, postfix='JTbasic3')
             #histo_clone_dict[histo_clone.name] = histo_clone
