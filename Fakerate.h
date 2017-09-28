@@ -5,6 +5,7 @@
 
 double PnTag(double fr[], int nTag);
 double PEmergingnTag(double fr[], int nTag, int ijet);
-double frCal(int nTrack, int option);
+double frCal(int jet_nTrack, int option);
+double frCal(int nTrack, double pt, int option);
 
 #endif
