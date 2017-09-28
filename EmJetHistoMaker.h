@@ -341,10 +341,9 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
     std::cout << "Jet-Level variable Store Problem!!!!" << std::endl;
   }
 
-  unsigned int nJet_basic = 0, nJet_basic3 = 0, nJet_dksignal = 0, nJet_dnsignal = 0, nJet_tag = 0;
+  unsigned int nJet_basic = 0, nJet_dksignal = 0, nJet_dnsignal = 0, nJet_tag = 0;
   int nJet_BTagL = 0, nJet_BTagM = 0, nJet_BTagT = 0;
   vector<int> pos_basicJT;
-  vector<int> pos_basicJT3;
 
   // for closure test
   double fr1[4] = {-1.0, -1.0, -1.0, -1.0};// first kind of test: without using flavour info
@@ -411,8 +410,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
         // std::cout << "Weird jets found " << " event " << event << " lumi " << lumi << " run " << run  << " jet index "<< ij  << std::endl;
         //}
         FillJetHistograms_pT(eventnumber, ij, "__JTbasic3"+tag);
-        pos_basicJT3.push_back(ij);
-        nJet_basic3++;
 	if ( jet_Alpha2DSig[ij]<0.3 ){
           FillJetHistograms_pT(eventnumber, ij, "__JTAlpha2DSig3"+tag);
           if( jet_frac2DSig[ij]<0.3 ){
@@ -444,7 +441,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
  
   // debug 
   if( pos_basicJT.size()  != nJet_basic )  std::cout << "WARNING!!! jet multiplicity does not match" << std::endl;
-  if( pos_basicJT3.size() != nJet_basic3 ) std::cout << "WARNING!! third type of basic jet multiplicity does not match" << std::endl;
 
    // Closure Test ( for QCD )
   for(int ij=0; ij<4; ij++){
@@ -503,7 +499,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag, bool pri
 void EmJetHistoMaker::FillClosureTestHistograms(long eventnumber, double vFR[], string tag, int nTag)
 {
   double p_ntag = PnTag(vFR, nTag);
-  std::cout << "fakerate " << vFR[0] << " " << vFR[1] << " " << vFR[2] << " " << vFR[3] << " nTag " << nTag << " p_ntag " << p_ntag << std::endl;
   histo_->hist1d["nEvts_ntag"+tag]->Fill(nTag,  p_ntag);// fill in nTag bin with weight p_ntag;
   for(int ij=0; ij<4; ij++){
     FillJetHistograms_pT(eventnumber, ij, tag+std::to_string(nTag), p_ntag);
