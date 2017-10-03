@@ -273,7 +273,7 @@ namespace reweight {
 
         weights_->SetName("lumiWeights");
 
-        TH1F* den = new TH1F(*(MC_distr_));
+        //TH1F* den = new TH1F(*(MC_distr_));
 
         // weights_->Divide( den );  // so now the average weight should be 1.0
 
