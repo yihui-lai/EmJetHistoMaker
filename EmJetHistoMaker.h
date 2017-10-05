@@ -335,13 +335,15 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
   vector<int> pos_basicJT;
 
   // for closure test
-  //double fr1[4] = {-1.0, -1.0, -1.0, -1.0};// first kind of test: without using flavour info
-  //double fr2[4] = {-1.0, -1.0, -1.0, -1.0};// second kind of test: using flavour info
+  double fr1[4] = {-1.0, -1.0, -1.0, -1.0};// first kind of test: without using flavour info
+  double fr2[4] = {-1.0, -1.0, -1.0, -1.0};// second kind of test: using flavour info
+  double fr3[4] = {-1.0, -1.0, -1.0, -1.0};// third kind of test: using weighted flavour fakerate
+  double fr4[4] = {-1.0, -1.0, -1.0, -1.0};// fourth kind of test
 
   // Jet loop
   for (unsigned ij = 0; ij < (*jet_pt).size(); ij++) {
-    //if (ij>=4) break; // :JETCUT:
-    if( nJet_basic>=4 ) break;
+    if (ij>=4) break; // :JETCUT:
+    //if( nJet_basic>=4 ) break;
     if( !SelectJet_basic(ij) ) continue;
     nJet_basic++;
     pos_basicJT.push_back(ij);
@@ -358,13 +360,15 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
     }
      
     // Closure Test( for QCD )
-    //int ibasicjet = nJet_basic-1;
-    //int nTrack = jet_nTrack[ij];
-    //fr1[ibasicjet] = frCal(nTrack, 0);
-    //if( !isData_ ){
-    //  if (jet_flavour[ij]<5 || jet_flavour[ij]==21 || jet_flavour[ij]==10 ) fr2[ibasicjet] = frCal(nTrack, 1);
-    //  else if(jet_flavour[ij]==5 || jet_flavour[ij]==19 ) fr2[ibasicjet]=frCal(nTrack, 2);
-    //}
+    int ibasicjet = nJet_basic-1;
+    int nTrack = jet_nTrack[ij];
+    fr1[ibasicjet] = frCal(nTrack, 0);
+    if( !isData_ ){
+      if (jet_flavour[ij]<5 || jet_flavour[ij]==21 || jet_flavour[ij]==10 ) fr2[ibasicjet] = frCal(nTrack, 1);
+      else if(jet_flavour[ij]==5 || jet_flavour[ij]==19 ) fr2[ibasicjet]=frCal(nTrack, 2);
+    }
+    fr3[ibasicjet] = frCal(nTrack, 3);
+    fr4[ibasicjet] = frCal(nTrack, 4);
     //if( (*jet_csv)[ij]>0.8484 ) fr2[ibasicjet] = frCal(nTrack, 1);
     //else fr2[ibasicjet] = frCal(nTrack, 2);
     
@@ -391,6 +395,7 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
   histo_->hist1d["nJets_BTagL"+tag]->Fill(nJet_BTagL, w);
   histo_->hist1d["nJets_BTagM"+tag]->Fill(nJet_BTagM, w);
   histo_->hist1d["nJets_BTagT"+tag]->Fill(nJet_BTagT, w);  
+  histo_->hist1d["nJets_EMTagged"+tag]->Fill(nJet_tag, w);
 
   FillJetHistograms_pT(eventnumber, minAlpha3DSigM_index, "__JTminAlpha3DSigM"+tag);
   FillJetHistograms_pT(eventnumber, maxCsv_index,         "__JTmaxCsv"+tag);
@@ -399,7 +404,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
   if( pos_basicJT.size()  != nJet_basic )  std::cout << "Error!!! jet multiplicity does not match" << std::endl;
 
   // Closure Test ( for QCD )
-  /*
   for(int ij=0; ij<4; ij++){
     if( fr1[ij]<0. ){
       std::cout << "Error: Event "<< event << " "<< run << " "<< lumi << " with fr1 "<< fr1[ij] <<  " of index "<< ij << " does not make sense"<< std::endl;
@@ -407,15 +411,23 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
     if( fr2[ij]<0. ){
       std::cout << "Error: Event "<< event << " "<< run << " "<< lumi << " with fr2 "<< fr2[ij] <<  " of index "<< ij << " does not make sense"<< std::endl;
     }
+    if( fr3[ij]<0. ){
+      std::cout << "Error: Event "<< event << " "<< run << " "<< lumi << " with fr3 "<< fr3[ij] <<  " of index "<< ij << " does not make sense"<< std::endl;
+    }
   }
-  */
-  //FillClosureTestHistograms(eventnumber, fr1, pos_basicJT, "__withoutflavour", 0);
-  //FillClosureTestHistograms(eventnumber, fr1, pos_basicJT, "__withoutflavour", 1);
-  //FillClosureTestHistograms(eventnumber, fr1, pos_basicJT, "__withoutflavour", 2);  
 
-  //FillClosureTestHistograms(eventnumber, fr2, pos_basicJT, "__withflavour", 0);  
-  //FillClosureTestHistograms(eventnumber, fr2, pos_basicJT, "__withflavour", 1);
-  //FillClosureTestHistograms(eventnumber, fr2, pos_basicJT, "__withflavour", 2);  
+  FillClosureTestHistograms(eventnumber, fr1, pos_basicJT, "__withoutflavour", 0);
+  FillClosureTestHistograms(eventnumber, fr1, pos_basicJT, "__withoutflavour", 1);
+  FillClosureTestHistograms(eventnumber, fr1, pos_basicJT, "__withoutflavour", 2);  
+
+  FillClosureTestHistograms(eventnumber, fr2, pos_basicJT, "__withflavour", 0);  
+  FillClosureTestHistograms(eventnumber, fr2, pos_basicJT, "__withflavour", 1);
+  FillClosureTestHistograms(eventnumber, fr2, pos_basicJT, "__withflavour", 2);  
+
+  FillClosureTestHistograms(eventnumber, fr3, pos_basicJT, "__withwflavour", 0);
+  FillClosureTestHistograms(eventnumber, fr3, pos_basicJT, "__withwflavour", 1);
+  FillClosureTestHistograms(eventnumber, fr4, pos_basicJT, "__withwflavour", 2);
+
   if( nJet_tag<=2 ){
     FillClosureTestHistograms_Truth(eventnumber, pos_basicJT, "", nJet_tag);
   }
@@ -485,9 +497,9 @@ void EmJetHistoMaker::FillClosureTestHistograms(long eventnumber, double vFR[], 
 {
   double p_ntag = PnTag(vFR, nTag);
   histo_->hist1d["nEvts_ntag"+tag]->Fill(nTag,  p_ntag);// fill in nTag bin with weight p_ntag;
-  //if( pos_basicJT.size()!=4 ) {
-  //  std::cout << "Error: basic jet size of this event" << event << " " << run << " " << lumi << " is "<< pos_basicJT.size() << ", not 4" << std::endl;
-  //}
+  if( pos_basicJT.size()!=4 ) {
+    std::cout << "Error: basic jet size of this event" << event << " " << run << " " << lumi << " is "<< pos_basicJT.size() << ", not 4" << std::endl;
+  }
   /*
   for( int ibasicJet=0; ibasicJet< pos_basicJT.size(); ibasicJet++){
     int ij = pos_basicJT[ibasicJet];
@@ -514,7 +526,7 @@ void EmJetHistoMaker::FillClosureTestHistograms_Truth(long eventnumber, const ve
     }
   }
   if( nTag!=ntag ){
-    std::cout << "Error(DEBUG): truth nTag passed does not match truth ntag" << std::endl;
+    std::cout << "Error: truth nTag passed does not match truth ntag" << std::endl;
   }
 }
 
@@ -526,11 +538,11 @@ void EmJetHistoMaker::FillJetHistograms_pT(long eventnumber, int ij, string tag)
 
 void EmJetHistoMaker::FillJetHistograms_pT(long eventnumber, int ij, string tag, double w)
 {
-  if((*jet_pt)[ij]>=100.0){
+  if((*jet_pt)[ij]>=150.0){
     FillJetHistograms(eventnumber, ij, tag, w);
-    if( (*jet_pt)[ij]>=100.0 && (*jet_pt)[ij]<200.0 )      FillJetHistograms(eventnumber, ij, "__pt1"+tag, w);
-    else if( (*jet_pt)[ij]>=200.0 && (*jet_pt)[ij]<300.0 ) FillJetHistograms(eventnumber, ij, "__pt2"+tag, w);
-    else if( (*jet_pt)[ij]>=300.0 )                        FillJetHistograms(eventnumber, ij, "__pt3"+tag, w);
+    //if( (*jet_pt)[ij]>=150.0 && (*jet_pt)[ij]<200.0 )      FillJetHistograms(eventnumber, ij, "__pt1"+tag, w);
+    //else if( (*jet_pt)[ij]>=200.0 && (*jet_pt)[ij]<300.0 ) FillJetHistograms(eventnumber, ij, "__pt2"+tag, w);
+    //else if( (*jet_pt)[ij]>=300.0 )                        FillJetHistograms(eventnumber, ij, "__pt3"+tag, w);
 
     // add flavour bin for MC 
     if( !isData_ ){
@@ -538,9 +550,9 @@ void EmJetHistoMaker::FillJetHistograms_pT(long eventnumber, int ij, string tag,
       if( jet_flavour[ij]<5 ) ftag = "__1" + tag;
       else                    ftag = "__"+std::to_string(jet_flavour[ij]) + tag;
       FillJetHistograms(eventnumber, ij, ftag, w);
-      if( (*jet_pt)[ij]>=100.0 && (*jet_pt)[ij]<200.0 )      FillJetHistograms(eventnumber, ij, "__pt1"+ftag, w);
-      else if( (*jet_pt)[ij]>=200.0 && (*jet_pt)[ij]<300.0 ) FillJetHistograms(eventnumber, ij, "__pt2"+ftag, w);
-      else if( (*jet_pt)[ij]>=300.0 )                        FillJetHistograms(eventnumber, ij, "__pt3"+ftag, w);
+      //if( (*jet_pt)[ij]>=150.0 && (*jet_pt)[ij]<200.0 )      FillJetHistograms(eventnumber, ij, "__pt1"+ftag, w);
+      //else if( (*jet_pt)[ij]>=200.0 && (*jet_pt)[ij]<300.0 ) FillJetHistograms(eventnumber, ij, "__pt2"+ftag, w);
+      //else if( (*jet_pt)[ij]>=300.0 )                        FillJetHistograms(eventnumber, ij, "__pt3"+ftag, w);
     }
   }
 }
@@ -723,7 +735,6 @@ double EmJetHistoMaker::CalculateEventWeight(long eventnumber)
   return weight;//normalize the histogram in the end
 }
 
-/*
 bool EmJetHistoMaker::JetFilter(long eventnumber)
 {
   double w = CalculateEventWeight(eventnumber);
@@ -733,18 +744,18 @@ bool EmJetHistoMaker::JetFilter(long eventnumber)
   cuts[0] = true                                                  ; labels[0]=("nocut")                                    ;
   cuts[1] = cuts[1-1] && jet_pt->size()>=4                        ; labels[1]=("jet_pt->size()>=4 ")                       ;
   cuts[2] = cuts[2-1] && ht4 > 1000                               ; labels[2]=("ht4 > 1000        ")                       ;
-  cuts[3] = cuts[3-1] && SelectJet_basic(0) && (*jet_pt)[0] > 400 ; labels[3]=("SelectJet_basic(0) && (*jet_pt)[0] > 400") ;
-  cuts[4] = cuts[4-1] && SelectJet_basic(1) && (*jet_pt)[1] > 200 ; labels[4]=("SelectJet_basic(1) && (*jet_pt)[1] > 200") ;
+  cuts[3] = cuts[3-1] && SelectJet_basic(0) && (*jet_pt)[0] > 300 ; labels[3]=("SelectJet_basic(0) && (*jet_pt)[0] > 300") ;
+  cuts[4] = cuts[4-1] && SelectJet_basic(1) && (*jet_pt)[1] > 300 ; labels[4]=("SelectJet_basic(1) && (*jet_pt)[1] > 300") ;
   cuts[5] = cuts[5-1] && SelectJet_basic(2) && (*jet_pt)[2] > 200 ; labels[5]=("SelectJet_basic(2) && (*jet_pt)[2] > 200") ;
-  cuts[6] = cuts[6-1] && SelectJet_basic(3) && (*jet_pt)[3] > 100 ; labels[6]=("SelectJet_basic(3) && (*jet_pt)[3] > 100") ;
+  cuts[6] = cuts[6-1] && SelectJet_basic(3) && (*jet_pt)[3] > 150 ; labels[6]=("SelectJet_basic(3) && (*jet_pt)[3] > 150") ;
   //Fill the cutflow table
   for (int ic = 0; ic < nCut; ic ++) {
     if ( cuts[ic] ) histo_->hist1d["cutflow"]->Fill(labels[ic].c_str(), w);
   }
   return cuts[6]; 
 }
-*/
 
+/*
 bool EmJetHistoMaker::JetFilter(long eventnumber)
 {
   double w = CalculateEventWeight(eventnumber);
@@ -782,6 +793,7 @@ bool EmJetHistoMaker::JetFilter(long eventnumber)
   }
   return cuts[6];
 }
+*/
 
 double EmJetHistoMaker::GetAlpha2DSig(int ij) // Calculate alpha for given jet
 {
@@ -946,7 +958,7 @@ bool EmJetHistoMaker::SelectJet_Emerging(int ij)
     std::cout << "Error!!! vector out of range,  size " << jet_Alpha3DSigM.size() << " " << jet_fabsmedianIP.size() << " ij "<< ij << std::endl;
     return false;
   }
-  if( jet_Alpha3DSigM[ij]<0.20 && jet_fabsmedianIP[ij]>0.05 ){
+  if( jet_Alpha3DSigM[ij]<0.25 && jet_fabsmedianIP[ij]>0.05 ){
     isEmerging = true;
   }
   return isEmerging;

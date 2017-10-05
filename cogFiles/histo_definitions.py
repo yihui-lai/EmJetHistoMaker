@@ -58,11 +58,13 @@ def user_define_histos():
     name = 'nJets_BTagM'               ; histo_dict[name] = Histo1F(name , Bins( 6  , 0   ,  6   ) );
     name = 'nJets_BTagT'               ; histo_dict[name] = Histo1F(name , Bins( 6  , 0   ,  6   ) );
     name = 'nJets_signal'              ; histo_dict[name] = Histo1F(name , Bins( 20 , 0   , 20   ) );
+    name = 'nJets_EMTagged'            ; histo_dict[name] = Histo1F(name , Bins( 20 , 0   , 20   ) );
     name = 'nJets_dksignal'            ; histo_dict[name] = Histo1F(name , Bins( 20 , 0   , 20   ) );
     name = 'nJets_dnsignal'            ; histo_dict[name] = Histo1F(name , Bins( 20 , 0   , 20   ) );
     name = 'nJets_tag'                 ; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
     name = 'nEvts_ntag__withoutflavour'; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
     name = 'nEvts_ntag__withflavour'   ; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
+    name = 'nEvts_ntag__withwflavour'  ; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
     name = 'jet_pt'                    ; histo_dict[name] = Histo1F(name , Bins(150 , 0   , 1500 ) )
     name = 'jet_eta'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
     name = 'jet_phi'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
