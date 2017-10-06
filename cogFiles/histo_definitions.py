@@ -194,10 +194,6 @@ def user_define_histos():
         if name[:4]=='jet_' or name[:6]=='track_':
             histo_clone = clone_object(histo, postfix='JTAFM')
             histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTminAlpha3DSigM')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='JTmaxCsv')
-            histo_clone_dict[histo_clone.name] = histo_clone
             '''
             histo_clone = clone_object(histo, postfix='dksig')
             histo_clone_dict[histo_clone.name] = histo_clone
@@ -234,6 +230,7 @@ def user_define_histos():
             histo_clone = clone_object(histo, postfix='withflavour2__Emerging')
             histo_clone_dict[histo_clone.name] = histo_clone
             '''
+            '''
             histo_clone = clone_object(histo, postfix='Emerging_truth_with0Tag')
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='Emerging_truth_with1Tag')
@@ -246,6 +243,7 @@ def user_define_histos():
             histo_clone_dict[histo_clone.name] = histo_clone
             histo_clone = clone_object(histo, postfix='truth_with2Tag')
             histo_clone_dict[histo_clone.name] = histo_clone
+            '''
             '''
             histo_clone = clone_object(histo, postfix='JTbasic__TypeIII')
             histo_clone_dict[histo_clone.name] = histo_clone

@@ -253,7 +253,8 @@ void EmJetHistoMaker::FillHistograms(long eventnumber)
 
   // turn on HLT trigger and jetfilter for QCD and signal sampels
   if( HLT_PFHT800==0 ) return;
-  if( (*pv_index)[0]!=-1 || fabs((*pv_z)[0])>15.0 ) return;
+  //if( (*pv_index)[0]!=-1 || fabs((*pv_z)[0])>15.0 ) return;
+  if( fabs((*pv_z)[0])>15.0 ) return; 
   if( !JetFilter(eventnumber) ) return;
   FillEventHistograms(eventnumber, "");
   ++nEvecount;
@@ -328,10 +329,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
 
   unsigned int nJet_basic = 0, nJet_tag = 0;
   int nJet_BTagL = 0, nJet_BTagM = 0, nJet_BTagT = 0;
-  double minAlpha3DSigM = 10.0;
-  int minAlpha3DSigM_index = -1;
-  double maxCsv = -10.0;
-  int maxCsv_index = -1;
   vector<int> pos_basicJT;
 
   // for closure test
@@ -372,15 +369,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
     //if( (*jet_csv)[ij]>0.8484 ) fr2[ibasicjet] = frCal(nTrack, 1);
     //else fr2[ibasicjet] = frCal(nTrack, 2);
     
-    if( jet_Alpha3DSigM[ij]< minAlpha3DSigM ){
-      minAlpha3DSigM = jet_Alpha3DSigM[ij];
-      minAlpha3DSigM_index = ij;
-    }
-
-    if( (*jet_csv)[ij] > maxCsv ){
-      maxCsv = (*jet_csv)[ij];
-      maxCsv_index = ij;
-    }
   }// Finish the loop over all jets in one event
   
   // Existing quantities (in ntuple)
@@ -396,9 +384,6 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
   histo_->hist1d["nJets_BTagM"+tag]->Fill(nJet_BTagM, w);
   histo_->hist1d["nJets_BTagT"+tag]->Fill(nJet_BTagT, w);  
   histo_->hist1d["nJets_EMTagged"+tag]->Fill(nJet_tag, w);
-
-  FillJetHistograms_pT(eventnumber, minAlpha3DSigM_index, "__JTminAlpha3DSigM"+tag);
-  FillJetHistograms_pT(eventnumber, maxCsv_index,         "__JTmaxCsv"+tag);
  
   // debug 
   if( pos_basicJT.size()  != nJet_basic )  std::cout << "Error!!! jet multiplicity does not match" << std::endl;
@@ -519,9 +504,9 @@ void EmJetHistoMaker::FillClosureTestHistograms_Truth(long eventnumber, const ve
   int ntag=0;
   for( int ibasicJet=0; ibasicJet< static_cast<int>(pos_basicJT.size()); ibasicJet++){
     int ij = pos_basicJT[ibasicJet];
-    FillJetHistograms_pT(eventnumber, ij, tag+"__truth_with"+std::to_string(nTag)+"Tag");
+    //FillJetHistograms_pT(eventnumber, ij, tag+"__truth_with"+std::to_string(nTag)+"Tag");
     if( SelectJet_Emerging(ij) ){
-      FillJetHistograms_pT(eventnumber, ij, tag+"__Emerging_truth_with"+std::to_string(nTag)+"Tag");
+      //FillJetHistograms_pT(eventnumber, ij, tag+"__Emerging_truth_with"+std::to_string(nTag)+"Tag");
       ntag++;
     }
   }
