@@ -253,8 +253,8 @@ void EmJetHistoMaker::FillHistograms(long eventnumber)
 
   // turn on HLT trigger and jetfilter for QCD and signal sampels
   if( HLT_PFHT800==0 ) return;
-  //if( (*pv_index)[0]!=-1 || fabs((*pv_z)[0])>15.0 ) return;
-  if( fabs((*pv_z)[0])>15.0 ) return; 
+  if( (*pv_index)[0]!=0 || fabs((*pv_z)[0])>15.0 ) return;
+  //if( fabs((*pv_z)[0])>15.0 ) return; 
   if( !JetFilter(eventnumber) ) return;
   FillEventHistograms(eventnumber, "");
   ++nEvecount;
@@ -441,6 +441,30 @@ void EmJetHistoMaker::FillEventHistograms(long eventnumber, string tag)
     }
   } 
   */
+  vector<double> vfr;
+  if( nJet_tag==1 ){
+    for( auto &ij_tag: pos_basicJT){
+      if(!SelectJet_Emerging(ij_tag)) continue;
+      if(!vfr.empty()) vfr.clear();
+      for( auto &ij_probe: pos_basicJT){
+        if(ij_probe == ij_tag) continue;
+        FillJetHistograms_pT(eventnumber, ij_probe, "__tagprobe"+tag);
+        vfr.push_back( frCal(jet_nTrack[ij_probe], 4) );
+        //if(SelectJet_Emerging(ij_probe)){
+        //  FillJetHistograms_pT(eventnumber, ij_probe, "__EMtagprobe"+tag);
+        //}
+      }
+      if(vfr.size()!=3) {
+        std::cout << "Error: fakerate vector size not 3" << std::endl;
+      }
+      else{
+        double p_1tag = vfr[0] *(1-vfr[1]) * (1-vfr[2]);
+        p_1tag += (1-vfr[0]) *   vfr[1]    * (1-vfr[2]);
+        p_1tag += (1-vfr[0]) *  (1-vfr[1]) *  vfr[2];
+        histo_->hist1d["nEvts_tagandprobe"+tag]->Fill(2.0, p_1tag);
+      }
+    }
+  }
 }
 
 void EmJetHistoMaker::FillSignalHistograms(long eventnumber, const vector<int> &pos_basicJT, string tag)
@@ -525,9 +549,9 @@ void EmJetHistoMaker::FillJetHistograms_pT(long eventnumber, int ij, string tag,
 {
   if((*jet_pt)[ij]>=150.0){
     FillJetHistograms(eventnumber, ij, tag, w);
+    if( fabs((*jet_eta)[ij])<1.4 ) FillJetHistograms(eventnumber, ij, "__Barrel"+tag, w);
+    if( fabs((*jet_eta)[ij])>1.4 ) FillJetHistograms(eventnumber, ij, "__Endcap"+tag, w);
     //if( (*jet_pt)[ij]>=150.0 && (*jet_pt)[ij]<200.0 )      FillJetHistograms(eventnumber, ij, "__pt1"+tag, w);
-    //else if( (*jet_pt)[ij]>=200.0 && (*jet_pt)[ij]<300.0 ) FillJetHistograms(eventnumber, ij, "__pt2"+tag, w);
-    //else if( (*jet_pt)[ij]>=300.0 )                        FillJetHistograms(eventnumber, ij, "__pt3"+tag, w);
 
     // add flavour bin for MC 
     if( !isData_ ){
@@ -535,9 +559,9 @@ void EmJetHistoMaker::FillJetHistograms_pT(long eventnumber, int ij, string tag,
       if( jet_flavour[ij]<5 ) ftag = "__1" + tag;
       else                    ftag = "__"+std::to_string(jet_flavour[ij]) + tag;
       FillJetHistograms(eventnumber, ij, ftag, w);
+      if( fabs((*jet_eta)[ij])<1.4 ) FillJetHistograms(eventnumber, ij, "__Barrel"+ftag, w);
+      if( fabs((*jet_eta)[ij])>1.4 ) FillJetHistograms(eventnumber, ij, "__Endcap"+ftag, w);
       //if( (*jet_pt)[ij]>=150.0 && (*jet_pt)[ij]<200.0 )      FillJetHistograms(eventnumber, ij, "__pt1"+ftag, w);
-      //else if( (*jet_pt)[ij]>=200.0 && (*jet_pt)[ij]<300.0 ) FillJetHistograms(eventnumber, ij, "__pt2"+ftag, w);
-      //else if( (*jet_pt)[ij]>=300.0 )                        FillJetHistograms(eventnumber, ij, "__pt3"+ftag, w);
     }
   }
 }
@@ -872,7 +896,7 @@ double EmJetHistoMaker::GetLTKFrac(int ij)
   for (unsigned itk=0; itk < (*track_pt)[ij].size(); itk++) {
     if ( (*track_source)[ij][itk] != 0 ) continue; // Only process tracks with source=0
     if ( ( (*track_quality)[ij][itk] & 4 ) == 0 ) continue; // Only process tracks with "highPurity" quality
-    if ( fabs((*pv_z)[0]-(*track_ref_z)[ij][itk]) > 1.5 ) continue;//remove pile-up tracks
+    //if ( fabs((*pv_z)[0]-(*track_ref_z)[ij][itk]) > 1.5 ) continue;//remove pile-up tracks
     if ( (*track_pt)[ij][itk] > maxtkpT ) maxtkpT=(*track_pt)[ij][itk];
   }
   double ltkfrac = maxtkpT/(*jet_pt)[ij];
@@ -931,7 +955,7 @@ bool EmJetHistoMaker::SelectJet_basic(int ij)
   double ltkfrac   = GetLTKFrac(ij);
   double nonpufrac = GetNonPUFrac(ij);
 
-  bool cut_ltkfrac = ltkfrac >0.0 && ltkfrac<0.6  ; result = result && cut_ltkfrac  ;
+  bool cut_ltkfrac = ltkfrac<0.6                  ; result = result && cut_ltkfrac  ;
   bool cut_nonpufrac = nonpufrac > 0.4            ; result = result && cut_nonpufrac;
   return result;
 }
@@ -943,7 +967,7 @@ bool EmJetHistoMaker::SelectJet_Emerging(int ij)
     std::cout << "Error!!! vector out of range,  size " << jet_Alpha3DSigM.size() << " " << jet_fabsmedianIP.size() << " ij "<< ij << std::endl;
     return false;
   }
-  if( jet_Alpha3DSigM[ij]<0.25 && jet_fabsmedianIP[ij]>0.05 ){
+  if( jet_Alpha3DSigM[ij]<0.25 && jet_fabsmedianIP[ij]>0.05 && (*jet_theta2D)[ij]>0 ){
     isEmerging = true;
   }
   return isEmerging;

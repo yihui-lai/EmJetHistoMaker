@@ -65,13 +65,12 @@ def user_define_histos():
     name = 'nEvts_ntag__withoutflavour'; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
     name = 'nEvts_ntag__withflavour'   ; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
     name = 'nEvts_ntag__withwflavour'  ; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
+    name = 'nEvts_tagandprobe'         ; histo_dict[name] = Histo1F(name , Bins( 10 , 0   , 10   ) );
     name = 'jet_pt'                    ; histo_dict[name] = Histo1F(name , Bins(150 , 0   , 1500 ) )
     name = 'jet_eta'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
     name = 'jet_phi'                   ; histo_dict[name] = Histo1F(name , Bins(100 , -5  , 5    ) )
     name = 'jet_nTrack'                ; histo_dict[name] = Histo1F(name , Bins(100 , 0.  , 100  ) )
     name = 'jet_logtheta2D'            ; histo_dict[name] = Histo1F(name , Bins( 60 , -5  ,  1   ) )
-    #name = 'jet_medianIP'              ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
-    #name = 'jet_maxIP'                 ; histo_dict[name] = Histo1F(name , vbins['track_ipXY']     )
     name = 'jet_medianIP'              ; histo_dict[name] = Histo1F(name , Bins(300 , -0.15 , 0.15  ) )
     name = 'jet_fabsmedianIP'          ; histo_dict[name] = Histo1F(name , Bins(300 ,  0.0 , 0.3  ) )
     name = 'jet_logfabsmedianIP'       ; histo_dict[name] = Histo1F(name , Bins( 60 , -4   , 2    ) )
@@ -148,11 +147,9 @@ def user_define_histos():
         if name[:4]=='jet_' or name[:6]=='track_':
             #histo_clone = clone_object(histo, postfix='pt0')
             #histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt1')
+            histo_clone = clone_object(histo, postfix='Barrel')
             histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt2')
-            histo_clone_dict[histo_clone.name] = histo_clone
-            histo_clone = clone_object(histo, postfix='pt3')
+            histo_clone = clone_object(histo, postfix='Endcap')
             histo_clone_dict[histo_clone.name] = histo_clone
     histo_dict.update(histo_clone_dict)
 
@@ -193,6 +190,8 @@ def user_define_histos():
     for name, histo in histo_dict.iteritems():
         if name[:4]=='jet_' or name[:6]=='track_':
             histo_clone = clone_object(histo, postfix='JTAFM')
+            histo_clone_dict[histo_clone.name] = histo_clone
+            histo_clone = clone_object(histo, postfix='tagprobe')
             histo_clone_dict[histo_clone.name] = histo_clone
             '''
             histo_clone = clone_object(histo, postfix='dksig')
